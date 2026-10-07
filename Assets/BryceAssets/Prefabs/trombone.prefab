@@ -1,5 +1,50 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2648466381724912471
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4362207861174819744}
+  - component: {fileID: 4368763962542481117}
+  m_Layer: 0
+  m_Name: MoneyAccumulator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4362207861174819744
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2648466381724912471}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.10113895, y: -0.01703, z: -0.06674683}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4810976309423828142}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4368763962542481117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2648466381724912471}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecb53d902f9d67f48b76ba69ff179cb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MoneyAccumulator
+  profit: 10
 --- !u!1001 &4994135795531746117
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10,15 +55,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 1420fc8be45a248d9ba8dc069c1802d9, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.6233898
+      value: 0.34514105
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 1420fc8be45a248d9ba8dc069c1802d9, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.50948584
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 1420fc8be45a248d9ba8dc069c1802d9, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2.39149
+      value: -1.1770432
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 1420fc8be45a248d9ba8dc069c1802d9, type: 3}
       propertyPath: m_LocalRotation.w
@@ -30,11 +75,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 1420fc8be45a248d9ba8dc069c1802d9, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 1420fc8be45a248d9ba8dc069c1802d9, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 1420fc8be45a248d9ba8dc069c1802d9, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -58,6 +103,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 1420fc8be45a248d9ba8dc069c1802d9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4362207861174819744}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1420fc8be45a248d9ba8dc069c1802d9, type: 3}
+--- !u!4 &4810976309423828142 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 1420fc8be45a248d9ba8dc069c1802d9, type: 3}
+  m_PrefabInstance: {fileID: 4994135795531746117}
+  m_PrefabAsset: {fileID: 0}
