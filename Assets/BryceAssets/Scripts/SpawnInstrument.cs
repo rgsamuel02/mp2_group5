@@ -37,7 +37,7 @@ public class SpawnInstrument : MonoBehaviour
     // Update is called once per frame
     public void Select(GameObject prefab)
     {
-        selected = Instantiate(prefab, Vector3.zero, Quaternion.identity);
+        selected = Instantiate(prefab);
         placeButton.action.Enable();
     }
 
@@ -45,14 +45,14 @@ public class SpawnInstrument : MonoBehaviour
     {
         if (selected == null) return;
         raycast.TryGetCurrent3DRaycastHit(out RaycastHit hit);
-        selected.transform.SetPositionAndRotation(GetNearestGridPoint(hit.point), Quaternion.identity);
+        selected.transform.SetPositionAndRotation(GetNearestGridPoint(hit.point), selected.GetComponent<Transform>().rotation * Quaternion.identity);
     }
     
     Vector3 GetNearestGridPoint(Vector3 p)
     {
         Vector3 ret;
         ret.x = (float) Math.Round(p.x / gridSize) * gridSize; 
-        ret.y = (float) Math.Round(p.y / gridSize) * gridSize;
+        ret.y = selected.GetComponent<Transform>().position.y;
         ret.z = (float) Math.Round(p.z / gridSize) * gridSize;
         return ret;
     }
