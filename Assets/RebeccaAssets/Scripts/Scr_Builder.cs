@@ -8,14 +8,11 @@ public class Scr_Builder : MonoBehaviour
     [Header("VR Controller")]
     public XRRayInteractor rayInteractor;
 
-    [Tooltip("Controller action used to place the selected object.")]
     public InputActionReference placeAction;
-
-    [Tooltip("Optional action for selecting GardenPlot.")]
     public InputActionReference selectPlotAction;
-
-    [Tooltip("Optional action for selecting Seedling.")]
     public InputActionReference selectSeedlingAction;
+    public InputActionReference waterAction;
+    public InputActionReference harvestAction;
 
     [Header("Garden Prefabs")]
     public GameObject gardenPlotPrefab;
@@ -33,40 +30,53 @@ public class Scr_Builder : MonoBehaviour
     public LayerMask groundLayer;
 
     private GameObject selectedPrefab;
+    private Scr_Inventory inventory;
 
-    private bool enabledPlaceAction;
-    private bool enabledPlotAction;
-    private bool enabledSeedlingAction;
+    private bool enabledPlace;
+    private bool enabledPlot;
+    private bool enabledSeedling;
+    private bool enabledWater;
+    private bool enabledHarvest;
 
     void OnEnable()
     {
-        EnableIfNeeded(placeAction, ref enabledPlaceAction);
-        EnableIfNeeded(selectPlotAction, ref enabledPlotAction);
-        EnableIfNeeded(selectSeedlingAction, ref enabledSeedlingAction);
+        EnableAction(placeAction, ref enabledPlace);
+        EnableAction(selectPlotAction, ref enabledPlot);
+        EnableAction(selectSeedlingAction, ref enabledSeedling);
+        EnableAction(waterAction, ref enabledWater);
+        EnableAction(harvestAction, ref enabledHarvest);
     }
 
     void OnDisable()
     {
-        DisableIfEnabled(placeAction, ref enabledPlaceAction);
-        DisableIfEnabled(selectPlotAction, ref enabledPlotAction);
-        DisableIfEnabled(selectSeedlingAction, ref enabledSeedlingAction);
+        DisableAction(placeAction, ref enabledPlace);
+        DisableAction(selectPlotAction, ref enabledPlot);
+        DisableAction(selectSeedlingAction, ref enabledSeedling);
+        DisableAction(waterAction, ref enabledWater);
+        DisableAction(harvestAction, ref enabledHarvest);
     }
 
     void Start()
     {
         selectedPrefab = gardenPlotPrefab;
+        inventory = FindFirstObjectByType<Scr_Inventory>();
 
         if (rayInteractor == null)
         {
             Debug.LogWarning(
-                "GardenBuilder: Assign your VR controller's XR Ray Interactor."
+                "GardenBuilder: Assign the controller's XR Ray Interactor."
             );
+        }
+
+        if (inventory == null)
+        {
+            Debug.LogError("GardenBuilder: GardenInventory not found.");
         }
     }
 
     void Update()
     {
-        // Keyboard controls are kept for quick desktop testing.
+        // Desktop testing shortcuts.
         if (Keyboard.current != null)
         {
             if (Keyboard.current.digit1Key.wasPressedThisFrame)
@@ -76,49 +86,62 @@ public class Scr_Builder : MonoBehaviour
                 selectedPrefab = seedlingPrefab;
         }
 
-        // Optional VR actions for switching the selected object.
+        // Controller actions for choosing the object to place.
         if (WasPressed(selectPlotAction))
             selectedPrefab = gardenPlotPrefab;
 
         if (WasPressed(selectSeedlingAction))
             selectedPrefab = seedlingPrefab;
 
-        // Place an object when the assigned controller action is pressed.
         if (WasPressed(placeAction))
             TryPlaceObject();
+
+        if (WasPressed(waterAction))
+            TryWaterPlant();
+
+        if (WasPressed(harvestAction))
+            TryHarvestPlant();
+    }
+
+    bool TryGetHit(out RaycastHit hit)
+    {
+        hit = default;
+
+        if (rayInteractor == null)
+            return false;
+
+        return rayInteractor.TryGetCurrent3DRaycastHit(out hit);
     }
 
     void TryPlaceObject()
     {
-        if (rayInteractor == null || selectedPrefab == null)
+        if (selectedPrefab == null || inventory == null)
             return;
 
-        if (!rayInteractor.TryGetCurrent3DRaycastHit(out RaycastHit hit))
+        if (!TryGetHit(out RaycastHit hit))
         {
-            Debug.Log("GardenBuilder: Aim at the ground first.");
+            Debug.Log("Aim at the garden first.");
             return;
         }
 
-        // Only allow placement on objects in the selected ground layer.
+        // Don't place objects on plants or other props.
         int hitLayer = hit.collider.gameObject.layer;
 
         if ((groundLayer.value & (1 << hitLayer)) == 0)
         {
-            Debug.Log("GardenBuilder: Aim at the garden ground.");
+            Debug.Log("Aim at the garden ground to place objects.");
             return;
         }
 
         Vector3 position = hit.point;
 
-        // Snap to the center of a grid cell.
         int cellX = Mathf.FloorToInt(position.x / cellSize);
         int cellZ = Mathf.FloorToInt(position.z / cellSize);
 
-        // Keep placement inside the grid.
         if (cellX < 0 || cellX >= gridSize ||
             cellZ < 0 || cellZ >= gridSize)
         {
-            Debug.Log("GardenBuilder: Aim inside the garden grid.");
+            Debug.Log("Aim inside the garden grid.");
             return;
         }
 
@@ -128,15 +151,7 @@ public class Scr_Builder : MonoBehaviour
         bool placingPlot = selectedPrefab == gardenPlotPrefab;
         bool placingSeedling = selectedPrefab == seedlingPrefab;
 
-        // Set height explicitly so prefab root transforms don't cause
-        // objects to spawn below or above the ground unexpectedly.
         position.y = placingPlot ? plotHeight : seedlingHeight;
-
-        if (placingSeedling && !HasPlotAt(cellX, cellZ))
-        {
-            Debug.Log("Planting requires a garden plot!");
-            return;
-        }
 
         if (placingPlot && HasPlotAt(cellX, cellZ))
         {
@@ -144,8 +159,61 @@ public class Scr_Builder : MonoBehaviour
             return;
         }
 
+        if (placingSeedling)
+        {
+            if (!HasPlotAt(cellX, cellZ))
+            {
+                Debug.Log("Planting requires a garden plot!");
+                return;
+            }
+
+            if (HasPlantAt(cellX, cellZ))
+            {
+                Debug.Log("There is already a plant in this plot!");
+                return;
+            }
+
+            if (!inventory.UseSeeds(1))
+                return;
+        }
+
         Instantiate(selectedPrefab, position, Quaternion.identity);
         Debug.Log("Garden object placed.");
+    }
+
+    void TryWaterPlant()
+    {
+        if (!TryGetHit(out RaycastHit hit))
+            return;
+
+        Scr_Plant plant = hit.collider.GetComponentInParent<Scr_Plant>();
+
+        if (plant == null)
+        {
+            Debug.Log("Aim at a plant to water it.");
+            return;
+        }
+
+        if (inventory == null || !inventory.UseWater(1))
+            return;
+
+        plant.Water();
+    }
+
+    void TryHarvestPlant()
+    {
+        if (!TryGetHit(out RaycastHit hit))
+            return;
+
+        Scr_Plant plant = hit.collider.GetComponentInParent<Scr_Plant>();
+
+        if (plant == null)
+        {
+            Debug.Log("Aim at a plant to harvest it.");
+            return;
+        }
+
+        plant.Harvest();
     }
 
     bool HasPlotAt(int targetX, int targetZ)
@@ -155,54 +223,69 @@ public class Scr_Builder : MonoBehaviour
 
         foreach (Scr_Plot plot in plots)
         {
-            int plotX = Mathf.FloorToInt(
-                plot.transform.position.x / cellSize
-            );
+            int x = Mathf.FloorToInt(plot.transform.position.x / cellSize);
+            int z = Mathf.FloorToInt(plot.transform.position.z / cellSize);
 
-            int plotZ = Mathf.FloorToInt(
-                plot.transform.position.z / cellSize
-            );
-
-            if (plotX == targetX && plotZ == targetZ)
+            if (x == targetX && z == targetZ)
                 return true;
         }
 
         return false;
     }
 
-    bool WasPressed(InputActionReference actionReference)
+    bool HasPlantAt(int targetX, int targetZ)
     {
-        return actionReference != null &&
-               actionReference.action != null &&
-               actionReference.action.enabled &&
-               actionReference.action.WasPressedThisFrame();
+        Scr_Plant[] plants =
+            FindObjectsByType<Scr_Plant>(FindObjectsSortMode.None);
+
+        foreach (Scr_Plant plant in plants)
+        {
+            if (plant.IsDead)
+                continue;
+
+            int x = Mathf.FloorToInt(plant.transform.position.x / cellSize);
+            int z = Mathf.FloorToInt(plant.transform.position.z / cellSize);
+
+            if (x == targetX && z == targetZ)
+                return true;
+        }
+
+        return false;
     }
 
-    void EnableIfNeeded(
-        InputActionReference actionReference,
+    bool WasPressed(InputActionReference reference)
+    {
+        return reference != null &&
+               reference.action != null &&
+               reference.action.enabled &&
+               reference.action.WasPressedThisFrame();
+    }
+
+    void EnableAction(
+        InputActionReference reference,
         ref bool enabledByThisScript)
     {
         enabledByThisScript = false;
 
-        if (actionReference == null || actionReference.action == null)
+        if (reference == null || reference.action == null)
             return;
 
-        if (!actionReference.action.enabled)
+        if (!reference.action.enabled)
         {
-            actionReference.action.Enable();
+            reference.action.Enable();
             enabledByThisScript = true;
         }
     }
 
-    void DisableIfEnabled(
-        InputActionReference actionReference,
+    void DisableAction(
+        InputActionReference reference,
         ref bool enabledByThisScript)
     {
         if (enabledByThisScript &&
-            actionReference != null &&
-            actionReference.action != null)
+            reference != null &&
+            reference.action != null)
         {
-            actionReference.action.Disable();
+            reference.action.Disable();
         }
 
         enabledByThisScript = false;
