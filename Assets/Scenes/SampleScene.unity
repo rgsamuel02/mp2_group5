@@ -1500,7 +1500,7 @@ PrefabInstance:
     - target: {fileID: 6738884551464104790, guid: 1e2645ef549788747a4a5303be4cb50b, type: 3}
       propertyPath: seedlingPrefab
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1555652619428584960, guid: b42aff538f11e904bb5b354db20e5618, type: 3}
     - target: {fileID: 6738884551464104790, guid: 1e2645ef549788747a4a5303be4cb50b, type: 3}
       propertyPath: selectPlotAction
       value: 
@@ -1550,6 +1550,16 @@ MonoBehaviour:
   water: 20
   seeds: 10
   tomatoes: 0
+  herbs: 0
+  flowers: 0
+  fertilizer: 0
+  compostMaterials: 0
+  soil: 10
+  wood: 0
+  stone: 0
+  gold: 0
+  gardenTools: 1
+  restaurantSupplyPoints: 0
 --- !u!1001 &6589557327273648605
 PrefabInstance:
   m_ObjectHideFlags: 0

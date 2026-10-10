@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5204802188408282882}
   - component: {fileID: 1556843772585000861}
   - component: {fileID: 6363337954431762880}
+  - component: {fileID: -6464693815672328320}
   m_Layer: 0
   m_Name: SM_Tomato_Lv1
   m_TagString: Untagged
@@ -106,9 +107,30 @@ MonoBehaviour:
   health: 100
   moisture: 50
   growth: 0
+  age: 0
   growthPerSecond: 2
   moistureLossPerSecond: 1
   healthLossWhenDry: 5
   waterAddedPerAction: 30
   matureAt: 100
   tomatoYield: 3
+  youngTomatoPlantPrefab: {fileID: 180336659550616498, guid: 6402709babab77242abba40b63209315, type: 3}
+  tomatoPlantPrefab: {fileID: 8597325850313553600, guid: 3c1fe8c1fd9fa2f4aa98b72bc2479ebb, type: 3}
+  youngStageAt: 34
+  matureStageAt: 67
+--- !u!114 &-6464693815672328320
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1555652619428584960}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5af6c2a0a8c0e344b9fe8dc170b6b774, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Scr_TomPlant
+  fruitCount: 0
+  ripeness: 0
+  ripenessGrowthStart: 67
+  fullyRipeAt: 100

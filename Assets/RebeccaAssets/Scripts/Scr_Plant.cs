@@ -1,4 +1,3 @@
-
 using UnityEngine;
 
 public class Scr_Plant : MonoBehaviour
@@ -7,6 +6,7 @@ public class Scr_Plant : MonoBehaviour
     [Range(0, 100)] public float health = 100f;
     [Range(0, 100)] public float moisture = 50f;
     [Range(0, 100)] public float growth = 0f;
+    public float age = 0f;
 
     [Header("Growth Settings")]
     public float growthPerSecond = 2f;
@@ -16,9 +16,21 @@ public class Scr_Plant : MonoBehaviour
     public float matureAt = 100f;
     public int tomatoYield = 3;
 
+    [Header("Growth Stage Prefabs")]
+    public GameObject youngTomatoPlantPrefab;
+    public GameObject tomatoPlantPrefab;
+
+    [Header("Growth Stage Thresholds")]
+    [Range(1, 99)] public float youngStageAt = 34f;
+    [Range(2, 100)] public float matureStageAt = 67f;
+
     private Vector3 startingScale;
     private Scr_Inventory inventory;
     private Renderer[] plantRenderers;
+
+    private Renderer rootRenderer;
+    private GameObject currentVisual;
+    private int currentStage = 1;
     private bool isDead = false;
 
     public bool IsMature
@@ -35,9 +47,21 @@ public class Scr_Plant : MonoBehaviour
     {
         startingScale = transform.localScale;
         inventory = FindFirstObjectByType<Scr_Inventory>();
+
+        // Stage 1 uses the original Seedling model.
+        rootRenderer = GetComponent<Renderer>();
+
+        // If the seedling's visible model is a child instead,
+        // use the first child as its initial visual.
+        if (rootRenderer == null && transform.childCount > 0)
+        {
+            currentVisual = transform.GetChild(0).gameObject;
+        }
+
         plantRenderers = GetComponentsInChildren<Renderer>();
 
         UpdateAppearance();
+        UpdateGrowthStage();
     }
 
     void Update()
@@ -45,18 +69,17 @@ public class Scr_Plant : MonoBehaviour
         if (isDead)
             return;
 
-        // Plants grow passively over time.
+        age += Time.deltaTime;
+        
         if (moisture > 0f)
         {
             growth += growthPerSecond * Time.deltaTime;
             growth = Mathf.Clamp(growth, 0f, matureAt);
         }
 
-        // Soil moisture slowly decreases.
         moisture -= moistureLossPerSecond * Time.deltaTime;
         moisture = Mathf.Clamp(moisture, 0f, 100f);
 
-        // Dry plants lose health.
         if (moisture <= 0f)
         {
             health -= healthLossWhenDry * Time.deltaTime;
@@ -69,7 +92,87 @@ public class Scr_Plant : MonoBehaviour
             return;
         }
 
+        UpdateGrowthStage();
         UpdateAppearance();
+    }
+
+    void UpdateGrowthStage()
+    {
+        int desiredStage;
+
+        if (growth < youngStageAt)
+        {
+            desiredStage = 1;
+        }
+        else if (growth < matureStageAt)
+        {
+            desiredStage = 2;
+        }
+        else
+        {
+            desiredStage = 3;
+        }
+
+        if (desiredStage != currentStage)
+        {
+            ChangeVisualStage(desiredStage);
+        }
+    }
+
+    void ChangeVisualStage(int newStage)
+    {
+        GameObject nextPrefab = null;
+
+        if (newStage == 2)
+        {
+            nextPrefab = youngTomatoPlantPrefab;
+        }
+        else if (newStage == 3)
+        {
+            nextPrefab = tomatoPlantPrefab;
+        }
+
+        // If a required prefab is missing, keep the current
+        // visual and try again on a later update.
+        if (newStage > 1 && nextPrefab == null)
+        {
+            Debug.LogWarning(
+                "GardenPlant: Assign the prefab for growth stage "
+                + newStage + " on " + gameObject.name
+            );
+            return;
+        }
+
+        // Remove the previous child visual, if there is one.
+        if (currentVisual != null)
+        {
+            Destroy(currentVisual);
+            currentVisual = null;
+        }
+
+        // The original seedling model may be on the root.
+        if (rootRenderer != null)
+        {
+            rootRenderer.enabled = (newStage == 1);
+        }
+
+        if (newStage > 1)
+        {
+            currentVisual = Instantiate(nextPrefab, transform, false);
+
+            // Align the new model to the plant's root.
+            currentVisual.transform.localPosition = Vector3.zero;
+            currentVisual.transform.localRotation = Quaternion.identity;
+        }
+
+        currentStage = newStage;
+        plantRenderers = GetComponentsInChildren<Renderer>();
+
+        UpdateAppearance();
+
+        Debug.Log(
+            gameObject.name + " changed to growth stage " + currentStage
+        );
     }
 
     public void Water()
@@ -84,13 +187,9 @@ public class Scr_Plant : MonoBehaviour
             moisture + waterAddedPerAction, 0f, 100f
         );
 
-        // Watering also restores a little health.
         health = Mathf.Clamp(health + 5f, 0f, 100f);
 
-        Debug.Log(
-            "Plant watered. Moisture: " +
-            Mathf.RoundToInt(moisture)
-        );
+        Debug.Log("Plant watered. Moisture: " + Mathf.RoundToInt(moisture));
 
         UpdateAppearance();
     }
@@ -105,7 +204,7 @@ public class Scr_Plant : MonoBehaviour
 
         if (!IsMature)
         {
-            Debug.Log("This plant is not mature yet!");
+            Debug.Log("This plant is not ready to harvest yet!");
             return;
         }
 
@@ -116,17 +215,15 @@ public class Scr_Plant : MonoBehaviour
         }
 
         inventory.AddTomatoes(tomatoYield);
-
-        // Remove the harvested plant for now.
         Destroy(gameObject);
     }
 
     void Die()
     {
         isDead = true;
+
         Debug.Log("A plant has died from neglect!");
 
-        // Turn the plant brown to signal death.
         foreach (Renderer plantRenderer in plantRenderers)
         {
             if (plantRenderer == null)
@@ -135,8 +232,9 @@ public class Scr_Plant : MonoBehaviour
             MaterialPropertyBlock block = new MaterialPropertyBlock();
             plantRenderer.GetPropertyBlock(block);
 
-            block.SetColor("_BaseColor", new Color(0.35f, 0.2f, 0.1f));
-            block.SetColor("_Color", new Color(0.35f, 0.2f, 0.1f));
+            Color deadColor = new Color(0.35f, 0.2f, 0.1f);
+            block.SetColor("_BaseColor", deadColor);
+            block.SetColor("_Color", deadColor);
 
             plantRenderer.SetPropertyBlock(block);
         }
@@ -144,8 +242,11 @@ public class Scr_Plant : MonoBehaviour
 
     void UpdateAppearance()
     {
-        // Scale the plant as it grows, up to twice its original size.
-        float growthScale = Mathf.Lerp(0.5f, 2f, growth / matureAt);
+        float safeMatureAt = Mathf.Max(matureAt, 1f);
+        float growthPercent = Mathf.Clamp01(growth / safeMatureAt);
+
+        float growthScale = Mathf.Lerp(0.5f, 2f, growthPercent);
+
         transform.localScale = startingScale * growthScale;
     }
 }
