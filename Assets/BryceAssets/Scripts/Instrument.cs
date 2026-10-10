@@ -1,9 +1,11 @@
 using UnityEngine;
 
-public class MoneyAccumulator : MonoBehaviour
+public class Instrument : MonoBehaviour
 {
     float t = 0.0f;
     public float profit;
+    public bool[] gridMask = new bool[9];
+    public GameState.InstrumentType type;
     void Update()
     {
         t += Time.deltaTime;

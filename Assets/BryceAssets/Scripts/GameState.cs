@@ -1,8 +1,11 @@
 using TMPro;
 using UnityEngine;
 
+
 public class GameState : MonoBehaviour
 {
+    public const int GRID_WIDTH = 30;
+    public const int GRID_HEIGHT = 20;
     // The static reference that other scripts call
     public static GameState Instance { get; private set; }
 
@@ -16,13 +19,25 @@ public class GameState : MonoBehaviour
         }
 
         Instance = this;
+        SetEmptyGrid();
         DontDestroyOnLoad(gameObject); // Optional: Keeps it alive across scenes
     }
+
+    public enum InstrumentType
+    {
+        EMPTY, 
+        TROMBONE,
+        VIOLIN,
+        TUBA,
+        CLARINET,
+        CELLO
+    };
 
     static float enjoyment = 1f;
     public const float payRate = 10; // how long in seconds before a musician gives money
     float money = 0.0f;
 
+    InstrumentType[,] grid = new InstrumentType[GRID_HEIGHT, GRID_WIDTH];
 
     public TextMeshProUGUI moneyText;
 
@@ -39,6 +54,47 @@ public class GameState : MonoBehaviour
     public static float GetMoney()
     {
         return Instance.money;
+    }
+
+    void SetEmptyGrid()
+    {
+        for (int i = 0; i < GRID_HEIGHT; i++)
+        {
+            for (int j = 0; j < GRID_WIDTH; j++)
+            {
+                grid[i, j] = InstrumentType.EMPTY;
+            }
+        }
+    }
+
+    public bool Placeable(Instrument inst, int x, int y)
+    {
+        for (int i = -1; i < 2; i++)
+        {
+            for (int j = -1; j < 2; j++)
+            {
+                if (x + j < 0 || x + j >= GRID_WIDTH || y + i < 0 || y + j >= GRID_HEIGHT) {
+                    if(!inst.gridMask[(i + 1) * 3 + j + 1])
+                        continue;
+                    return false;
+                }
+                if (inst.gridMask[(i + 1) * 3 + j + 1] && grid[y + i, x + j] != InstrumentType.EMPTY) return false;
+            }
+        }
+        return true;
+    }
+
+    public bool Place(Instrument inst, int x, int y)
+    {
+        if (!Placeable(inst, x, y)) return false;
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                if (inst.gridMask[i * 3 + j]) grid[y + i - 1, x + j - 1] = inst.type;
+            }
+        }
+        return true;
     }
 
     void Update()
