@@ -9,7 +9,7 @@ public class Instrument : MonoBehaviour
     void Update()
     {
         t += Time.deltaTime;
-        if (t > GameState.payRate)
+        if (t > 10)
         {
             t = 0;
             GameState.Instance.AddPay(GameState.Instance.GetEnjoyment() * profit);

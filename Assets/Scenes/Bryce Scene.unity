@@ -2915,6 +2915,14 @@ PrefabInstance:
       propertyPath: m_RayInteractor
       value: 
       objectReference: {fileID: 1740303362}
+    - target: {fileID: 7054646180837666701, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_JumpInput.m_InputActionReferenceValue
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7054646180837666701, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_JumpInput.m_InputActionReferencePerformed
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 8877177980677234388, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_EnableNearCasting
       value: 0
@@ -2942,6 +2950,7 @@ GameObject:
   - component: {fileID: 632650292}
   - component: {fileID: 632650291}
   - component: {fileID: 632650290}
+  - component: {fileID: 632650293}
   m_Layer: 0
   m_Name: Tutorials
   m_TagString: Untagged
@@ -2956,7 +2965,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 632650288}
-  m_LocalRotation: {x: 0.38268343, y: 0, z: 0, w: 0.92387956}
+  m_LocalRotation: {x: 0.38268343, y: -0, z: -0, w: 0.92387956}
   m_LocalPosition: {x: 0, y: 0, z: 0.15}
   m_LocalScale: {x: 0.0005, y: 0.0005, z: 0.0005}
   m_ConstrainProportionsScale: 0
@@ -3033,6 +3042,20 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &632650293
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 632650288}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37aae2d960efe0749b01620ddce74ac6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuManager
+  close: {fileID: -1644001223835636349, guid: e0ca4504471ca124088e1e2cfe6804ae, type: 3}
+  text: {fileID: 1894527126}
 --- !u!1001 &661416713
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6457,6 +6480,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d4e5ca4f92f1e24cbe01e5955ae7a45, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpawnInstrument
+  confirm: {fileID: 11711766586467970, guid: e0ca4504471ca124088e1e2cfe6804ae, type: 3}
+  cancel: {fileID: -1644001223835636349, guid: e0ca4504471ca124088e1e2cfe6804ae, type: 3}
   placeButton: {fileID: 6454596279149084813, guid: e0ca4504471ca124088e1e2cfe6804ae, type: 3}
   raycast: {fileID: 1740303362}
   unplaceableMat: {fileID: 2100000, guid: 01df02bb2e562a14682f5473227a25ef, type: 2}
@@ -7013,6 +7038,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af622634860394a41928443b3594890e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameState
+  menu: {fileID: 632650293}
   moneyText: {fileID: 330301979}
 --- !u!4 &1796414472
 Transform:
@@ -8992,7 +9018,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2143636390
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9054,6 +9080,7 @@ CanvasRenderer:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 1796414472}
   - {fileID: 832575519}
   - {fileID: 626233814}
   - {fileID: 1576943896}
@@ -9061,7 +9088,6 @@ SceneRoots:
   - {fileID: 1542722410}
   - {fileID: 124469196}
   - {fileID: 1720437065}
-  - {fileID: 1796414472}
   - {fileID: 2057782136}
   - {fileID: 284926830}
   - {fileID: 1413231556}
