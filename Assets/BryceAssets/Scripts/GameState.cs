@@ -20,8 +20,11 @@ public class GameState : MonoBehaviour
 
         Instance = this;
         SetEmptyGrid();
+        menu.LoadMenu("Welcome to your new job as an orchestra manager! You must hire instruments to improve the sound, but be careful; you don't want to have too much of one type of sound.\n\nYou can purchase instruments over at stage left. How about you start with a violin to be the concertmaster?\n\nPress B to close this menu.");
         DontDestroyOnLoad(gameObject); // Optional: Keeps it alive across scenes
     }
+
+    public MenuManager menu;
 
     public enum InstrumentType
     {
@@ -33,8 +36,19 @@ public class GameState : MonoBehaviour
         CELLO
     };
 
+    int[] basePrices =
+    {
+        0,
+        10,
+        30,
+        30,
+        10,
+        10
+    };
+    
+    int instrumentCount = 0;
+
     static float enjoyment = 1f;
-    public const float payRate = 10; // how long in seconds before a musician gives money
     float money = 0.0f;
 
     InstrumentType[,] grid = new InstrumentType[GRID_HEIGHT, GRID_WIDTH];
@@ -51,9 +65,15 @@ public class GameState : MonoBehaviour
         money += income;
     }
 
-    public static float GetMoney()
+    public float GetMoney()
     {
-        return Instance.money;
+        return money;
+    }
+
+    public float GetInstrumentCost(InstrumentType i)
+    {
+        if (i == InstrumentType.VIOLIN && instrumentCount == 0) return 0;
+        return basePrices[(int) i] * (instrumentCount + 1);
     }
 
     void SetEmptyGrid()
@@ -94,6 +114,7 @@ public class GameState : MonoBehaviour
                 if (inst.gridMask[i * 3 + j]) grid[y + i - 1, x + j - 1] = inst.type;
             }
         }
+        instrumentCount += 1;
         return true;
     }
 
