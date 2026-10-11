@@ -10,8 +10,13 @@ public class GameState : MonoBehaviour
     static string template = "Money: {0:F2}\nMaterial: {1}\n\nHigh: {2:F2}\nMedium: {3:F2}\nLow: {4:F2}\n\nBrass: {5}\nWoodwind: {6}\nStrings: {7}";
     public const int GRID_WIDTH = 30;
     public const int GRID_HEIGHT = 20;
+    public const float GRID_SIZE = 0.5f;
     // The static reference that other scripts call
     public static GameState Instance { get; private set; }
+
+    public GameObject person;
+    public GameObject audience;
+    public TrashSpawner trashSpawner;
 
     private void Awake()
     {
@@ -31,15 +36,18 @@ public class GameState : MonoBehaviour
 
     public static int[] basePrices =
     {
-        0,
-        0,
-        0,
-        0,
-        0
+        1,
+        3,
+        3,
+        1,
+        1
     };
+
+    bool[] occupiedSeats = new bool[50];
 
     float high = 0, mid = 0, low = 0, brass = 0, woodwind = 0, strings = 0;
     float pitchEnjoyment = 1, timbreEnjoyment = 1;
+    int trash = 10;
     float money = 0.0f;
     int material = 0;
 
@@ -65,14 +73,31 @@ public class GameState : MonoBehaviour
 
     public float GetEnjoyment()
     {
-        Debug.Log(pitchEnjoyment);
-        Debug.Log(timbreEnjoyment);
-        return pitchEnjoyment * timbreEnjoyment;
+        return pitchEnjoyment * timbreEnjoyment * (Math.Max(20f - trash, 10f) / 20);
     }
 
     public void AddPay(float income)
     {
         money += income;
+
+        if (income <= 0) return; // if we bought or otherwise lost money for some reason don't spawn a customer
+
+        // verify that there is an empty seat
+        for (int i = 0; i < occupiedSeats.Length; i++)
+        {
+            if (!occupiedSeats[i]) break;
+            if (i == occupiedSeats.Length - 1) return;
+        }
+
+        GameObject newPerson = Instantiate(person, audience.transform);
+        newPerson.transform.localPosition = new Vector3(6.5f, 0, -4.5f);
+        int seat = UnityEngine.Random.Range(0, 50);
+        while (occupiedSeats[seat])
+        {
+            seat = UnityEngine.Random.Range(0, 50);
+        }
+        newPerson.GetComponent<Person>().SetTarget(seat);
+        occupiedSeats[seat] = true;
     }
 
     public float GetMoney()
@@ -135,11 +160,77 @@ public class GameState : MonoBehaviour
         inst.y = y;
         instruments.Add(inst);
         inst.AddPerks();
+        CalculateNeighbors();
         return true;
+    }
+
+    public Instrument GetInstrumentAt(int x, int y)
+    {
+        if (x < 0 || x >= GRID_WIDTH || y < 0 || y >= GRID_HEIGHT) return null;
+        for (int i = 0; i < instruments.Count; i++)
+        {
+            if (Math.Abs(instruments[i].x - x) > 1 || Math.Abs(instruments[i].y - y) > 1) continue;
+            for (int j = 0; j < 9; j++)
+            {
+                Debug.Log(i);
+                Debug.Log(j);
+                if (instruments[i].gridMask[j] && instruments[i].x + (j % 3) - 1 == x && instruments[i].y + (j / 3) - 1 == y) return instruments[i];
+            }
+        }
+        return null;
+    }
+
+    public void FreeSeat(int t)
+    {
+        occupiedSeats[t] = false;
+    }
+
+    public void DestroyTrash()
+    {
+        trash -= 1;
+    }
+
+    public void DestroyInstrument(Instrument inst)
+    {
+        instruments.Remove(inst);
+        CalculateNeighbors();
     }
 
     void Update()
     {
-        stats.SetText(String.Format(template, money, material, high, mid, low, brass, woodwind, strings));
+        stats.SetText(string.Format(template, money, material, high, mid, low, brass, woodwind, strings));
+    }
+
+    void CalculateNeighbors()
+    {
+        for (int i = 0; i < instruments.Count; i++)
+        {
+            instruments[i].ResetStats();
+        }
+        for (int i = 0; i < instruments.Count; i++)
+        {
+            for (int j = i + 1; j < instruments.Count; j++)
+            {
+                // These instruments are classified as neighbors
+                if (Math.Abs(instruments[i].x - instruments[j].x) + Math.Abs(instruments[i].y - instruments[j].y) <= 3)
+                {
+                    // increase popularity by putting same instruments next to each other.
+                    if (instruments[i].type == instruments[j].type)
+                    {
+                        instruments[i].Neighbor(1.5f, 1, 1);
+                        instruments[j].Neighbor(1.5f, 1, 1);
+                    }
+                    // increase volume by putting brass/woodwinds/strings next to each other
+                    if (instruments[i].brass && instruments[j].brass || instruments[i].woodwind && instruments[j].woodwind || instruments[i].strings && instruments[j].strings)
+                    {
+                        instruments[i].Neighbor(1, 1.5f, 1);
+                        instruments[j].Neighbor(1, 1.5f, 1);
+                    }
+                    // instruments are just happy to have neighbors of any kind.
+                    instruments[i].Neighbor(1, 1, 1.1f);
+                    instruments[j].Neighbor(1, 1, 1.1f);
+                }
+            }
+        }
     }
 }

@@ -18,7 +18,6 @@ public class MoveInstrument : MonoBehaviour
     private Material selectedMat;
     private Vector3 offset;
 
-    private float gridSize = 0.5f;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -45,10 +44,10 @@ public class MoveInstrument : MonoBehaviour
             confirmHandler = (ctx) =>
             {
                 GameState.Instance.AddPay(-cost);
-                Purchase(prefab);
                 confirm.action.performed -= confirmHandler;
                 confirm.action.Disable();
                 GameState.Instance.menu.CloseMenu();
+                Purchase(prefab);
             };
             confirm.action.performed += confirmHandler;
             confirm.action.Enable();
@@ -87,14 +86,14 @@ public class MoveInstrument : MonoBehaviour
             placeButton.action.Disable();
             selected.GetComponent<MeshRenderer>().material = unplaceableMat;
         }
-        selected.transform.SetPositionAndRotation(new Vector3((target.x - 14) * gridSize, selected.GetComponent<Transform>().position.y, (-target.y - 1) * gridSize) - offset, selected.GetComponent<Transform>().rotation * Quaternion.identity);
+        selected.transform.SetPositionAndRotation(new Vector3((target.x - 14) * GameState.GRID_SIZE, selected.GetComponent<Transform>().position.y, (-target.y - 1) * GameState.GRID_SIZE) - offset, selected.GetComponent<Transform>().rotation * Quaternion.identity);
     }
     
-    Vector2 GetNearestGridPoint(Vector3 p)
+    public static Vector2 GetNearestGridPoint(Vector3 p)
     {
         Vector2 ret;
-        ret.x = (float) Math.Round(p.x / gridSize) + 14; 
-        ret.y = -(float) Math.Round(p.z / gridSize + 1);
+        ret.x = (float) Math.Round(p.x / GameState.GRID_SIZE) + 14; 
+        ret.y = -(float) Math.Round(p.z / GameState.GRID_SIZE + 1);
         return ret;
     }
 
@@ -106,8 +105,8 @@ public class MoveInstrument : MonoBehaviour
             firstPlace = false;
         }
         Vector3 pos = selected.transform.position + offset;
-        int x = (int) Math.Round(pos.x / gridSize + 14);
-        int y = (int) -Math.Round(pos.z / gridSize + 1);
+        int x = (int) Math.Round(pos.x / GameState.GRID_SIZE + 14);
+        int y = (int) -Math.Round(pos.z / GameState.GRID_SIZE + 1);
         if (GameState.Instance.Place(selected.GetComponent<Instrument>(), x, y)) {
             selected = null;
             placeButton.action.Disable();

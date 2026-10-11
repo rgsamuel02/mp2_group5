@@ -18,5 +18,7 @@ public class TrashDestroyer : MonoBehaviour
 
         // Destroy the game object
         Destroy(socketedObject);
+
+        GameState.Instance.DestroyTrash();
     }
 }

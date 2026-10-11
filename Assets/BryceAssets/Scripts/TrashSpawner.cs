@@ -14,8 +14,12 @@ public class TrashSpawner : MonoBehaviour
             int location = r.Next(50);
             int x = location % 10;
             int y = location / 10;
-            Instantiate(trashPrefabs[r.Next(trashPrefabs.Count)], AudienceArea.transform, false).transform.localPosition = new(4.5f - x, 0, 2 * y - 1);
+            Instantiate(trashPrefabs[Random.Range(0, 3)], AudienceArea.transform, false).transform.localPosition = new(4.5f - x, 0, 2 * y - 1);
         }
-        Destroy(gameObject);
+    }
+
+    public void SpawnTrash(float x, float z)
+    {
+        Instantiate(trashPrefabs[Random.Range(0, 3)]).transform.localPosition = new Vector3(x, 0, z);
     }
 }
