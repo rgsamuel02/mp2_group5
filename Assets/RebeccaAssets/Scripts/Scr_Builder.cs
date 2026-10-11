@@ -10,15 +10,16 @@ public class Scr_Builder : MonoBehaviour
     public InputActionReference placeAction;
     public InputActionReference selectPlotAction;
     public InputActionReference selectSeedlingAction;
-    public InputActionReference selectHerbAction;
+    public InputActionReference selectCornAction;
     public InputActionReference selectFlowerAction;
     public InputActionReference waterAction;
+    public InputActionReference fertilizerAction;
     public InputActionReference harvestAction;
 
     [Header("Prefabs")]
     public GameObject gardenPlotPrefab;
     public GameObject seedlingPrefab;
-    public GameObject herbSeedlingPrefab;
+    public GameObject cornSeedlingPrefab;
     public GameObject flowerSeedlingPrefab;
 
     [Header("Grid Settings")]
@@ -28,25 +29,32 @@ public class Scr_Builder : MonoBehaviour
     public float seedlingHeight = 0.3f;
     public LayerMask groundLayer;
 
+    [Header("Resource Costs")]
+    [Min(1)] public int seedsPerPlant = 1;
+    [Min(1)] public int waterPerAction = 1;
+    [Min(1)] public int fertilizerPerAction = 1;
+
     [Header("Current Selection")]
     public GameObject selectedPrefab;
 
     private Scr_Inventory inventory;
+
     private readonly HashSet<InputAction> actionsEnabledHere =
         new HashSet<InputAction>();
 
-    void OnEnable()
+    private void OnEnable()
     {
         EnableAction(placeAction);
         EnableAction(selectPlotAction);
         EnableAction(selectSeedlingAction);
-        EnableAction(selectHerbAction);
+        EnableAction(selectCornAction);
         EnableAction(selectFlowerAction);
         EnableAction(waterAction);
+        EnableAction(fertilizerAction);
         EnableAction(harvestAction);
     }
 
-    void OnDisable()
+    private void OnDisable()
     {
         foreach (InputAction action in actionsEnabledHere)
         {
@@ -57,7 +65,7 @@ public class Scr_Builder : MonoBehaviour
         actionsEnabledHere.Clear();
     }
 
-    void EnableAction(InputActionReference reference)
+    private void EnableAction(InputActionReference reference)
     {
         if (reference == null || reference.action == null)
             return;
@@ -71,21 +79,21 @@ public class Scr_Builder : MonoBehaviour
         }
     }
 
-    void Start()
+    private void Start()
     {
         inventory = FindFirstObjectByType<Scr_Inventory>();
 
         if (inventory == null)
         {
             Debug.LogError(
-                "GardenBuilder could not find GardenInventory."
+                "Scr_Builder could not find Scr_Inventory."
             );
         }
     }
 
-    void Update()
+    private void Update()
     {
-        // Keyboard shortcuts for testing in the Editor.
+        // Keyboard shortcuts for testing in the Unity Editor.
         if (Keyboard.current != null)
         {
             if (Keyboard.current.digit1Key.wasPressedThisFrame)
@@ -95,7 +103,7 @@ public class Scr_Builder : MonoBehaviour
                 SelectPrefab(seedlingPrefab, "Tomato seedling");
 
             if (Keyboard.current.digit3Key.wasPressedThisFrame)
-                SelectPrefab(herbSeedlingPrefab, "Herb seedling");
+                SelectPrefab(cornSeedlingPrefab, "Corn seedling");
 
             if (Keyboard.current.digit4Key.wasPressedThisFrame)
                 SelectPrefab(flowerSeedlingPrefab, "Flower seedling");
@@ -107,8 +115,8 @@ public class Scr_Builder : MonoBehaviour
         if (WasPressed(selectSeedlingAction))
             SelectPrefab(seedlingPrefab, "Tomato seedling");
 
-        if (WasPressed(selectHerbAction))
-            SelectPrefab(herbSeedlingPrefab, "Herb seedling");
+        if (WasPressed(selectCornAction))
+            SelectPrefab(cornSeedlingPrefab, "Corn seedling");
 
         if (WasPressed(selectFlowerAction))
             SelectPrefab(flowerSeedlingPrefab, "Flower seedling");
@@ -119,18 +127,21 @@ public class Scr_Builder : MonoBehaviour
         if (WasPressed(waterAction))
             TryWaterPlant();
 
+        if (WasPressed(fertilizerAction))
+            TryFertilizePlant();
+
         if (WasPressed(harvestAction))
             TryHarvestPlant();
     }
 
-    bool WasPressed(InputActionReference reference)
+    private bool WasPressed(InputActionReference reference)
     {
         return reference != null &&
                reference.action != null &&
                reference.action.WasPressedThisFrame();
     }
 
-    void SelectPrefab(GameObject prefab, string label)
+    private void SelectPrefab(GameObject prefab, string label)
     {
         if (prefab == null)
         {
@@ -142,7 +153,7 @@ public class Scr_Builder : MonoBehaviour
         Debug.Log("Selected: " + label);
     }
 
-    bool TryGetHit(out RaycastHit hit)
+    private bool TryGetHit(out RaycastHit hit)
     {
         hit = default;
 
@@ -152,7 +163,7 @@ public class Scr_Builder : MonoBehaviour
         return rayInteractor.TryGetCurrent3DRaycastHit(out hit);
     }
 
-    void TryPlaceObject()
+    private void TryPlaceObject()
     {
         if (selectedPrefab == null)
         {
@@ -163,8 +174,11 @@ public class Scr_Builder : MonoBehaviour
         if (!TryGetHit(out RaycastHit hit))
             return;
 
-        // Placement must target the garden ground.
-        if ((groundLayer.value & (1 << hit.collider.gameObject.layer)) == 0)
+        bool placingPlot = selectedPrefab == gardenPlotPrefab;
+
+        // Plot and crop placement must target the garden ground.
+        if ((groundLayer.value &
+             (1 << hit.collider.gameObject.layer)) == 0)
         {
             Debug.Log("Point at the garden ground to place an object.");
             return;
@@ -185,8 +199,6 @@ public class Scr_Builder : MonoBehaviour
             0f,
             (cellZ + 0.5f) * cellSize
         );
-
-        bool placingPlot = selectedPrefab == gardenPlotPrefab;
 
         if (placingPlot)
         {
@@ -209,7 +221,6 @@ public class Scr_Builder : MonoBehaviour
             return;
         }
 
-        // All three plant types require a plot.
         if (!HasPlotAt(cellCenter))
         {
             Debug.Log("Place a garden plot before planting.");
@@ -218,17 +229,17 @@ public class Scr_Builder : MonoBehaviour
 
         if (HasPlantAt(cellCenter))
         {
-            Debug.Log("This plot already has a plant.");
+            Debug.Log("This plot already has a living crop.");
             return;
         }
 
         if (inventory == null)
         {
-            Debug.LogError("GardenInventory is missing.");
+            Debug.LogError("Scr_Inventory is missing.");
             return;
         }
 
-        if (!inventory.UseSeeds(1))
+        if (!inventory.UseSeeds(seedsPerPlant))
             return;
 
         Vector3 plantPosition = cellCenter;
@@ -240,59 +251,55 @@ public class Scr_Builder : MonoBehaviour
             Quaternion.identity
         );
 
-        Debug.Log("Plant placed in the garden.");
+        Debug.Log("Crop planted.");
     }
 
-    bool HasPlotAt(Vector3 cellCenter)
+    private bool HasPlotAt(Vector3 cellCenter)
     {
         Scr_Plot[] plots =
             FindObjectsByType<Scr_Plot>(FindObjectsSortMode.None);
 
         foreach (Scr_Plot plot in plots)
         {
-            if (plot == null)
-                continue;
-
-            if (SameCell(plot.transform.position, cellCenter))
+            if (plot != null &&
+                SameCell(plot.transform.position, cellCenter))
                 return true;
         }
 
         return false;
     }
 
-    bool HasPlantAt(Vector3 cellCenter)
+    private bool HasPlantAt(Vector3 cellCenter)
     {
-        // Tomato plants.
+        // Tomato crops.
         Scr_Plant[] tomatoes =
             FindObjectsByType<Scr_Plant>(FindObjectsSortMode.None);
 
         foreach (Scr_Plant plant in tomatoes)
         {
-            if (plant == null || plant.IsDead)
-                continue;
-
-            if (SameCell(plant.transform.position, cellCenter))
-                return true;
-        }
-
-        // Herb plants.
-        Scr_CornPlant[] herbs =
-            FindObjectsByType<Scr_CornPlant>(FindObjectsSortMode.None);
-
-        foreach (Scr_CornPlant plant in herbs)
-        {
-            if (plant != null &&
+            if (plant != null && !plant.IsDead &&
                 SameCell(plant.transform.position, cellCenter))
                 return true;
         }
 
-        // Flower plants.
+        // Corn crops.
+        Scr_CornPlant[] cornPlants =
+            FindObjectsByType<Scr_CornPlant>(FindObjectsSortMode.None);
+
+        foreach (Scr_CornPlant plant in cornPlants)
+        {
+            if (plant != null && !plant.IsDead &&
+                SameCell(plant.transform.position, cellCenter))
+                return true;
+        }
+
+        // Flower crops.
         Scr_Flower[] flowers =
             FindObjectsByType<Scr_Flower>(FindObjectsSortMode.None);
 
         foreach (Scr_Flower plant in flowers)
         {
-            if (plant != null &&
+            if (plant != null && !plant.IsDead &&
                 SameCell(plant.transform.position, cellCenter))
                 return true;
         }
@@ -300,7 +307,7 @@ public class Scr_Builder : MonoBehaviour
         return false;
     }
 
-    bool SameCell(Vector3 position, Vector3 cellCenter)
+    private bool SameCell(Vector3 position, Vector3 cellCenter)
     {
         int x1 = Mathf.FloorToInt(position.x / cellSize);
         int z1 = Mathf.FloorToInt(position.z / cellSize);
@@ -311,62 +318,130 @@ public class Scr_Builder : MonoBehaviour
         return x1 == x2 && z1 == z2;
     }
 
-    
-    void TryWaterPlant()
+    private void TryWaterPlant()
     {
         if (!TryGetHit(out RaycastHit hit))
+        return;
+
+        // Refill water if pointing at the water bin.
+        Scr_WaterBin bin =
+            hit.collider.GetComponentInParent<Scr_WaterBin>();
+
+        if (bin != null)
+        {
+            if (inventory == null)
+            {
+                Debug.LogError("Garden inventory is missing.");
+                return;
+            }
+
+            bin.Refill(inventory);
             return;
+        }
 
         Scr_Plant tomato =
             hit.collider.GetComponentInParent<Scr_Plant>();
 
-        Scr_CornPlant herb =
+        Scr_CornPlant corn =
             hit.collider.GetComponentInParent<Scr_CornPlant>();
 
         Scr_Flower flower =
             hit.collider.GetComponentInParent<Scr_Flower>();
 
-        if (tomato == null && herb == null && flower == null)
+        if (tomato == null && corn == null && flower == null)
         {
-            Debug.Log("Point at a plant to water it.");
+            Debug.Log("Point at a crop to water it.");
             return;
         }
 
-        if (tomato != null && tomato.IsDead)
+        if ((tomato != null && tomato.IsDead) ||
+            (corn != null && corn.IsDead) ||
+            (flower != null && flower.IsDead))
         {
-            Debug.Log("This tomato plant is dead.");
+            Debug.Log("This crop is dead.");
             return;
         }
 
-        if (herb != null && herb.IsDead)
-        {
-            Debug.Log("This herb plant is dead.");
-            return;
-        }
-
-        if (flower != null && flower.IsDead)
-        {
-            Debug.Log("This flower plant is dead.");
-            return;
-        }
-
-        if (inventory == null || !inventory.UseWater(1))
+        if (inventory == null ||
+            !inventory.UseWater(waterPerAction))
             return;
 
         if (tomato != null)
             tomato.Water();
-        else if (herb != null)
-            herb.Water();
+        else if (corn != null)
+            corn.Water();
         else
             flower.Water();
+
+        Debug.Log("Crop watered.");
     }
 
-    void TryHarvestPlant()
+    
+    void TryFertilizePlant()
     {
         if (!TryGetHit(out RaycastHit hit))
             return;
 
-        // Tomato plant.
+        // If the player is pointing at the fertilizer bin,
+        // refill the inventory instead of fertilizing a plant.
+        Scr_FertilizerBin bin =
+            hit.collider.GetComponentInParent<Scr_FertilizerBin>();
+
+        if (bin != null)
+        {
+            if (inventory == null)
+            {
+                Debug.LogError("Garden inventory is missing.");
+                return;
+            }
+
+            bin.Refill(inventory);
+            return;
+        }
+
+        // Otherwise, try to fertilize a plant.
+        Scr_Plant tomato =
+            hit.collider.GetComponentInParent<Scr_Plant>();
+
+        Scr_CornPlant corn =
+            hit.collider.GetComponentInParent<Scr_CornPlant>();
+
+        Scr_Flower flower =
+            hit.collider.GetComponentInParent<Scr_Flower>();
+
+        if (tomato == null && corn == null && flower == null)
+        {
+            Debug.Log("Point at a plant or fertilizer bin.");
+            return;
+        }
+
+        if ((tomato != null && tomato.IsDead) ||
+            (corn != null && corn.IsDead) ||
+            (flower != null && flower.IsDead))
+        {
+            Debug.Log("Dead plants cannot be fertilized.");
+            return;
+        }
+
+        if (inventory == null || !inventory.UseFertilizer(1))
+        {
+            Debug.Log("You don't have enough fertilizer.");
+            return;
+        }
+
+        if (tomato != null)
+            tomato.Fertilize();
+        else if (corn != null)
+            corn.Fertilize();
+        else
+            flower.Fertilize();
+    }
+
+    private void TryHarvestPlant()
+    {
+        if (!TryGetHit(out RaycastHit hit))
+            return;
+
         Scr_Plant tomato =
             hit.collider.GetComponentInParent<Scr_Plant>();
 
@@ -376,17 +451,15 @@ public class Scr_Builder : MonoBehaviour
             return;
         }
 
-        // Herb plant.
-        Scr_CornPlant herb =
+        Scr_CornPlant corn =
             hit.collider.GetComponentInParent<Scr_CornPlant>();
 
-        if (herb != null)
+        if (corn != null)
         {
-            herb.Harvest();
+            corn.Harvest();
             return;
         }
 
-        // Flower plant.
         Scr_Flower flower =
             hit.collider.GetComponentInParent<Scr_Flower>();
 
@@ -396,6 +469,6 @@ public class Scr_Builder : MonoBehaviour
             return;
         }
 
-        Debug.Log("Point at a plant to harvest it.");
+        Debug.Log("Point at a crop to harvest it.");
     }
 }

@@ -1,74 +1,131 @@
-
 using UnityEngine;
 
 public class Scr_Sprinkler : MonoBehaviour
 {
-    [Header("Sprinkler Stats")]
-    [Min(0f)] public float maxWaterReserve = 20f;
-    [Min(0f)] public float waterReserve = 20f;
+    [Header("Automatic Watering")]
+    [Min(0.5f)]
+    public float wateringInterval = 5f;
 
-    [Header("Watering Settings")]
-    [Min(0f)] public float waterUsedPerAction = 1f;
-    [Min(0f)] public float moistureAddedPerAction = 15f;
+    [Min(1f)]
+    public float waterAreaWidth = 4f;
 
-    [Header("Refill Settings")]
-    [Min(0f)] public float waterAddedPerRefill = 5f;
+    [Min(1f)]
+    public float waterAreaDepth = 4f;
 
-    public bool IsEmpty => waterReserve < waterUsedPerAction;
-    public bool IsFull => waterReserve >= maxWaterReserve;
+    [Header("Debug")]
+    public bool showDebugMessages = true;
 
-    private void Awake()
+    private float wateringTimer;
+
+    void Start()
     {
-        waterReserve = Mathf.Clamp(
-            waterReserve, 0f, maxWaterReserve
-        );
+        wateringTimer = wateringInterval;
+
+        if (showDebugMessages)
+        {
+            Debug.Log("Sprinkler started. It waters plants automatically.");
+        }
     }
 
-    public bool WaterPlant(Scr_Plant plant)
+    void Update()
     {
-        if (plant == null || plant.IsDead)
-            return false;
+        wateringTimer += Time.deltaTime;
 
-        if (IsEmpty)
+        if (wateringTimer >= wateringInterval)
         {
-            Debug.Log("The sprinkler has run out of water.");
-            return false;
+            WaterNearbyPlants();
+            wateringTimer = 0f;
+        }
+    }
+
+    void WaterNearbyPlants()
+    {
+        int plantsWatered = 0;
+
+        // Water tomatoes.
+        Scr_Plant[] tomatoes =
+            FindObjectsByType<Scr_Plant>(FindObjectsSortMode.None);
+
+        foreach (Scr_Plant plant in tomatoes)
+        {
+            if (plant == null || plant.IsDead)
+                continue;
+
+            if (IsInsideWaterArea(plant.transform.position))
+            {
+                plant.Water();
+                plantsWatered++;
+            }
         }
 
-        waterReserve -= waterUsedPerAction;
-        waterReserve = Mathf.Max(0f, waterReserve);
+        // Water corn.
+        Scr_CornPlant[] cornPlants =
+            FindObjectsByType<Scr_CornPlant>(FindObjectsSortMode.None);
 
-        plant.Water();
-
-        Debug.Log("Sprinkler water reserve: " + waterReserve);
-        return true;
-    }
-
-    public bool Refill(float amount)
-    {
-        if (amount <= 0f || IsFull)
+        foreach (Scr_CornPlant plant in cornPlants)
         {
-            Debug.Log("The sprinkler is already full or cannot be refilled.");
-            return false;
+            if (plant == null || plant.IsDead)
+                continue;
+
+            if (IsInsideWaterArea(plant.transform.position))
+            {
+                plant.Water();
+                plantsWatered++;
+            }
         }
 
-        float previousReserve = waterReserve;
-        waterReserve = Mathf.Min(
-            maxWaterReserve, waterReserve + amount
-        );
+        // Water flowers.
+        Scr_Flower[] flowers =
+            FindObjectsByType<Scr_Flower>(FindObjectsSortMode.None);
 
-        Debug.Log(
-            "Sprinkler refilled: +" +
-            (waterReserve - previousReserve) +
-            ". Water reserve: " + waterReserve + "/" +
-            maxWaterReserve
-        );
+        foreach (Scr_Flower plant in flowers)
+        {
+            if (plant == null || plant.IsDead)
+                continue;
 
-        return waterReserve > previousReserve;
+            if (IsInsideWaterArea(plant.transform.position))
+            {
+                plant.Water();
+                plantsWatered++;
+            }
+        }
+
+        if (showDebugMessages && plantsWatered > 0)
+        {
+            Debug.Log("Sprinkler watered " + plantsWatered + " plant(s).");
+        }
     }
 
-    public bool RefillOnce()
+    bool IsInsideWaterArea(Vector3 plantPosition)
     {
-        return Refill(waterAddedPerRefill);
+        // The sprinkler's position is the center of its watering area.
+        float halfWidth = waterAreaWidth / 2f;
+        float halfDepth = waterAreaDepth / 2f;
+
+        float distanceX =
+            Mathf.Abs(plantPosition.x - transform.position.x);
+
+        float distanceZ =
+            Mathf.Abs(plantPosition.z - transform.position.z);
+
+        return distanceX <= halfWidth &&
+               distanceZ <= halfDepth;
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        // Show the watering area in the Scene view.
+        Gizmos.color = Color.cyan;
+
+        Vector3 areaCenter = new Vector3(
+            transform.position.x,
+            transform.position.y + 0.05f,
+            transform.position.z
+        );
+
+        Gizmos.DrawWireCube(
+            areaCenter,
+            new Vector3(waterAreaWidth, 0.1f, waterAreaDepth)
+        );
     }
 }

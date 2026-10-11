@@ -108,6 +108,41 @@ public class Scr_Flower : MonoBehaviour
         Debug.Log("Flower watered. Moisture: " + moisture);
     }
 
+
+    public void Fertilize()
+    {
+        if (isDead)
+        {
+            Debug.Log("This flower is dead. It cannot be fertilized.");
+            return;
+        }
+
+        // Fertilizer encourages growth and improves plant health.
+        growth = Mathf.Clamp(growth + 20f, 0f, matureAt);
+        health = Mathf.Clamp(health + 10f, 0f, 100f);
+
+        // Keep the flower-specific stats synchronized with growth.
+        bloom = Mathf.Clamp(
+            growth / Mathf.Max(matureAt, 1f) * 100f,
+            0f,
+            100f
+        );
+
+        flowerCount = Mathf.RoundToInt(
+            Mathf.Lerp(0, maximumFlowers, bloom / 100f)
+        );
+
+        UpdateVisualStage();
+
+        Debug.Log(
+            "Flower fertilized! Growth: " +
+            Mathf.RoundToInt(growth) +
+            ", Health: " +
+            Mathf.RoundToInt(health)
+        );
+    }
+
+
     void UpdateVisualStage()
     {
         bool shouldBeMature = growth >= matureVisualAt;

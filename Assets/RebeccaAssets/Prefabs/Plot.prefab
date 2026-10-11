@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 3737145311177679766}
   - component: {fileID: 5008901460157033198}
   - component: {fileID: 3616746772334826952}
-  - component: {fileID: 1009257183252413693}
   m_Layer: 0
   m_Name: Plot
   m_TagString: Untagged
@@ -113,20 +112,3 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &1009257183252413693
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6954791427301772665}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e01eee40f4d87334db8bf84383e99109, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Scr_Plot
-  soilQuality: 70
-  fertility: 50
-  moisture: 50
-  moistureLossPerSecond: 0.25
-  fertilizerBonus: 10

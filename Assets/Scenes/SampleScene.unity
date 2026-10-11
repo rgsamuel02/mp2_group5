@@ -728,6 +728,37 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 122673212}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &212762262
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 212762263}
+  m_Layer: 0
+  m_Name: SprinklerSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &212762263
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 212762262}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5135148749081800982}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &221147353
 GameObject:
   m_ObjectHideFlags: 0
@@ -3843,7 +3874,7 @@ PrefabInstance:
     - target: {fileID: 6738884551464104790, guid: 1e2645ef549788747a4a5303be4cb50b, type: 3}
       propertyPath: waterAction
       value: 
-      objectReference: {fileID: -5684558904543120851, guid: e0ca4504471ca124088e1e2cfe6804ae, type: 3}
+      objectReference: {fileID: 2526168894431210536, guid: e0ca4504471ca124088e1e2cfe6804ae, type: 3}
     - target: {fileID: 6738884551464104790, guid: 1e2645ef549788747a4a5303be4cb50b, type: 3}
       propertyPath: playerCamera
       value: 
@@ -3865,13 +3896,29 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1555652619428584960, guid: b42aff538f11e904bb5b354db20e5618, type: 3}
     - target: {fileID: 6738884551464104790, guid: 1e2645ef549788747a4a5303be4cb50b, type: 3}
+      propertyPath: fertilizerAction
+      value: 
+      objectReference: {fileID: -5684558904543120851, guid: e0ca4504471ca124088e1e2cfe6804ae, type: 3}
+    - target: {fileID: 6738884551464104790, guid: 1e2645ef549788747a4a5303be4cb50b, type: 3}
+      propertyPath: gardenPlotPrefab
+      value: 
+      objectReference: {fileID: 6954791427301772665, guid: 97dc686fb5847434287307cd3e3fe213, type: 3}
+    - target: {fileID: 6738884551464104790, guid: 1e2645ef549788747a4a5303be4cb50b, type: 3}
+      propertyPath: selectCornAction
+      value: 
+      objectReference: {fileID: -631344258065148156, guid: e0ca4504471ca124088e1e2cfe6804ae, type: 3}
+    - target: {fileID: 6738884551464104790, guid: 1e2645ef549788747a4a5303be4cb50b, type: 3}
       propertyPath: selectHerbAction
       value: 
       objectReference: {fileID: -631344258065148156, guid: e0ca4504471ca124088e1e2cfe6804ae, type: 3}
     - target: {fileID: 6738884551464104790, guid: 1e2645ef549788747a4a5303be4cb50b, type: 3}
       propertyPath: selectPlotAction
       value: 
-      objectReference: {fileID: 11711766586467970, guid: e0ca4504471ca124088e1e2cfe6804ae, type: 3}
+      objectReference: {fileID: 5113088590926889233, guid: e0ca4504471ca124088e1e2cfe6804ae, type: 3}
+    - target: {fileID: 6738884551464104790, guid: 1e2645ef549788747a4a5303be4cb50b, type: 3}
+      propertyPath: cornSeedlingPrefab
+      value: 
+      objectReference: {fileID: 6252522317207959490, guid: a17c17a395d3c7e4a88fc7ccc46ff862, type: 3}
     - target: {fileID: 6738884551464104790, guid: 1e2645ef549788747a4a5303be4cb50b, type: 3}
       propertyPath: groundLayer.m_Bits
       value: 40
@@ -3891,7 +3938,7 @@ PrefabInstance:
     - target: {fileID: 6738884551464104790, guid: 1e2645ef549788747a4a5303be4cb50b, type: 3}
       propertyPath: selectSeedlingAction
       value: 
-      objectReference: {fileID: 5113088590926889233, guid: e0ca4504471ca124088e1e2cfe6804ae, type: 3}
+      objectReference: {fileID: 11711766586467970, guid: e0ca4504471ca124088e1e2cfe6804ae, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 2370939280917946952, guid: 1e2645ef549788747a4a5303be4cb50b, type: 3}
@@ -3927,6 +3974,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3257372912449851524, guid: 1e2645ef549788747a4a5303be4cb50b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2028788195}
+    - targetCorrespondingSourceObject: {fileID: 3257372912449851524, guid: 1e2645ef549788747a4a5303be4cb50b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 212762263}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 2189526492161600534, guid: 1e2645ef549788747a4a5303be4cb50b, type: 3}
       insertIndex: -1
@@ -3958,18 +4008,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Scr_Inventory
   water: 20
+  fertilizer: 0
   seeds: 10
   tomatoes: 0
-  herbs: 0
+  corn: 0
   flowers: 0
-  fertilizer: 0
-  compostMaterials: 0
-  soil: 10
-  wood: 0
-  stone: 0
-  gold: 0
-  gardenTools: 1
-  restaurantSupplyPoints: 0
 --- !u!114 &5135148749081800984
 MonoBehaviour:
   m_ObjectHideFlags: 0

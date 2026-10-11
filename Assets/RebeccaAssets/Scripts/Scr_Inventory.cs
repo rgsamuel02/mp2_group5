@@ -1,59 +1,50 @@
-
 using UnityEngine;
 
 public enum GardenResource
 {
     Water,
+    Fertilizer,
     Seeds,
     Tomatoes,
-    Herbs,
-    Flowers,
-    Fertilizer,
-    CompostMaterials,
-    Soil,
-    Wood,
-    Stone,
-    Gold,
-    GardenTools,
-    RestaurantSupplyPoints
+    Corn,
+    Flowers
 }
 
 public class Scr_Inventory : MonoBehaviour
 {
     [Header("Player Resources")]
     public int water = 20;
+    public int fertilizer = 10;
     public int seeds = 10;
+
     public int tomatoes = 0;
-    public int herbs = 0;
+    public int corn = 0;
     public int flowers = 0;
-    public int fertilizer = 0;
-    public int compostMaterials = 0;
-    public int soil = 10;
-    public int wood = 0;
-    public int stone = 0;
-    public int gold = 0;
-    public int gardenTools = 1;
-    public int restaurantSupplyPoints = 0;
 
     public int GetAmount(GardenResource resource)
     {
         switch (resource)
         {
-            case GardenResource.Water: return water;
-            case GardenResource.Seeds: return seeds;
-            case GardenResource.Tomatoes: return tomatoes;
-            case GardenResource.Herbs: return herbs;
-            case GardenResource.Flowers: return flowers;
-            case GardenResource.Fertilizer: return fertilizer;
-            case GardenResource.CompostMaterials: return compostMaterials;
-            case GardenResource.Soil: return soil;
-            case GardenResource.Wood: return wood;
-            case GardenResource.Stone: return stone;
-            case GardenResource.Gold: return gold;
-            case GardenResource.GardenTools: return gardenTools;
-            case GardenResource.RestaurantSupplyPoints:
-                return restaurantSupplyPoints;
-            default: return 0;
+            case GardenResource.Water:
+                return water;
+
+            case GardenResource.Fertilizer:
+                return fertilizer;
+
+            case GardenResource.Seeds:
+                return seeds;
+
+            case GardenResource.Tomatoes:
+                return tomatoes;
+
+            case GardenResource.Corn:
+                return corn;
+
+            case GardenResource.Flowers:
+                return flowers;
+
+            default:
+                return 0;
         }
     }
 
@@ -80,34 +71,40 @@ public class Scr_Inventory : MonoBehaviour
         ChangeResource(resource, amount);
     }
 
-    void ChangeResource(GardenResource resource, int amount)
+    private void ChangeResource(GardenResource resource, int amount)
     {
         switch (resource)
         {
-            case GardenResource.Water: water += amount; break;
-            case GardenResource.Seeds: seeds += amount; break;
-            case GardenResource.Tomatoes: tomatoes += amount; break;
-            case GardenResource.Herbs: herbs += amount; break;
-            case GardenResource.Flowers: flowers += amount; break;
-            case GardenResource.Fertilizer: fertilizer += amount; break;
-            case GardenResource.CompostMaterials:
-                compostMaterials += amount;
+            case GardenResource.Water:
+                water += amount;
                 break;
-            case GardenResource.Soil: soil += amount; break;
-            case GardenResource.Wood: wood += amount; break;
-            case GardenResource.Stone: stone += amount; break;
-            case GardenResource.Gold: gold += amount; break;
-            case GardenResource.GardenTools: gardenTools += amount; break;
-            case GardenResource.RestaurantSupplyPoints:
-                restaurantSupplyPoints += amount;
+
+            case GardenResource.Fertilizer:
+                fertilizer += amount;
+                break;
+
+            case GardenResource.Seeds:
+                seeds += amount;
+                break;
+
+            case GardenResource.Tomatoes:
+                tomatoes += amount;
+                break;
+
+            case GardenResource.Corn:
+                corn += amount;
+                break;
+
+            case GardenResource.Flowers:
+                flowers += amount;
                 break;
         }
 
         ShowResources();
     }
 
-    // Keep these methods so the existing GardenBuilder and GardenPlant
-    // scripts can continue to call them.
+    // Compatibility methods for existing scripts.
+
     public bool UseWater(int amount)
     {
         return UseResource(GardenResource.Water, amount);
@@ -121,7 +118,16 @@ public class Scr_Inventory : MonoBehaviour
     public void AddTomatoes(int amount)
     {
         AddResource(GardenResource.Tomatoes, amount);
-        AddResource(GardenResource.RestaurantSupplyPoints, amount);
+    }
+
+    public void AddCorn(int amount)
+    {
+        AddResource(GardenResource.Corn, amount);
+    }
+
+    public void AddFlowers(int amount)
+    {
+        AddResource(GardenResource.Flowers, amount);
     }
 
     public void AddWater(int amount)
@@ -129,22 +135,29 @@ public class Scr_Inventory : MonoBehaviour
         AddResource(GardenResource.Water, amount);
     }
 
-    void ShowResources()
+    public void AddFertilizer(int amount)
+    {
+        AddResource(GardenResource.Fertilizer, amount);
+    }
+
+    // Unlimited fertilizer supply: applying fertilizer does not
+    // decrease the inventory count.
+
+    public bool UseFertilizer(int amount)
+    {
+        return UseResource(GardenResource.Fertilizer, amount);
+    }
+
+
+    private void ShowResources()
     {
         Debug.Log(
             "Inventory | Water: " + water +
+            " | Fertilizer: " + fertilizer +
             " | Seeds: " + seeds +
             " | Tomatoes: " + tomatoes +
-            " | Herbs: " + herbs +
-            " | Flowers: " + flowers +
-            " | Fertilizer: " + fertilizer +
-            " | Compost: " + compostMaterials +
-            " | Soil: " + soil +
-            " | Wood: " + wood +
-            " | Stone: " + stone +
-            " | Gold: " + gold +
-            " | Tools: " + gardenTools +
-            " | Supply Points: " + restaurantSupplyPoints
+            " | Corn: " + corn +
+            " | Flowers: " + flowers
         );
     }
 }

@@ -101,6 +101,33 @@ public class Scr_CornPlant : MonoBehaviour
         Debug.Log("Herb watered. Moisture: " + moisture);
     }
 
+    public void Fertilize()
+    {
+        if (isDead)
+        {
+            Debug.Log("This corn plant is dead. It cannot be fertilized.");
+            return;
+        }
+
+        // Fertilizer encourages growth and improves plant health.
+        growth = Mathf.Clamp(growth + 20f, 0f, matureAt);
+        health = Mathf.Clamp(health + 10f, 0f, 100f);
+
+        // Update the number of herbs/corn produced as growth increases.
+        herbYield = Mathf.RoundToInt(
+            Mathf.Lerp(0, maximumYield, growth / matureAt)
+        );
+
+        UpdateVisualStage();
+
+        Debug.Log(
+            "Corn fertilized! Growth: " +
+            Mathf.RoundToInt(growth) +
+            ", Health: " +
+            Mathf.RoundToInt(health)
+        );
+    }
+
     void UpdateVisualStage()
     {
         bool shouldBeMature = growth >= matureVisualAt;
@@ -158,7 +185,7 @@ public class Scr_CornPlant : MonoBehaviour
         }
 
         int amount = herbYield;
-        inventory.AddResource(GardenResource.Herbs, amount);
+        inventory.AddResource(GardenResource.Corn, amount);
 
         Debug.Log("Harvested " + amount + " herbs.");
 

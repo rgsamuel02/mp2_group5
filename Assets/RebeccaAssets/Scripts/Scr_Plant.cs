@@ -60,7 +60,6 @@ public class Scr_Plant : MonoBehaviour
 
         plantRenderers = GetComponentsInChildren<Renderer>();
 
-        UpdateAppearance();
         UpdateGrowthStage();
     }
 
@@ -93,7 +92,6 @@ public class Scr_Plant : MonoBehaviour
         }
 
         UpdateGrowthStage();
-        UpdateAppearance();
     }
 
     void UpdateGrowthStage()
@@ -168,8 +166,6 @@ public class Scr_Plant : MonoBehaviour
         currentStage = newStage;
         plantRenderers = GetComponentsInChildren<Renderer>();
 
-        UpdateAppearance();
-
         Debug.Log(
             gameObject.name + " changed to growth stage " + currentStage
         );
@@ -190,8 +186,29 @@ public class Scr_Plant : MonoBehaviour
         health = Mathf.Clamp(health + 5f, 0f, 100f);
 
         Debug.Log("Plant watered. Moisture: " + Mathf.RoundToInt(moisture));
+    }
 
-        UpdateAppearance();
+    public void Fertilize()
+    {
+        if (isDead)
+        {
+            Debug.Log("This tomato plant is dead. It cannot be fertilized.");
+            return;
+        }
+
+        // Fertilizer encourages growth and improves plant health.
+        growth = Mathf.Clamp(growth + 20f, 0f, matureAt);
+        health = Mathf.Clamp(health + 10f, 0f, 100f);
+
+        // Update the plant model if fertilizer advances its growth stage.
+        UpdateGrowthStage();
+
+        Debug.Log(
+            "Tomato plant fertilized! Growth: " +
+            Mathf.RoundToInt(growth) +
+            ", Health: " +
+            Mathf.RoundToInt(health)
+        );
     }
 
     public void Harvest()
@@ -238,15 +255,5 @@ public class Scr_Plant : MonoBehaviour
 
             plantRenderer.SetPropertyBlock(block);
         }
-    }
-
-    void UpdateAppearance()
-    {
-        float safeMatureAt = Mathf.Max(matureAt, 1f);
-        float growthPercent = Mathf.Clamp01(growth / safeMatureAt);
-
-        float growthScale = Mathf.Lerp(0.5f, 2f, growthPercent);
-
-        transform.localScale = startingScale * growthScale;
     }
 }

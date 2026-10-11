@@ -4917,10 +4917,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 807d37e1713004847aefea9bf7438532, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 7988104024208573173}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 807d37e1713004847aefea9bf7438532, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7339889718153511962}
+      addedObject: {fileID: -5320209912316007163}
   m_SourcePrefab: {fileID: 100100000, guid: 807d37e1713004847aefea9bf7438532, type: 3}
 --- !u!4 &2441101090081594589 stripped
 Transform:
@@ -4932,22 +4929,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 807d37e1713004847aefea9bf7438532, type: 3}
   m_PrefabInstance: {fileID: 9114669458961180746}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &7988104024208573173
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8267665832142083355}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8c4360a9ad3377f498f543aa3c5b38e5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::WildSprinklerSpawner
-  wildSprinklerPrefab: {fileID: 8267665832142083355}
-  spawnPosition: {x: 2.5, y: 0.1, z: 2.5}
-  spawnRotation: {x: 0, y: 0, z: 0}
---- !u!114 &7339889718153511962
+--- !u!114 &-5320209912316007163
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4959,6 +4941,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b4c2bf8b27f08e49855939ea7fa79c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Scr_Sprinkler
-  waterReserve: 20
-  waterUsedPerAction: 1
-  moistureAddedPerAction: 15
+  wateringInterval: 5
+  waterAreaWidth: 4
+  waterAreaDepth: 4
+  showDebugMessages: 1
