@@ -80,7 +80,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Instrument
   profit: 0
   gridMask: 000100000100000000
-  type: 1
+  type: 0
+  high: 0
+  mid: 1
+  low: 1
+  brass: 1
+  woodwind: 0
+  strings: 0
 --- !u!33 &328054499781840542
 MeshFilter:
   m_ObjectHideFlags: 0

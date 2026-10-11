@@ -37,7 +37,7 @@ public class MoveInstrument : MonoBehaviour
 
     public void Select(GameObject prefab)
     {
-        float cost = GameState.Instance.GetInstrumentCost(prefab.GetComponent<Instrument>().type);
+        float cost = GameState.Instance.GetInstrumentCost(prefab.GetComponent<Instrument>());
         bool affordable = GameState.Instance.GetMoney() >= cost;
         if (affordable)
         {
@@ -48,6 +48,7 @@ public class MoveInstrument : MonoBehaviour
                 Purchase(prefab);
                 confirm.action.performed -= confirmHandler;
                 confirm.action.Disable();
+                GameState.Instance.menu.CloseMenu();
             };
             confirm.action.performed += confirmHandler;
             confirm.action.Enable();

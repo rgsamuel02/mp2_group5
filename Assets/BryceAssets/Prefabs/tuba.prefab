@@ -193,7 +193,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Instrument
   profit: 0
   gridMask: 010101010101010101
-  type: 3
+  type: 2
+  high: 0
+  mid: 0
+  low: 1
+  brass: 1
+  woodwind: 0
+  strings: 0
 --- !u!4 &7550164476314361535 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 7e49287ea42827e49873350e827e20ae, type: 3}

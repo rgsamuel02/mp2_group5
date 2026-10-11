@@ -134,4 +134,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Instrument
   profit: 0
   gridMask: 000000000100000000
-  type: 5
+  type: 4
+  high: 0
+  mid: 1
+  low: 1
+  brass: 0
+  woodwind: 0
+  strings: 1
