@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Scr_Flower : MonoBehaviour
+public class Scr_CornPlant : MonoBehaviour
 {
     [Header("Core Plant Stats")]
     [Range(0, 100)] public float health = 100f;
@@ -8,9 +8,8 @@ public class Scr_Flower : MonoBehaviour
     [Range(0, 100)] public float growth = 0f;
     public float age = 0f;
 
-    [Header("Flower Stats")]
-    [Range(0, 100)] public float bloom = 0f;
-    [Min(0)] public int flowerCount = 0;
+    [Header("Herb Stats")]
+    [Min(0)] public int herbYield = 0;
 
     [Header("Growth Settings")]
     public float growthPerSecond = 2f;
@@ -19,11 +18,11 @@ public class Scr_Flower : MonoBehaviour
     public float waterAddedPerAction = 30f;
     public float matureAt = 100f;
     public float matureVisualAt = 50f;
-    public int maximumFlowers = 6;
+    public int maximumYield = 5;
 
     [Header("Visual Stages")]
     public GameObject seedlingVisual;
-    public GameObject matureFlowerPrefab;
+    public GameObject matureHerbPrefab;
 
     private GameObject matureVisualInstance;
     private bool showingMatureVisual;
@@ -43,7 +42,7 @@ public class Scr_Flower : MonoBehaviour
 
         if (seedlingVisual == null)
         {
-            Debug.LogError("FlowerBush needs a seedling visual child.");
+            Debug.LogError("HerbPlant needs a seedling visual child.");
             enabled = false;
             return;
         }
@@ -75,14 +74,8 @@ public class Scr_Flower : MonoBehaviour
                 0f, 100f
             );
 
-        // Flowers bloom as the plant grows.
-        bloom = Mathf.Clamp(
-            growth / matureAt * 100f,
-            0f, 100f
-        );
-
-        flowerCount = Mathf.RoundToInt(
-            Mathf.Lerp(0, maximumFlowers, bloom / 100f)
+        herbYield = Mathf.RoundToInt(
+            Mathf.Lerp(0, maximumYield, growth / matureAt)
         );
 
         if (health <= 0f)
@@ -105,7 +98,7 @@ public class Scr_Flower : MonoBehaviour
 
         health = Mathf.Clamp(health + 5f, 0f, 100f);
 
-        Debug.Log("Flower watered. Moisture: " + moisture);
+        Debug.Log("Herb watered. Moisture: " + moisture);
     }
 
     void UpdateVisualStage()
@@ -115,9 +108,9 @@ public class Scr_Flower : MonoBehaviour
         if (shouldBeMature == showingMatureVisual)
             return;
 
-        if (shouldBeMature && matureFlowerPrefab == null)
+        if (shouldBeMature && matureHerbPrefab == null)
         {
-            Debug.LogWarning("Assign the Mature Flower Prefab.");
+            Debug.LogWarning("Assign the Mature Herb Prefab.");
             return;
         }
 
@@ -127,7 +120,7 @@ public class Scr_Flower : MonoBehaviour
         if (shouldBeMature)
         {
             matureVisualInstance = Instantiate(
-                matureFlowerPrefab,
+                matureHerbPrefab,
                 seedlingVisual.transform.parent
             );
 
@@ -151,7 +144,7 @@ public class Scr_Flower : MonoBehaviour
     {
         if (isDead || !IsMature)
         {
-            Debug.Log("The flowers are not ready to harvest.");
+            Debug.Log("The herbs are not ready to harvest.");
             return;
         }
 
@@ -164,21 +157,20 @@ public class Scr_Flower : MonoBehaviour
             return;
         }
 
-        int amount = flowerCount;
-        inventory.AddResource(GardenResource.Flowers, amount);
+        int amount = herbYield;
+        inventory.AddResource(GardenResource.Herbs, amount);
 
-        Debug.Log("Harvested " + amount + " flowers.");
+        Debug.Log("Harvested " + amount + " herbs.");
 
         growth = 0f;
-        bloom = 0f;
-        flowerCount = 0;
+        herbYield = 0;
         UpdateVisualStage();
     }
 
     void Die()
     {
         isDead = true;
-        Debug.Log("The flower plant died from neglect.");
+        Debug.Log("The herb plant died from neglect.");
 
         if (matureVisualInstance != null)
             matureVisualInstance.SetActive(false);

@@ -1,97 +1,117 @@
-
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
 public class Scr_Builder : MonoBehaviour
 {
-    [Header("VR Controller")]
+    [Header("VR Controls")]
     public XRRayInteractor rayInteractor;
-
     public InputActionReference placeAction;
     public InputActionReference selectPlotAction;
     public InputActionReference selectSeedlingAction;
+    public InputActionReference selectHerbAction;
+    public InputActionReference selectFlowerAction;
     public InputActionReference waterAction;
     public InputActionReference harvestAction;
 
-    [Header("Garden Prefabs")]
+    [Header("Prefabs")]
     public GameObject gardenPlotPrefab;
     public GameObject seedlingPrefab;
+    public GameObject herbSeedlingPrefab;
+    public GameObject flowerSeedlingPrefab;
 
     [Header("Grid Settings")]
-    public float cellSize = 1f;
     public int gridSize = 10;
-
-    [Header("Placement Height")]
+    public float cellSize = 1f;
     public float plotHeight = 0.05f;
     public float seedlingHeight = 0.3f;
-
-    [Header("Ground")]
     public LayerMask groundLayer;
 
-    private GameObject selectedPrefab;
-    private Scr_Inventory inventory;
+    [Header("Current Selection")]
+    public GameObject selectedPrefab;
 
-    private bool enabledPlace;
-    private bool enabledPlot;
-    private bool enabledSeedling;
-    private bool enabledWater;
-    private bool enabledHarvest;
+    private Scr_Inventory inventory;
+    private readonly HashSet<InputAction> actionsEnabledHere =
+        new HashSet<InputAction>();
 
     void OnEnable()
     {
-        EnableAction(placeAction, ref enabledPlace);
-        EnableAction(selectPlotAction, ref enabledPlot);
-        EnableAction(selectSeedlingAction, ref enabledSeedling);
-        EnableAction(waterAction, ref enabledWater);
-        EnableAction(harvestAction, ref enabledHarvest);
+        EnableAction(placeAction);
+        EnableAction(selectPlotAction);
+        EnableAction(selectSeedlingAction);
+        EnableAction(selectHerbAction);
+        EnableAction(selectFlowerAction);
+        EnableAction(waterAction);
+        EnableAction(harvestAction);
     }
 
     void OnDisable()
     {
-        DisableAction(placeAction, ref enabledPlace);
-        DisableAction(selectPlotAction, ref enabledPlot);
-        DisableAction(selectSeedlingAction, ref enabledSeedling);
-        DisableAction(waterAction, ref enabledWater);
-        DisableAction(harvestAction, ref enabledHarvest);
+        foreach (InputAction action in actionsEnabledHere)
+        {
+            if (action != null && action.enabled)
+                action.Disable();
+        }
+
+        actionsEnabledHere.Clear();
+    }
+
+    void EnableAction(InputActionReference reference)
+    {
+        if (reference == null || reference.action == null)
+            return;
+
+        InputAction action = reference.action;
+
+        if (!action.enabled)
+        {
+            action.Enable();
+            actionsEnabledHere.Add(action);
+        }
     }
 
     void Start()
     {
-        selectedPrefab = gardenPlotPrefab;
         inventory = FindFirstObjectByType<Scr_Inventory>();
-
-        if (rayInteractor == null)
-        {
-            Debug.LogWarning(
-                "GardenBuilder: Assign the controller's XR Ray Interactor."
-            );
-        }
 
         if (inventory == null)
         {
-            Debug.LogError("GardenBuilder: GardenInventory not found.");
+            Debug.LogError(
+                "GardenBuilder could not find GardenInventory."
+            );
         }
     }
 
     void Update()
     {
-        // Desktop testing shortcuts.
+        // Keyboard shortcuts for testing in the Editor.
         if (Keyboard.current != null)
         {
             if (Keyboard.current.digit1Key.wasPressedThisFrame)
-                selectedPrefab = gardenPlotPrefab;
+                SelectPrefab(gardenPlotPrefab, "Garden plot");
 
             if (Keyboard.current.digit2Key.wasPressedThisFrame)
-                selectedPrefab = seedlingPrefab;
+                SelectPrefab(seedlingPrefab, "Tomato seedling");
+
+            if (Keyboard.current.digit3Key.wasPressedThisFrame)
+                SelectPrefab(herbSeedlingPrefab, "Herb seedling");
+
+            if (Keyboard.current.digit4Key.wasPressedThisFrame)
+                SelectPrefab(flowerSeedlingPrefab, "Flower seedling");
         }
 
-        // Controller actions for choosing the object to place.
         if (WasPressed(selectPlotAction))
-            selectedPrefab = gardenPlotPrefab;
+            SelectPrefab(gardenPlotPrefab, "Garden plot");
 
         if (WasPressed(selectSeedlingAction))
-            selectedPrefab = seedlingPrefab;
+            SelectPrefab(seedlingPrefab, "Tomato seedling");
+
+        if (WasPressed(selectHerbAction))
+            SelectPrefab(herbSeedlingPrefab, "Herb seedling");
+
+        if (WasPressed(selectFlowerAction))
+            SelectPrefab(flowerSeedlingPrefab, "Flower seedling");
 
         if (WasPressed(placeAction))
             TryPlaceObject();
@@ -101,6 +121,25 @@ public class Scr_Builder : MonoBehaviour
 
         if (WasPressed(harvestAction))
             TryHarvestPlant();
+    }
+
+    bool WasPressed(InputActionReference reference)
+    {
+        return reference != null &&
+               reference.action != null &&
+               reference.action.WasPressedThisFrame();
+    }
+
+    void SelectPrefab(GameObject prefab, string label)
+    {
+        if (prefab == null)
+        {
+            Debug.LogWarning(label + " prefab is not assigned.");
+            return;
+        }
+
+        selectedPrefab = prefab;
+        Debug.Log("Selected: " + label);
     }
 
     bool TryGetHit(out RaycastHit hit)
@@ -115,89 +154,211 @@ public class Scr_Builder : MonoBehaviour
 
     void TryPlaceObject()
     {
-        if (selectedPrefab == null || inventory == null)
+        if (selectedPrefab == null)
+        {
+            Debug.Log("Select a plot or plant first.");
             return;
+        }
 
         if (!TryGetHit(out RaycastHit hit))
+            return;
+
+        // Placement must target the garden ground.
+        if ((groundLayer.value & (1 << hit.collider.gameObject.layer)) == 0)
         {
-            Debug.Log("Aim at the garden first.");
+            Debug.Log("Point at the garden ground to place an object.");
             return;
         }
 
-        // Don't place objects on plants or other props.
-        int hitLayer = hit.collider.gameObject.layer;
-
-        if ((groundLayer.value & (1 << hitLayer)) == 0)
-        {
-            Debug.Log("Aim at the garden ground to place objects.");
-            return;
-        }
-
-        Vector3 position = hit.point;
-
-        int cellX = Mathf.FloorToInt(position.x / cellSize);
-        int cellZ = Mathf.FloorToInt(position.z / cellSize);
+        int cellX = Mathf.FloorToInt(hit.point.x / cellSize);
+        int cellZ = Mathf.FloorToInt(hit.point.z / cellSize);
 
         if (cellX < 0 || cellX >= gridSize ||
             cellZ < 0 || cellZ >= gridSize)
         {
-            Debug.Log("Aim inside the garden grid.");
+            Debug.Log("That position is outside the garden grid.");
             return;
         }
 
-        position.x = (cellX + 0.5f) * cellSize;
-        position.z = (cellZ + 0.5f) * cellSize;
+        Vector3 cellCenter = new Vector3(
+            (cellX + 0.5f) * cellSize,
+            0f,
+            (cellZ + 0.5f) * cellSize
+        );
 
         bool placingPlot = selectedPrefab == gardenPlotPrefab;
-        bool placingSeedling = selectedPrefab == seedlingPrefab;
 
-        position.y = placingPlot ? plotHeight : seedlingHeight;
-
-        if (placingPlot && HasPlotAt(cellX, cellZ))
+        if (placingPlot)
         {
-            Debug.Log("A garden plot already exists here!");
+            if (HasPlotAt(cellCenter))
+            {
+                Debug.Log("There is already a plot in this cell.");
+                return;
+            }
+
+            Vector3 plotPosition = cellCenter;
+            plotPosition.y = plotHeight;
+
+            Instantiate(
+                gardenPlotPrefab,
+                plotPosition,
+                Quaternion.identity
+            );
+
+            Debug.Log("Garden plot placed.");
             return;
         }
 
-        if (placingSeedling)
+        // All three plant types require a plot.
+        if (!HasPlotAt(cellCenter))
         {
-            if (!HasPlotAt(cellX, cellZ))
-            {
-                Debug.Log("Planting requires a garden plot!");
-                return;
-            }
-
-            if (HasPlantAt(cellX, cellZ))
-            {
-                Debug.Log("There is already a plant in this plot!");
-                return;
-            }
-
-            if (!inventory.UseSeeds(1))
-                return;
+            Debug.Log("Place a garden plot before planting.");
+            return;
         }
 
-        Instantiate(selectedPrefab, position, Quaternion.identity);
-        Debug.Log("Garden object placed.");
+        if (HasPlantAt(cellCenter))
+        {
+            Debug.Log("This plot already has a plant.");
+            return;
+        }
+
+        if (inventory == null)
+        {
+            Debug.LogError("GardenInventory is missing.");
+            return;
+        }
+
+        if (!inventory.UseSeeds(1))
+            return;
+
+        Vector3 plantPosition = cellCenter;
+        plantPosition.y = seedlingHeight;
+
+        Instantiate(
+            selectedPrefab,
+            plantPosition,
+            Quaternion.identity
+        );
+
+        Debug.Log("Plant placed in the garden.");
     }
 
+    bool HasPlotAt(Vector3 cellCenter)
+    {
+        Scr_Plot[] plots =
+            FindObjectsByType<Scr_Plot>(FindObjectsSortMode.None);
+
+        foreach (Scr_Plot plot in plots)
+        {
+            if (plot == null)
+                continue;
+
+            if (SameCell(plot.transform.position, cellCenter))
+                return true;
+        }
+
+        return false;
+    }
+
+    bool HasPlantAt(Vector3 cellCenter)
+    {
+        // Tomato plants.
+        Scr_Plant[] tomatoes =
+            FindObjectsByType<Scr_Plant>(FindObjectsSortMode.None);
+
+        foreach (Scr_Plant plant in tomatoes)
+        {
+            if (plant == null || plant.IsDead)
+                continue;
+
+            if (SameCell(plant.transform.position, cellCenter))
+                return true;
+        }
+
+        // Herb plants.
+        Scr_CornPlant[] herbs =
+            FindObjectsByType<Scr_CornPlant>(FindObjectsSortMode.None);
+
+        foreach (Scr_CornPlant plant in herbs)
+        {
+            if (plant != null &&
+                SameCell(plant.transform.position, cellCenter))
+                return true;
+        }
+
+        // Flower plants.
+        Scr_Flower[] flowers =
+            FindObjectsByType<Scr_Flower>(FindObjectsSortMode.None);
+
+        foreach (Scr_Flower plant in flowers)
+        {
+            if (plant != null &&
+                SameCell(plant.transform.position, cellCenter))
+                return true;
+        }
+
+        return false;
+    }
+
+    bool SameCell(Vector3 position, Vector3 cellCenter)
+    {
+        int x1 = Mathf.FloorToInt(position.x / cellSize);
+        int z1 = Mathf.FloorToInt(position.z / cellSize);
+
+        int x2 = Mathf.FloorToInt(cellCenter.x / cellSize);
+        int z2 = Mathf.FloorToInt(cellCenter.z / cellSize);
+
+        return x1 == x2 && z1 == z2;
+    }
+
+    
     void TryWaterPlant()
     {
         if (!TryGetHit(out RaycastHit hit))
             return;
 
-        Scr_Plant plant = hit.collider.GetComponentInParent<Scr_Plant>();
+        Scr_Plant tomato =
+            hit.collider.GetComponentInParent<Scr_Plant>();
 
-        if (plant == null)
+        Scr_CornPlant herb =
+            hit.collider.GetComponentInParent<Scr_CornPlant>();
+
+        Scr_Flower flower =
+            hit.collider.GetComponentInParent<Scr_Flower>();
+
+        if (tomato == null && herb == null && flower == null)
         {
-            Debug.Log("Aim at a plant to water it.");
+            Debug.Log("Point at a plant to water it.");
+            return;
+        }
+
+        if (tomato != null && tomato.IsDead)
+        {
+            Debug.Log("This tomato plant is dead.");
+            return;
+        }
+
+        if (herb != null && herb.IsDead)
+        {
+            Debug.Log("This herb plant is dead.");
+            return;
+        }
+
+        if (flower != null && flower.IsDead)
+        {
+            Debug.Log("This flower plant is dead.");
             return;
         }
 
         if (inventory == null || !inventory.UseWater(1))
             return;
 
-        plant.Water();
+        if (tomato != null)
+            tomato.Water();
+        else if (herb != null)
+            herb.Water();
+        else
+            flower.Water();
     }
 
     void TryHarvestPlant()
@@ -205,89 +366,36 @@ public class Scr_Builder : MonoBehaviour
         if (!TryGetHit(out RaycastHit hit))
             return;
 
-        Scr_Plant plant = hit.collider.GetComponentInParent<Scr_Plant>();
+        // Tomato plant.
+        Scr_Plant tomato =
+            hit.collider.GetComponentInParent<Scr_Plant>();
 
-        if (plant == null)
+        if (tomato != null)
         {
-            Debug.Log("Aim at a plant to harvest it.");
+            tomato.Harvest();
             return;
         }
 
-        plant.Harvest();
-    }
+        // Herb plant.
+        Scr_CornPlant herb =
+            hit.collider.GetComponentInParent<Scr_CornPlant>();
 
-    bool HasPlotAt(int targetX, int targetZ)
-    {
-        Scr_Plot[] plots =
-            FindObjectsByType<Scr_Plot>(FindObjectsSortMode.None);
-
-        foreach (Scr_Plot plot in plots)
+        if (herb != null)
         {
-            int x = Mathf.FloorToInt(plot.transform.position.x / cellSize);
-            int z = Mathf.FloorToInt(plot.transform.position.z / cellSize);
-
-            if (x == targetX && z == targetZ)
-                return true;
-        }
-
-        return false;
-    }
-
-    bool HasPlantAt(int targetX, int targetZ)
-    {
-        Scr_Plant[] plants =
-            FindObjectsByType<Scr_Plant>(FindObjectsSortMode.None);
-
-        foreach (Scr_Plant plant in plants)
-        {
-            if (plant.IsDead)
-                continue;
-
-            int x = Mathf.FloorToInt(plant.transform.position.x / cellSize);
-            int z = Mathf.FloorToInt(plant.transform.position.z / cellSize);
-
-            if (x == targetX && z == targetZ)
-                return true;
-        }
-
-        return false;
-    }
-
-    bool WasPressed(InputActionReference reference)
-    {
-        return reference != null &&
-               reference.action != null &&
-               reference.action.enabled &&
-               reference.action.WasPressedThisFrame();
-    }
-
-    void EnableAction(
-        InputActionReference reference,
-        ref bool enabledByThisScript)
-    {
-        enabledByThisScript = false;
-
-        if (reference == null || reference.action == null)
+            herb.Harvest();
             return;
-
-        if (!reference.action.enabled)
-        {
-            reference.action.Enable();
-            enabledByThisScript = true;
-        }
-    }
-
-    void DisableAction(
-        InputActionReference reference,
-        ref bool enabledByThisScript)
-    {
-        if (enabledByThisScript &&
-            reference != null &&
-            reference.action != null)
-        {
-            reference.action.Disable();
         }
 
-        enabledByThisScript = false;
+        // Flower plant.
+        Scr_Flower flower =
+            hit.collider.GetComponentInParent<Scr_Flower>();
+
+        if (flower != null)
+        {
+            flower.Harvest();
+            return;
+        }
+
+        Debug.Log("Point at a plant to harvest it.");
     }
 }
