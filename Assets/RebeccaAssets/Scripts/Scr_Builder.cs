@@ -21,6 +21,11 @@ public class Scr_Builder : MonoBehaviour
     public GameObject seedlingPrefab;
     public GameObject cornSeedlingPrefab;
     public GameObject flowerSeedlingPrefab;
+    public GameObject wateringCanPrefab;
+
+    public Transform wateringCanAnchor;
+    private GameObject wateringCanInstance;
+    private Coroutine hideWateringCanRoutine;
 
     [Header("Grid Settings")]
     public int gridSize = 10;
@@ -87,6 +92,27 @@ public class Scr_Builder : MonoBehaviour
         {
             Debug.LogError(
                 "Scr_Builder could not find Scr_Inventory."
+            );
+        } 
+        if (wateringCanPrefab != null && wateringCanAnchor != null)
+        {
+            wateringCanInstance = Instantiate(
+                wateringCanPrefab,
+                wateringCanAnchor
+            );
+
+            wateringCanInstance.transform.localPosition =
+                Vector3.zero;
+
+            wateringCanInstance.transform.localRotation =
+                Quaternion.identity;
+
+            wateringCanInstance.SetActive(false);
+        }
+        else
+        {
+            Debug.LogWarning(
+                "Assign both Watering Can Prefab and Watering Can Anchor."
             );
         }
     }
@@ -373,10 +399,37 @@ public class Scr_Builder : MonoBehaviour
         else
             flower.Water();
 
+        ShowWateringCan();
+
         Debug.Log("Crop watered.");
     }
 
-    
+        
+    private void ShowWateringCan()
+    {
+        if (wateringCanInstance == null)
+            return;
+
+        wateringCanInstance.SetActive(true);
+
+        if (hideWateringCanRoutine != null)
+            StopCoroutine(hideWateringCanRoutine);
+
+        hideWateringCanRoutine =
+            StartCoroutine(HideWateringCanAfterDelay(2f));
+    }
+
+    private System.Collections.IEnumerator HideWateringCanAfterDelay(
+        float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        if (wateringCanInstance != null)
+            wateringCanInstance.SetActive(false);
+
+        hideWateringCanRoutine = null;
+    }
+
     void TryFertilizePlant()
     {
         if (!TryGetHit(out RaycastHit hit))
