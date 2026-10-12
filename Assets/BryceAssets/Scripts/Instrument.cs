@@ -49,7 +49,7 @@ public class Instrument : MonoBehaviour
 
     public float CalculatePay()
     {
-        return GameState.Instance.GetEnjoyment() * GameState.basePrices[(int) type] * loudness * synergy
+        return GameState.Instance.GetEnjoyment() * GameState.basePrices[(int) type] * loudness * synergy;
     }
 
     public void AddPerks()
