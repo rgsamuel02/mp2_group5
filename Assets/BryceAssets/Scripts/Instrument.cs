@@ -4,19 +4,26 @@ public class Instrument : MonoBehaviour
 {
     public int x, y;
     float t = 0.0f;
-    public float profit;
     public bool[] gridMask = new bool[9];
     float popularity = 1;
     float loudness = 1;
     float happiness = 300;
     float depression = 1; // I could not think of a better name for the variable that describes how fast happiness is lost
+    float synergy = 1;
     public enum InstrumentType
     { 
-        TROMBONE,
         VIOLIN,
-        TUBA,
+        VIOLA,
+        CELLO,
+        BASS,
+        FLUTE,
         CLARINET,
-        CELLO
+        OBOE,
+        BASSOON,
+        TRUMPET,
+        HORN,
+        TROMBONE,
+        TUBA,
     };
 
     public InstrumentType type;
@@ -29,7 +36,7 @@ public class Instrument : MonoBehaviour
         if (t > 10 / popularity)
         {
             t = 0;
-            GameState.Instance.AddPay(GameState.Instance.GetEnjoyment() * GameState.basePrices[(int) type] * loudness);
+            GameState.Instance.AddPay(CalculatePay());
         }
         happiness -= depression * Time.deltaTime;
         if (happiness <= 0)
@@ -38,6 +45,11 @@ public class Instrument : MonoBehaviour
             GameState.Instance.DestroyInstrument(this);
             Destroy(gameObject);
         }
+    }
+
+    public float CalculatePay()
+    {
+        return GameState.Instance.GetEnjoyment() * GameState.basePrices[(int) type] * loudness * synergy
     }
 
     public void AddPerks()
@@ -52,6 +64,7 @@ public class Instrument : MonoBehaviour
         loudness = 1;
         popularity = 1;
         depression = 1;
+        synergy = 1;
     }
 
     public void Neighbor(float popularityMod, float loudnessMod, float depressionMod)
@@ -87,6 +100,11 @@ public class Instrument : MonoBehaviour
         return depression;
     }
 
+    public void AddSynergy()
+    {
+        synergy += 1;
+    }
+
     void OnTriggerEnter(Collider other)
     {
         Debug.Log(other.gameObject.name);
@@ -94,6 +112,51 @@ public class Instrument : MonoBehaviour
         {
             happiness = 300;
             Destroy(other.gameObject);
+        }
+    }
+
+    public static bool Synergize(InstrumentType i, InstrumentType j)
+    {
+        switch (i)
+        {
+            case InstrumentType.VIOLIN:
+                if (j == InstrumentType.VIOLA) return true;
+                return false;
+            case InstrumentType.VIOLA:
+                if (j == InstrumentType.VIOLIN || j == InstrumentType.CELLO) return true;
+                return false;
+            case InstrumentType.CELLO:
+                if (j == InstrumentType.VIOLA || j == InstrumentType.BASS) return true;
+                return false;
+            case InstrumentType.BASS:
+                if (j == InstrumentType.CELLO) return true;
+                return false;
+            case InstrumentType.FLUTE:
+                if (j == InstrumentType.CLARINET) return true;
+                return false;
+            case InstrumentType.CLARINET:
+                if (j == InstrumentType.FLUTE) return true;
+                return false;
+            case InstrumentType.OBOE:
+                if (j == InstrumentType.BASSOON) return true;
+                return false;
+            case InstrumentType.BASSOON:
+                if (j == InstrumentType.OBOE) return true;
+                return false;
+            case InstrumentType.TRUMPET:
+                if (j == InstrumentType.TROMBONE) return true;
+                return false;
+            case InstrumentType.HORN:
+                if (j == InstrumentType.HORN) return true;
+                return false;
+            case InstrumentType.TROMBONE:
+                if (j == InstrumentType.TRUMPET || j == InstrumentType.TUBA) return true;
+                return false;
+            case InstrumentType.TUBA:
+                if (j == InstrumentType.TROMBONE) return true;
+                return false;
+            default:
+                return false;
         }
     }
 }

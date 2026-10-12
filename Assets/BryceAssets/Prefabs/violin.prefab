@@ -179,9 +179,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecb53d902f9d67f48b76ba69ff179cb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Instrument
-  profit: 0
-  gridMask: 000000000100000000
-  type: 1
+  x: 0
+  y: 0
+  gridMask: 000100000100000000
+  type: 0
   high: 1
   mid: 0
   low: 0

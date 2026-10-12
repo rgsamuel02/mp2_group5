@@ -37,8 +37,15 @@ public class GameState : MonoBehaviour
     public static int[] basePrices =
     {
         1,
-        3,
-        3,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
         1,
         1
     };
@@ -229,6 +236,11 @@ public class GameState : MonoBehaviour
                     // instruments are just happy to have neighbors of any kind.
                     instruments[i].Neighbor(1, 1, 1.1f);
                     instruments[j].Neighbor(1, 1, 1.1f);
+                    if (Instrument.Synergize(instruments[i].type, instruments[j].type))
+                    {
+                        instruments[i].AddSynergy();
+                        instruments[j].AddSynergy();
+                    }
                 }
             }
         }
