@@ -163,7 +163,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &2119763445017095785
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -197,7 +197,7 @@ MonoBehaviour:
   tutorialTitle: Fertilizer Bin
   tutorialDescription: Point at this bin and use the fertilizer interaction (RH trigger)
     to refill your supply.
-  popupObject: {fileID: 776669287396103885}
+  popupObject: {fileID: 856126180877890966}
   titleText: {fileID: 5811668553317329555}
   descriptionText: {fileID: 3061294759451604142}
   encounterDistance: 2
