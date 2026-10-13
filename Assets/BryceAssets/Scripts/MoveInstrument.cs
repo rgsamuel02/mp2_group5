@@ -86,14 +86,14 @@ public class MoveInstrument : MonoBehaviour
             placeButton.action.Disable();
             selected.GetComponent<MeshRenderer>().material = unplaceableMat;
         }
-        selected.transform.SetPositionAndRotation(new Vector3((target.x - 14) * GameState.GRID_SIZE, selected.GetComponent<Transform>().position.y, (-target.y - 1) * GameState.GRID_SIZE) - offset, selected.GetComponent<Transform>().rotation * Quaternion.identity);
+        selected.transform.SetPositionAndRotation(new Vector3((target.x - 14) * GameState.GRID_SIZE - GameState.GRID_SIZE / 2, selected.GetComponent<Transform>().position.y, (-target.y - 1) * GameState.GRID_SIZE + GameState.GRID_SIZE / 2) - offset, selected.GetComponent<Transform>().rotation * Quaternion.identity);
     }
     
     public static Vector2 GetNearestGridPoint(Vector3 p)
     {
         Vector2 ret;
-        ret.x = (float) Math.Round(p.x / GameState.GRID_SIZE) + 14; 
-        ret.y = -(float) Math.Round(p.z / GameState.GRID_SIZE + 1);
+        ret.x = (float) Math.Round((p.x + GameState.GRID_SIZE / 2) / GameState.GRID_SIZE) + 14; 
+        ret.y = -(float) Math.Round((p.z - GameState.GRID_SIZE / 2) / GameState.GRID_SIZE + 1);
         return ret;
     }
 
@@ -105,8 +105,10 @@ public class MoveInstrument : MonoBehaviour
             firstPlace = false;
         }
         Vector3 pos = selected.transform.position + offset;
-        int x = (int) Math.Round(pos.x / GameState.GRID_SIZE + 14);
-        int y = (int) -Math.Round(pos.z / GameState.GRID_SIZE + 1);
+        int x = (int) Math.Round((GameState.GRID_SIZE / 2 + pos.x) / GameState.GRID_SIZE + 14);
+        int y = (int) -Math.Round((pos.z - GameState.GRID_SIZE / 2) / GameState.GRID_SIZE + 1);
+        Debug.Log(x);
+        Debug.Log(y);
         if (GameState.Instance.Place(selected.GetComponent<Instrument>(), x, y)) {
             selected = null;
             placeButton.action.Disable();

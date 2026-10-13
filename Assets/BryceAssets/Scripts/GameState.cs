@@ -36,18 +36,18 @@ public class GameState : MonoBehaviour
 
     public static int[] basePrices =
     {
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
     };
 
     bool[] occupiedSeats = new bool[50];
