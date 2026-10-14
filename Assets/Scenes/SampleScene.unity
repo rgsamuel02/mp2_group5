@@ -627,6 +627,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Rebecca Sim
       objectReference: {fileID: 0}
+    - target: {fileID: 2672701238348080511, guid: 1e2645ef549788747a4a5303be4cb50b, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: fd1acb3ae6e23e340a2a5ea695f943b2, type: 2}
+    - target: {fileID: 2672701238348080511, guid: 1e2645ef549788747a4a5303be4cb50b, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 5098248911426160793, guid: fd1acb3ae6e23e340a2a5ea695f943b2, type: 2}
+    - target: {fileID: 2672701238348080511, guid: 1e2645ef549788747a4a5303be4cb50b, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3257372912449851524, guid: 1e2645ef549788747a4a5303be4cb50b, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0

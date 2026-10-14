@@ -115,7 +115,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Scr_Inventory
   water: 20
-  fertilizer: 0
+  fertilizer: 10
   seeds: 10
   tomatoes: 0
   corn: 0

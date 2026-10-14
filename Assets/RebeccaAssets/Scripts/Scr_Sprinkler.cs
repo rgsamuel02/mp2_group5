@@ -1,131 +1,128 @@
+
 using UnityEngine;
 
 public class Scr_Sprinkler : MonoBehaviour
 {
-    [Header("Automatic Watering")]
-    [Min(0.5f)]
-    public float wateringInterval = 5f;
 
-    [Min(1f)]
-    public float waterAreaWidth = 4f;
+    [Header("Watering Settings")]
+    [Min(0.1f)]
+    public float wateringRadius = 2f;
 
-    [Min(1f)]
-    public float waterAreaDepth = 4f;
+    [Min(0.1f)]
+    public float wateringInterval = 2f;
 
-    [Header("Debug")]
-    public bool showDebugMessages = true;
+    [Header("Visual Effect")]
+    public ParticleSystem waterSpray;
 
     private float wateringTimer;
 
-    void Start()
+    private void Start()
     {
-        wateringTimer = wateringInterval;
-
-        if (showDebugMessages)
+        if (waterSpray != null)
         {
-            Debug.Log("Sprinkler started. It waters plants automatically.");
+            waterSpray.Play();
         }
     }
 
-    void Update()
+    private void Update()
     {
+        StartSpraying();
+
         wateringTimer += Time.deltaTime;
 
         if (wateringTimer >= wateringInterval)
         {
-            WaterNearbyPlants();
             wateringTimer = 0f;
+            WaterNearbyCrops();
         }
     }
 
-    void WaterNearbyPlants()
+    private void StartSpraying()
     {
-        int plantsWatered = 0;
+        if (waterSpray != null && !waterSpray.isPlaying)
+        {
+            waterSpray.Play();
+        }
+    }
 
-        // Water tomatoes.
+    private void StopSpraying()
+    {
+        if (waterSpray != null && waterSpray.isPlaying)
+        {
+            waterSpray.Stop(
+                true,
+                ParticleSystemStopBehavior.StopEmittingAndClear
+            );
+        }
+    }
+
+    private void WaterNearbyCrops()
+    {
+        // Find living tomato plants.
         Scr_Plant[] tomatoes =
             FindObjectsByType<Scr_Plant>(FindObjectsSortMode.None);
 
-        foreach (Scr_Plant plant in tomatoes)
-        {
-            if (plant == null || plant.IsDead)
-                continue;
-
-            if (IsInsideWaterArea(plant.transform.position))
-            {
-                plant.Water();
-                plantsWatered++;
-            }
-        }
-
-        // Water corn.
+        // Find living corn plants.
         Scr_CornPlant[] cornPlants =
             FindObjectsByType<Scr_CornPlant>(FindObjectsSortMode.None);
 
-        foreach (Scr_CornPlant plant in cornPlants)
-        {
-            if (plant == null || plant.IsDead)
-                continue;
-
-            if (IsInsideWaterArea(plant.transform.position))
-            {
-                plant.Water();
-                plantsWatered++;
-            }
-        }
-
-        // Water flowers.
+        // Find living flowers.
         Scr_Flower[] flowers =
             FindObjectsByType<Scr_Flower>(FindObjectsSortMode.None);
 
-        foreach (Scr_Flower plant in flowers)
-        {
-            if (plant == null || plant.IsDead)
-                continue;
+        bool wateredAnyCrop = false;
 
-            if (IsInsideWaterArea(plant.transform.position))
+        foreach (Scr_Plant plant in tomatoes)
+        {
+            if (plant != null && !plant.IsDead &&
+                IsInsideWateringRadius(plant.transform.position))
             {
                 plant.Water();
-                plantsWatered++;
+                wateredAnyCrop = true;
             }
         }
 
-        if (showDebugMessages && plantsWatered > 0)
+        foreach (Scr_CornPlant plant in cornPlants)
         {
-            Debug.Log("Sprinkler watered " + plantsWatered + " plant(s).");
+            if (plant != null && !plant.IsDead &&
+                IsInsideWateringRadius(plant.transform.position))
+            {
+                plant.Water();
+                wateredAnyCrop = true;
+            }
+        }
+
+        foreach (Scr_Flower flower in flowers)
+        {
+            if (flower != null && !flower.IsDead &&
+                IsInsideWateringRadius(flower.transform.position))
+            {
+                flower.Water();
+                wateredAnyCrop = true;
+            }
         }
     }
 
-    bool IsInsideWaterArea(Vector3 plantPosition)
+    private bool IsInsideWateringRadius(Vector3 position)
     {
-        // The sprinkler's position is the center of its watering area.
-        float halfWidth = waterAreaWidth / 2f;
-        float halfDepth = waterAreaDepth / 2f;
+        // Measure distance across the ground, ignoring height.
+        Vector2 sprinklerPosition =
+            new Vector2(transform.position.x, transform.position.z);
 
-        float distanceX =
-            Mathf.Abs(plantPosition.x - transform.position.x);
+        Vector2 cropPosition =
+            new Vector2(position.x, position.z);
 
-        float distanceZ =
-            Mathf.Abs(plantPosition.z - transform.position.z);
-
-        return distanceX <= halfWidth &&
-               distanceZ <= halfDepth;
+        return Vector2.Distance(sprinklerPosition, cropPosition)
+               <= wateringRadius;
     }
 
-    void OnDrawGizmosSelected()
+    private void OnDrawGizmosSelected()
     {
-        // Show the watering area in the Scene view.
         Gizmos.color = Color.cyan;
 
-        Vector3 areaCenter = new Vector3(
-            transform.position.x,
-            transform.position.y + 0.05f,
-            transform.position.z
-        );
+        Vector3 center = transform.position;
+        center.y = transform.position.y + 0.05f;
 
-        Gizmos.DrawWireCube(
-            areaCenter,
-            new Vector3(waterAreaWidth, 0.1f, waterAreaDepth)
-        );
+        Gizmos.DrawWireSphere(center, wateringRadius);
     }
 }
