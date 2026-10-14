@@ -12,7 +12,7 @@ public class Instrument : MonoBehaviour
     float depression = 1; // I could not think of a better name for the variable that describes how fast happiness is lost
     float synergy = 1;
     int durability = 3;
-    int breakChance = 4096; // 1 in this chance of durability decreasing.
+    int breakChance = 8192; // 1 in this chance of durability decreasing.
     public enum InstrumentType
     { 
         VIOLIN,
@@ -48,7 +48,7 @@ public class Instrument : MonoBehaviour
             DestroyInstrument();
         }
         if (Random.Range(0, breakChance) == 0) {
-            if (!hasBroken)
+            if (!hasBroken && !GameState.Instance.menu.IsOpen())
             {
                 GameState.Instance.menu.LoadMenu("Uh oh! One of your instruments started to break! You can fix it using your material. To do this, point your controller at a grid space and press X\n\nPress B to close this message.");
                 hasBroken = true;
@@ -71,7 +71,7 @@ public class Instrument : MonoBehaviour
 
     public float CalculatePay()
     {
-        return GameState.Instance.GetEnjoyment() * GameState.basePrices[(int) type] * loudness * synergy;
+        return GameState.Instance.GetEnjoyment() * GameState.basePrices[(int) type] * loudness * synergy * 3;
     }
 
     public void AddPerks()

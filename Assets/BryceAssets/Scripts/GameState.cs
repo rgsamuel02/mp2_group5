@@ -39,19 +39,19 @@ public class GameState : MonoBehaviour
 
     public static int[] basePrices =
     {
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        100
     };
 
     bool[] occupiedSeats = new bool[50];
@@ -94,7 +94,7 @@ public class GameState : MonoBehaviour
 
         if (income < 0) return; // if we bought or otherwise lost money for some reason don't spawn a customer
 
-        if (firstCustomer)
+        if (firstCustomer && !menu.IsOpen())
         {
             menu.LoadMenu("Congratulations! You got your first customer. Each customer will pay an amount based on the instrument they came to see. You can see how much an instrument will sell tickets for by pointing at their grid space and pressing X\n\nPress B to close this menu.");
             firstCustomer = false;
