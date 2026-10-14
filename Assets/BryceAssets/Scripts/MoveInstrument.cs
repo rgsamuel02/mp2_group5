@@ -65,17 +65,25 @@ public class MoveInstrument : MonoBehaviour
             GameState.Instance.menu.LoadMenu("You just bought your first violin! At the beginning, the location doesn't matter very much, but location will affect instrument performance later in the game. You can move objects after their initial placement.\n\nPress Right Trigger to place.\n\nPress B to close this menu.");
             firstSelect = false;
         }
-        selected = Instantiate(prefab);
+        selected = Instantiate(prefab, GameState.Instance.parent);
         selectedMat = selected.GetComponent<MeshRenderer>().material;
         placeButton.action.Enable();
         offset = prefab.GetComponent<Transform>().Find("offset").localPosition;
+    }
+
+    public void Move(GameObject instrument)
+    {
+        selected = instrument;
+        selectedMat = selected.GetComponent<MeshRenderer>().material;
+        placeButton.action.Enable();
+        offset = instrument.GetComponent<Transform>().Find("offset").localPosition;
     }
 
     void Update()
     {
         if (selected == null) return;
         raycast.TryGetCurrent3DRaycastHit(out RaycastHit hit);
-        Vector2 target = GetNearestGridPoint(hit.point);
+        Vector2 target = GetNearestGridPoint(hit.point - GameState.Instance.parent.position);
         if (GameState.Instance.Placeable(selected.GetComponent<Instrument>(), (int) target.x, (int) target.y))
         {
             placeButton.action.Enable();
@@ -86,7 +94,7 @@ public class MoveInstrument : MonoBehaviour
             placeButton.action.Disable();
             selected.GetComponent<MeshRenderer>().material = unplaceableMat;
         }
-        selected.transform.SetPositionAndRotation(new Vector3((target.x - 14) * GameState.GRID_SIZE - GameState.GRID_SIZE / 2, selected.GetComponent<Transform>().position.y, (-target.y - 1) * GameState.GRID_SIZE + GameState.GRID_SIZE / 2) - offset, selected.GetComponent<Transform>().rotation * Quaternion.identity);
+        selected.transform.SetLocalPositionAndRotation(new Vector3((target.x - 14) * GameState.GRID_SIZE - GameState.GRID_SIZE / 2, selected.GetComponent<Transform>().localPosition.y, (-target.y - 1) * GameState.GRID_SIZE + GameState.GRID_SIZE / 2) - offset, selected.GetComponent<Transform>().rotation * Quaternion.identity);
     }
     
     public static Vector2 GetNearestGridPoint(Vector3 p)
@@ -104,7 +112,7 @@ public class MoveInstrument : MonoBehaviour
             GameState.Instance.menu.LoadMenu("You now have your first instrument. Instruments have stats like happiness, volume, and popularity.\n\nIf an instrument becomes too unhappy, it will leave your orchestra.\n\nLouder instruments contribute more to their respective pitch groups, but they also make more money.\n\nPopular instruments will get paid at a faster rate.\n\nPress B to close menu.");
             firstPlace = false;
         }
-        Vector3 pos = selected.transform.position + offset;
+        Vector3 pos = selected.transform.localPosition + offset;
         int x = (int) Math.Round((GameState.GRID_SIZE / 2 + pos.x) / GameState.GRID_SIZE + 14);
         int y = (int) -Math.Round((pos.z - GameState.GRID_SIZE / 2) / GameState.GRID_SIZE + 1);
         Debug.Log(x);

@@ -14,6 +14,8 @@ public class GameState : MonoBehaviour
     // The static reference that other scripts call
     public static GameState Instance { get; private set; }
 
+    public Transform parent;
+
     public GameObject person;
     public GameObject audience;
     public TrashSpawner trashSpawner;
@@ -47,7 +49,8 @@ public class GameState : MonoBehaviour
         0,
         0,
         0,
-        0
+        0,
+        50
     };
 
     bool[] occupiedSeats = new bool[50];
@@ -87,7 +90,7 @@ public class GameState : MonoBehaviour
     {
         money += income;
 
-        if (income <= 0) return; // if we bought or otherwise lost money for some reason don't spawn a customer
+        if (income < 0) return; // if we bought or otherwise lost money for some reason don't spawn a customer
 
         // verify that there is an empty seat
         for (int i = 0; i < occupiedSeats.Length; i++)
@@ -192,8 +195,14 @@ public class GameState : MonoBehaviour
         occupiedSeats[t] = false;
     }
 
+    public void CreateTrash()
+    {
+        trash += 1;
+    }
+
     public void DestroyTrash()
     {
+        material += 1;
         trash -= 1;
     }
 
@@ -201,6 +210,10 @@ public class GameState : MonoBehaviour
     {
         instruments.Remove(inst);
         CalculateNeighbors();
+    }
+    public int GetMaterial()
+    {
+        return material;
     }
 
     void Update()

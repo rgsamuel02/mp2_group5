@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class Instrument : MonoBehaviour
 {
+    static bool hasBroken = false;
     public int x, y;
     float t = 0.0f;
     public bool[] gridMask = new bool[9];
@@ -10,6 +11,8 @@ public class Instrument : MonoBehaviour
     float happiness = 300;
     float depression = 1; // I could not think of a better name for the variable that describes how fast happiness is lost
     float synergy = 1;
+    float durability = 3;
+    int breakChance = 4096; // 1 in this chance of durability decreasing.
     public enum InstrumentType
     { 
         VIOLIN,
@@ -24,6 +27,7 @@ public class Instrument : MonoBehaviour
         HORN,
         TROMBONE,
         TUBA,
+        PIANO
     };
 
     public InstrumentType type;
@@ -41,10 +45,24 @@ public class Instrument : MonoBehaviour
         happiness -= depression * Time.deltaTime;
         if (happiness <= 0)
         {
-            ChangeLoudness(-loudness); // remove buffs from everything
-            GameState.Instance.DestroyInstrument(this);
-            Destroy(gameObject);
+            DestroyInstrument();
         }
+        if (Random.Range(0, breakChance) == 0) {
+            if (!hasBroken)
+            {
+                GameState.Instance.menu.LoadMenu("Uh oh! One of your instruments started to break! You can fix it using your material. To do this, point your controller at a grid space and press X\n\nPress B to close this message.");
+                hasBroken = true;
+            }
+            durability -= 1;
+            if (durability == 0) DestroyInstrument();
+        }
+    }
+
+    public void DestroyInstrument()
+    {
+        ChangeLoudness(-loudness); // remove buffs from everything
+        GameState.Instance.DestroyInstrument(this);
+        Destroy(gameObject);
     }
 
     public float CalculatePay()
@@ -59,9 +77,15 @@ public class Instrument : MonoBehaviour
         GameState.Instance.AdjustTimbre(brass ? loudness : 0, woodwind ? loudness : 0, strings ? loudness : 0);
     }
 
+    public void Repair()
+    {
+        if (GameState.Instance.GetMaterial() < 1) return;
+        durability = 3;
+    }
+
     public void ResetStats()
     {
-        loudness = 1;
+        ChangeLoudness(1 - loudness);
         popularity = 1;
         depression = 1;
         synergy = 1;
@@ -99,6 +123,14 @@ public class Instrument : MonoBehaviour
     {
         return depression;
     }
+    public float GetSynergy()
+    {
+        return synergy;
+    }
+    public float GetDurability()
+    {
+        return durability;
+    }
 
     public void AddSynergy()
     {
@@ -117,6 +149,7 @@ public class Instrument : MonoBehaviour
 
     public static bool Synergize(InstrumentType i, InstrumentType j)
     {
+        if (i == InstrumentType.PIANO || j == InstrumentType.PIANO) return true;
         switch (i)
         {
             case InstrumentType.VIOLIN:
