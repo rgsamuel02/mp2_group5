@@ -21,7 +21,7 @@ public class TrashSpawner : MonoBehaviour
 
     public void SpawnTrash(float x, float z)
     {
-        if (firstSpawn)
+        if (firstSpawn && !GameState.Instance.menu.IsOpen())
         {
             GameState.Instance.menu.LoadMenu("Some rude audience members will leave trash behind.\n\nBetter clean it up to make sure people have a good time or you won't get paid as much.\n\nI bet you get material from it though.\n\nPress B to close this menu.");
             firstSpawn = false;

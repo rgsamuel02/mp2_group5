@@ -51,7 +51,7 @@ public class InstrumentSelector : MonoBehaviour
     void Update()
     {
         if (targetInstrument == null) return;
-            GameState.Instance.menu.LoadMenu($"Happiness: {targetInstrument.GetHappiness():F2}\nDepression: {targetInstrument.GetDepression():F2}\nPopularity: {targetInstrument.GetPopularity():F2}\nLoudness: {targetInstrument.GetLoudness():F2}\nSynergy: {targetInstrument.GetSynergy()}\nDurability: {targetInstrument.GetDurability()}\nCustomer Price: {targetInstrument.CalculatePay()}\n\nPress B to close this menu.\nPress X to repair this instrument (cost 1 material)\nPress A to move this instrument.\nPress Y to sell this instrument for half its purchase price.");
+            GameState.Instance.menu.LoadMenu($"Happiness: {targetInstrument.GetHappiness():F2}\nDepression: {targetInstrument.GetDepression():F2}\nPopularity: {targetInstrument.GetPopularity():F2}\nLoudness: {targetInstrument.GetLoudness():F2}\nSynergy: {targetInstrument.GetSynergy()}\nDurability: {targetInstrument.GetDurability()}\nProfit: {targetInstrument.CalculatePay()}\n\nPress B to close this menu.\nPress X to repair this instrument (cost 1 material)\nPress A to move this instrument.\nPress Y to sell this instrument for half its purchase price.");
     }
 
     private void CloseMenu(InputAction.CallbackContext context)

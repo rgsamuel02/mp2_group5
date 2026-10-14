@@ -87,11 +87,18 @@ public class GameState : MonoBehaviour
         return pitchEnjoyment * timbreEnjoyment * (Math.Max(20f - trash, 10f) / 20);
     }
 
+    bool firstCustomer = true;
     public void AddPay(float income)
     {
         money += income;
 
         if (income < 0) return; // if we bought or otherwise lost money for some reason don't spawn a customer
+
+        if (firstCustomer)
+        {
+            menu.LoadMenu("Congratulations! You got your first customer. Each customer will pay an amount based on the instrument they came to see. You can see how much an instrument will sell tickets for by pointing at their grid space and pressing X\n\nPress B to close this menu.");
+            firstCustomer = false;
+        }
 
         // verify that there is an empty seat
         for (int i = 0; i < occupiedSeats.Length; i++)
@@ -119,6 +126,7 @@ public class GameState : MonoBehaviour
     public float GetInstrumentCost(Instrument i)
     {
         if (i.type == Instrument.InstrumentType.VIOLIN && instruments.Count == 0) return 0;
+        if (i.type == Instrument.InstrumentType.PIANO) return basePrices[(int) i.type];
         return basePrices[(int) i.type] * (instruments.Count + 1);
     }
 

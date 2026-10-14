@@ -9,7 +9,7 @@ public class MoveInstrument : MonoBehaviour
     public InputActionReference confirm;
     public InputActionReference cancel;
     private Action<InputAction.CallbackContext> confirmHandler;
-    private bool firstSelect = true, firstPlace = true;
+    private bool firstSelect = true, firstPlace = true, secondPurchase = true, thirdPurchase = true;
     private GameObject selected = null;
 
     public InputActionReference placeButton;
@@ -63,8 +63,18 @@ public class MoveInstrument : MonoBehaviour
         if (selected != null) return;
         if (firstSelect)
         {
-            GameState.Instance.menu.LoadMenu("You just bought your first violin! At the beginning, the location doesn't matter very much, but location will affect instrument performance later in the game. You can move objects after their initial placement.\n\nPress Right Trigger to place.\n\nPress B to close this menu.");
+            GameState.Instance.menu.LoadMenu("You just bought your first violin! At the beginning, the location doesn't matter very much, but location will affect instrument performance later in the game. Press X while pointing at a grid point to see that instruments stats or move it.\n\nPress Right Trigger to place.\n\nPress B to close this menu.");
             firstSelect = false;
+        }
+        else if (secondPurchase)
+        {
+            GameState.Instance.menu.LoadMenu("Congratulations on purchasing a second instrument! This will really help balance your ensemble. Putting it closer to another instrument will make sure it gets sad less quickly.\n\nThere are also perks for placing instruments of the same type next to each other. Neighboring brass, woodwind, or strings will increase loudness. Neighboring instruments that are the same will increase popularity.\n\nPress B to close this menu.");
+            secondPurchase = false;
+        }
+        else if (thirdPurchase)
+        {
+            GameState.Instance.menu.LoadMenu("As you keep buying instruments, you may notice some synergize with each other. This is based on if they neighbor an instrument they would neighbor in a real orchestra. You'll have to experiment to see what instruments synergize.\n\nPress B to close this menu.");
+            thirdPurchase = false;
         }
         selected = Instantiate(prefab, GameState.Instance.parent);
         selectedMat = selected.GetComponent<MeshRenderer>().material;
@@ -111,7 +121,7 @@ public class MoveInstrument : MonoBehaviour
     {
         if (firstPlace)
         {
-            GameState.Instance.menu.LoadMenu("You now have your first instrument. Instruments have stats like happiness, volume, and popularity.\n\nIf an instrument becomes too unhappy, it will leave your orchestra.\n\nLouder instruments contribute more to their respective pitch groups, but they also make more money.\n\nPopular instruments will get paid at a faster rate.\n\nPress B to close menu.");
+            GameState.Instance.menu.LoadMenu("You now have your first instrument. Instruments have stats like happiness, volume, and popularity.\n\nIf an instrument becomes too unhappy or breaks, it will leave your orchestra.\n\nLouder instruments contribute more to their respective pitch groups, but they also make more money.\n\nPopular instruments will get paid at a faster rate.\n\nPress B to close menu.");
             firstPlace = false;
         }
         Vector3 pos = selected.transform.localPosition + offset;
