@@ -11,7 +11,7 @@ public class Instrument : MonoBehaviour
     float happiness = 300;
     float depression = 1; // I could not think of a better name for the variable that describes how fast happiness is lost
     float synergy = 1;
-    float durability = 3;
+    int durability = 3;
     int breakChance = 4096; // 1 in this chance of durability decreasing.
     public enum InstrumentType
     { 
@@ -54,7 +54,11 @@ public class Instrument : MonoBehaviour
                 hasBroken = true;
             }
             durability -= 1;
-            if (durability == 0) DestroyInstrument();
+            if (durability < 0) DestroyInstrument();
+            var rend = GetComponent<MeshRenderer>();
+            var mats = rend.materials;
+            mats[1] = GameState.Instance.breakStates[2 - durability];
+            rend.materials = mats;
         }
     }
 
@@ -80,6 +84,11 @@ public class Instrument : MonoBehaviour
     public void Repair()
     {
         if (GameState.Instance.GetMaterial() < 1) return;
+        GameState.Instance.SetMaterial(GameState.Instance.GetMaterial() - 1);
+        var rend = GetComponent<MeshRenderer>();
+        var mats = rend.materials;
+        mats[1] = mats[0];
+        rend.materials = mats;
         durability = 3;
     }
 

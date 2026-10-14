@@ -24,6 +24,7 @@ public class InstrumentSelector : MonoBehaviour
         closeAction.action.performed += CloseMenu;
         moveAction.action.performed += (ctx) =>
         {
+            if (targetInstrument == null) return;
             mover.Move(targetInstrument.gameObject);
             GameState.Instance.DestroyInstrument(targetInstrument);
             CloseMenu(ctx);
@@ -55,7 +56,7 @@ public class InstrumentSelector : MonoBehaviour
 
     private void CloseMenu(InputAction.CallbackContext context)
     {
-            GameState.Instance.menu.CloseMenu();
+        GameState.Instance.menu.CloseMenu();
 
         moveAction.action.Disable();
         sellAction.action.Disable();

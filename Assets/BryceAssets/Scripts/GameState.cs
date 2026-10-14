@@ -19,6 +19,7 @@ public class GameState : MonoBehaviour
     public GameObject person;
     public GameObject audience;
     public TrashSpawner trashSpawner;
+    public List<Material> breakStates;
 
     private void Awake()
     {
@@ -50,7 +51,7 @@ public class GameState : MonoBehaviour
         0,
         0,
         0,
-        50
+        0
     };
 
     bool[] occupiedSeats = new bool[50];
@@ -215,7 +216,10 @@ public class GameState : MonoBehaviour
     {
         return material;
     }
-
+    public void SetMaterial(int m)
+    {
+        material = m;
+    }
     void Update()
     {
         stats.SetText(string.Format(template, money, material, high, mid, low, brass, woodwind, strings));

@@ -60,6 +60,7 @@ public class MoveInstrument : MonoBehaviour
 
     public void Purchase(GameObject prefab)
     {
+        if (selected != null) return;
         if (firstSelect)
         {
             GameState.Instance.menu.LoadMenu("You just bought your first violin! At the beginning, the location doesn't matter very much, but location will affect instrument performance later in the game. You can move objects after their initial placement.\n\nPress Right Trigger to place.\n\nPress B to close this menu.");
@@ -73,6 +74,7 @@ public class MoveInstrument : MonoBehaviour
 
     public void Move(GameObject instrument)
     {
+        if (selected != null) return;
         selected = instrument;
         selectedMat = selected.GetComponent<MeshRenderer>().material;
         placeButton.action.Enable();
