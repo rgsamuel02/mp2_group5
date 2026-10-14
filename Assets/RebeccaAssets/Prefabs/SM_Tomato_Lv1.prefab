@@ -109,10 +109,10 @@ MonoBehaviour:
   moisture: 50
   growth: 0
   age: 0
-  growthPerSecond: 2
-  moistureLossPerSecond: 1
-  healthLossWhenDry: 5
-  waterAddedPerAction: 30
+  growthPerSecond: 0.25
+  moistureLossPerSecond: 0.15
+  healthLossWhenDry: 1
+  waterAddedPerAction: 50
   matureAt: 100
   tomatoYield: 3
   youngTomatoPlantPrefab: {fileID: 180336659550616498, guid: 6402709babab77242abba40b63209315, type: 3}
@@ -153,7 +153,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1175255807267016054
 Transform:
   m_ObjectHideFlags: 0

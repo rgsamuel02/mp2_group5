@@ -17,7 +17,7 @@ public class Scr_CornPlant : MonoBehaviour
     public float healthLossWhenDry = 5f;
     public float waterAddedPerAction = 30f;
     public float matureAt = 100f;
-    public float matureVisualAt = 50f;
+    public float matureVisualAt = 100f;
     public int maximumYield = 5;
 
     [Header("Visual Stages")]
@@ -167,11 +167,21 @@ public class Scr_CornPlant : MonoBehaviour
         }
     }
 
+
     public void Harvest()
     {
-        if (isDead || !IsMature)
+        // Dead plants can be removed, but never give inventory.
+        if (isDead)
         {
-            Debug.Log("The herbs are not ready to harvest.");
+            Debug.Log("Dead corn plant removed. No resources collected.");
+            Destroy(gameObject);
+            return;
+        }
+
+        // Living plants must be mature to produce resources.
+        if (!IsMature)
+        {
+            Debug.Log("Corn is not ready to harvest yet.");
             return;
         }
 
@@ -180,19 +190,20 @@ public class Scr_CornPlant : MonoBehaviour
 
         if (inventory == null)
         {
-            Debug.LogError("GardenInventory was not found.");
+            Debug.LogError("Scr_Inventory was not found.");
             return;
         }
 
         int amount = herbYield;
         inventory.AddResource(GardenResource.Corn, amount);
 
-        Debug.Log("Harvested " + amount + " herbs.");
+        Debug.Log("Harvested " + amount + " corn.");
 
         growth = 0f;
         herbYield = 0;
         UpdateVisualStage();
     }
+
 
     void Die()
     {

@@ -18,7 +18,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &5356201734446094312
 Transform:
   m_ObjectHideFlags: 0
@@ -243,12 +243,12 @@ MonoBehaviour:
   growth: 0
   age: 0
   herbYield: 0
-  growthPerSecond: 2
-  moistureLossPerSecond: 1
+  growthPerSecond: 0.5
+  moistureLossPerSecond: 0.5
   healthLossWhenDry: 5
-  waterAddedPerAction: 30
+  waterAddedPerAction: 50
   matureAt: 100
-  matureVisualAt: 50
+  matureVisualAt: 100
   maximumYield: 5
   seedlingVisual: {fileID: 6252522317207959490}
-  matureHerbPrefab: {fileID: 919132149155446097, guid: e9845e102d3aa4e4d8506eaf7fd7a62c, type: 3}
+  matureHerbPrefab: {fileID: 3919874784970273056, guid: 426e47183914ba942aa5997c63807888, type: 3}

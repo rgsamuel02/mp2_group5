@@ -89,8 +89,6 @@ MonoBehaviour:
   seedlingPrefab: {fileID: 1555652619428584960, guid: b42aff538f11e904bb5b354db20e5618, type: 3}
   cornSeedlingPrefab: {fileID: 6252522317207959490, guid: a17c17a395d3c7e4a88fc7ccc46ff862, type: 3}
   flowerSeedlingPrefab: {fileID: 1555652619428584960, guid: 720021203d46b224dbafa3fa02376b60, type: 3}
-  wateringCanPrefab: {fileID: 179056, guid: 220c818457a8d2441bf84edb4edee095, type: 3}
-  wateringCanAnchor: {fileID: 7205344663009482710}
   gridSize: 10
   cellSize: 1
   plotHeight: 0.05
@@ -98,10 +96,13 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 40
+  interactionRadius: 1.5
   seedsPerPlant: 1
   waterPerAction: 1
   fertilizerPerAction: 1
   selectedPrefab: {fileID: 8078193555061509472}
+  waterSpray: {fileID: 0}
+  fertilizerSpray: {fileID: 0}
 --- !u!114 &5002940204166621444
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -509,6 +510,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Scr_InventoryUI
   inventory: {fileID: 5002940204166621444}
   inventoryText: {fileID: 2672701238348080511}
+  inventoryFont: {fileID: 0}
 --- !u!1 &3881446906834613221
 GameObject:
   m_ObjectHideFlags: 0
