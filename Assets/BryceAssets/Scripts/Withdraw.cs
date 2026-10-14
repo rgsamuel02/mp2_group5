@@ -20,7 +20,7 @@ public class Withdraw : MonoBehaviour
             firstWithdraw = false;
         }
         if (GameState.Instance.GetMoney() < 1) return;
-        Instantiate(coin, new(-7,1,-1), Quaternion.identity);
+        Instantiate(coin, GameState.Instance.parent).transform.localPosition = new(-7, 1, -1);
         GameState.Instance.AddPay(-1);
     }
 }
