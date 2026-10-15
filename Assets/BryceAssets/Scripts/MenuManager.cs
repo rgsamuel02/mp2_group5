@@ -28,4 +28,8 @@ public class MenuManager : MonoBehaviour
         gameObject.SetActive(false);
         close.action.Disable();
     }
+    public bool IsOpen()
+    {
+        return gameObject.activeInHierarchy;
+    }
 }
