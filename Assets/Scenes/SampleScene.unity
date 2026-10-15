@@ -3072,6 +3072,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: XR Origin (XR Rig)
       objectReference: {fileID: 0}
+    - target: {fileID: 1717954561962503725, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1717954561962503726, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.64
@@ -3638,6 +3642,67 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 510227acbda01054f96e8b0b0358a6cb, type: 3}
+--- !u!1001 &2720453575051022850
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 997328788209705544, guid: 677202a0fdee81a46a65b85c0d5c85a4, type: 3}
+      propertyPath: m_Name
+      value: Bryce Sim
+      objectReference: {fileID: 0}
+    - target: {fileID: 1409796534961127816, guid: 677202a0fdee81a46a65b85c0d5c85a4, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1409796534961127816, guid: 677202a0fdee81a46a65b85c0d5c85a4, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1409796534961127816, guid: 677202a0fdee81a46a65b85c0d5c85a4, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -55.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 1409796534961127816, guid: 677202a0fdee81a46a65b85c0d5c85a4, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1409796534961127816, guid: 677202a0fdee81a46a65b85c0d5c85a4, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1409796534961127816, guid: 677202a0fdee81a46a65b85c0d5c85a4, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1409796534961127816, guid: 677202a0fdee81a46a65b85c0d5c85a4, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1409796534961127816, guid: 677202a0fdee81a46a65b85c0d5c85a4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1409796534961127816, guid: 677202a0fdee81a46a65b85c0d5c85a4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1409796534961127816, guid: 677202a0fdee81a46a65b85c0d5c85a4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8754867984006422863, guid: 677202a0fdee81a46a65b85c0d5c85a4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 677202a0fdee81a46a65b85c0d5c85a4, type: 3}
 --- !u!1001 &3058282722110726947
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3718,6 +3783,10 @@ PrefabInstance:
     - target: {fileID: 2189526492161600534, guid: 1e2645ef549788747a4a5303be4cb50b, type: 3}
       propertyPath: m_Name
       value: Rebecca Sim
+      objectReference: {fileID: 0}
+    - target: {fileID: 2189526492161600534, guid: 1e2645ef549788747a4a5303be4cb50b, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3257372912449851524, guid: 1e2645ef549788747a4a5303be4cb50b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3980,63 +4049,6 @@ MonoBehaviour:
   - title: Discover the Wild Sprinkler
     message: Find the sprinkler in the garden. Automatic watering must be implemented
       separately.
---- !u!1001 &6589557327273648605
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 2081728846603942419, guid: 677202a0fdee81a46a65b85c0d5c85a4, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2081728846603942419, guid: 677202a0fdee81a46a65b85c0d5c85a4, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2081728846603942419, guid: 677202a0fdee81a46a65b85c0d5c85a4, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2081728846603942419, guid: 677202a0fdee81a46a65b85c0d5c85a4, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2081728846603942419, guid: 677202a0fdee81a46a65b85c0d5c85a4, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2081728846603942419, guid: 677202a0fdee81a46a65b85c0d5c85a4, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2081728846603942419, guid: 677202a0fdee81a46a65b85c0d5c85a4, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2081728846603942419, guid: 677202a0fdee81a46a65b85c0d5c85a4, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2081728846603942419, guid: 677202a0fdee81a46a65b85c0d5c85a4, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2081728846603942419, guid: 677202a0fdee81a46a65b85c0d5c85a4, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7967265660162530561, guid: 677202a0fdee81a46a65b85c0d5c85a4, type: 3}
-      propertyPath: m_Name
-      value: Bryce Sim
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 677202a0fdee81a46a65b85c0d5c85a4, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -4045,7 +4057,7 @@ SceneRoots:
   - {fileID: 410087041}
   - {fileID: 832575519}
   - {fileID: 5135148749081800980}
-  - {fileID: 6589557327273648605}
+  - {fileID: 2720453575051022850}
   - {fileID: 2430111141848511446}
   - {fileID: 3058282722110726947}
   - {fileID: 1171707053}

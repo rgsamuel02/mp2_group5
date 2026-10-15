@@ -6,7 +6,7 @@ public class Person : MonoBehaviour
     float targetX, targetZ;
     float lifeSpan = 60;
     float speed = 1;
-    float trashSpawnRate = 1f;
+    float trashSpawnRate = 0.1f;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
