@@ -2,12 +2,12 @@ using UnityEditor;
 using UnityEngine;
 
 /// <summary>
-/// Inspector + Scene view tools for <see cref="CafeGrid"/>: paint blocked / raised cells by clicking them.
+/// Inspector + Scene view tools for <see cref="CafeGrid"/>: paint raised cells by clicking them.
 /// </summary>
 [CustomEditor(typeof(CafeGrid))]
 public class CafeGridEditor : Editor
 {
-    enum PaintMode { Off, Blocked, Raised }
+    enum PaintMode { Off, Raised }
 
     static PaintMode mode;
     static bool showLabels = true;
@@ -22,12 +22,11 @@ public class CafeGridEditor : Editor
 
         EditorGUILayout.Space();
         EditorGUILayout.LabelField("Scene View Painting", EditorStyles.boldLabel);
-        mode = (PaintMode)GUILayout.Toolbar((int)mode, new[] { "Off", "Paint Blocked", "Paint Raised" });
+        mode = (PaintMode)GUILayout.Toolbar((int)mode, new[] { "Off", "Paint Raised" });
         showLabels = EditorGUILayout.Toggle("Show Cell Coordinates", showLabels);
         if (mode != PaintMode.Off)
             EditorGUILayout.HelpBox("Click (or drag) over cells in the Scene view to toggle them. Hold Shift to only clear.", MessageType.Info);
 
-        if (GUILayout.Button("Clear Blocked Cells")) { Undo.RecordObject(grid, "Clear Blocked Cells"); grid.blockedCells.Clear(); }
         if (GUILayout.Button("Clear Raised Cells")) { Undo.RecordObject(grid, "Clear Raised Cells"); grid.raisedCells.Clear(); }
         SceneView.RepaintAll();
     }
@@ -54,7 +53,7 @@ public class CafeGridEditor : Editor
 
         if ((e.type == EventType.MouseDown || e.type == EventType.MouseDrag) && TryGetHoveredCell(grid, e.mousePosition, out var cell))
         {
-            var list = mode == PaintMode.Blocked ? grid.blockedCells : grid.raisedCells;
+            var list = grid.raisedCells;
             if (e.type == EventType.MouseDown)
             {
                 strokeCells.Clear();
@@ -62,7 +61,7 @@ public class CafeGridEditor : Editor
             }
             if (strokeCells.Add(cell))
             {
-                Undo.RecordObject(grid, mode == PaintMode.Blocked ? "Paint Blocked Cell" : "Paint Raised Cell");
+                Undo.RecordObject(grid, "Paint Raised Cell");
                 if (strokeAdds) { if (!list.Contains(cell)) list.Add(cell); }
                 else list.Remove(cell);
                 EditorUtility.SetDirty(grid);
@@ -76,7 +75,7 @@ public class CafeGridEditor : Editor
             {
                 var c = grid.CellToWorld(hover);
                 float s = grid.cellSize;
-                Handles.color = mode == PaintMode.Blocked ? Color.red : Color.cyan;
+                Handles.color = Color.cyan;
                 Handles.DrawWireCube(c + Vector3.up, new Vector3(s, 2f, s));
             }
             if (e.type == EventType.MouseMove) SceneView.RepaintAll();
@@ -87,19 +86,11 @@ public class CafeGridEditor : Editor
     {
         cell = default;
         var ray = HandleUtility.GUIPointToWorldRay(mousePos);
-        // Try the raised plane first so counter cells can be picked where the counter is.
-        foreach (float y in new[] { grid.raisedFloorY, grid.FloorY })
-        {
-            var plane = new Plane(Vector3.up, new Vector3(0f, y, 0f));
-            if (!plane.Raycast(ray, out float dist)) continue;
-            var c = grid.WorldToCell(ray.GetPoint(dist));
-            if (!grid.InBounds(c)) continue;
-            // In Blocked mode only raised cells live on the raised plane; in Raised mode you pick on the counter top.
-            if (mode != PaintMode.Raised && y == grid.raisedFloorY && y != grid.FloorY && !grid.IsRaised(c)) continue;
-            cell = c;
-            return true;
-        }
-        return false;
+        // Pick on the counter-top plane so cells line up with the counter you're clicking on.
+        var plane = new Plane(Vector3.up, new Vector3(0f, grid.raisedFloorY, 0f));
+        if (!plane.Raycast(ray, out float dist)) return false;
+        cell = grid.WorldToCell(ray.GetPoint(dist));
+        return grid.InBounds(cell);
     }
 
     static void DrawLabels(CafeGrid grid)

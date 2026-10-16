@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   displayName: Sofa & Table
   price: 100
-  prefab: {fileID: 0}
+  prefab: {fileID: 1094687313994584051, guid: 7930cfdde4bb9534db3909295a037c45, type: 3}
   preview: {fileID: 0}
   gridPlaceable: 1
+  footprint: {x: 3, y: 4}

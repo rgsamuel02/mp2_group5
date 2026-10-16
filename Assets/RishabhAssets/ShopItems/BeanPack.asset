@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItem
   displayName: Bean Pack
   price: 100
-  prefab: {fileID: 0}
+  prefab: {fileID: 7869994624358708671, guid: e1ee8129d10f76b4f9ba21e51a7f588b, type: 3}
   preview: {fileID: 0}
   gridPlaceable: 1

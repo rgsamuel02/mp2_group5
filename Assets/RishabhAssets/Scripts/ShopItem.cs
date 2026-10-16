@@ -17,4 +17,7 @@ public class ShopItem : ScriptableObject
 
     [Tooltip("Whether this item snaps onto the grid when placed (false for tools like the Broom).")]
     public bool gridPlaceable = true;
+
+    [Tooltip("Cells covered when placed: X along the prefab's local X, Y along its local Z.")]
+    public Vector2Int footprint = Vector2Int.one;
 }
