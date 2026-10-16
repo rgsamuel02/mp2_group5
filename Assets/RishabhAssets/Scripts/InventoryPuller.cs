@@ -19,18 +19,21 @@ public class InventoryPuller : MonoBehaviour
     public float spawnDistance = 0.2f;
 
     GrabbableItem pulling;
+    bool isPulling;
 
     void Update()
     {
         if (!interactor && !TryFindInteractor()) return;
 
-        // A pulled item is held by a manual interaction, so end it ourselves when grip is let go.
-        if (pulling)
+        // A pulled item is held by a manual interaction, so end it ourselves when grip is let go
+        // (or when the item despawns in hand, e.g. a bean pack using its last scoop).
+        if (isPulling)
         {
-            if (!interactor.logicalSelectState.active)
+            if (!pulling || !interactor.logicalSelectState.active)
             {
                 if (interactor.isPerformingManualInteraction) interactor.EndManualInteraction();
                 pulling = null;
+                isPulling = false;
             }
             return;
         }
@@ -45,6 +48,7 @@ public class InventoryPuller : MonoBehaviour
         // Out of the wall means toward the viewer, i.e. against the canvas's forward.
         var position = hit.worldPosition - hit.gameObject.transform.forward * spawnDistance;
         pulling = GrabbableItem.Create(row.Item, position, grid, inventory, previewMaterial);
+        isPulling = true;
         interactor.StartManualInteraction((UnityEngine.XR.Interaction.Toolkit.Interactables.IXRSelectInteractable)pulling.Grab);
     }
 

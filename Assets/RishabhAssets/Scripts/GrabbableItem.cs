@@ -42,7 +42,8 @@ public class GrabbableItem : MonoBehaviour
         occupant.footprint = item.footprint;
 
         // XRGrabInteractable collects colliders in Awake, so they must exist before it is added.
-        if (!go.GetComponentInChildren<Collider>()) AddBoundsCollider(go, occupant);
+        // Trigger volumes (e.g. the coffee machine's bean intake) don't count: grabbing needs a solid collider.
+        if (!System.Array.Exists(go.GetComponentsInChildren<Collider>(), c => !c.isTrigger)) AddBoundsCollider(go, occupant);
 
         var body = go.GetComponent<Rigidbody>();
         if (!body) body = go.AddComponent<Rigidbody>();
