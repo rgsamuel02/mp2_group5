@@ -41,7 +41,8 @@ public class StartingFurniture : MonoBehaviour
             if (!p.item) continue;
             var size = CafeGrid.RotatedSize(p.item.footprint, p.quarterTurns);
             var center = grid.FootprintToWorld(p.anchor, size);
-            Gizmos.DrawWireCube(center + Vector3.up * 2f, new Vector3(size.x * grid.cellSize, 4f, size.y * grid.cellSize) * 0.98f);
+            float h = grid.cellSize * 0.08f;
+            Gizmos.DrawWireCube(center + Vector3.up * h * 0.5f, new Vector3(size.x * grid.cellSize * 0.98f, h, size.y * grid.cellSize * 0.98f));
         }
     }
 }

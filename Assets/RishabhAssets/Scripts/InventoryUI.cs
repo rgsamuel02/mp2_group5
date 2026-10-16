@@ -23,6 +23,9 @@ public class InventoryUI : MonoBehaviour
         inventory.Changed -= Rebuild;
     }
 
+    /// <summary>True if <paramref name="row"/> is one of this list's visible rows.</summary>
+    public bool Owns(ItemRow row) => row && row.gameObject.activeSelf && rows.Contains(row);
+
     void Rebuild()
     {
         // Reuse rows rather than destroying them; Destroy is deferred, so stale rows would linger this frame.
@@ -33,8 +36,8 @@ public class InventoryUI : MonoBehaviour
         {
             bool used = i < entries.Count;
             rows[i].gameObject.SetActive(used);
-            // No button yet; pulling items out of the wall comes later.
-            if (used) rows[i].Bind(entries[i].item, $"x{entries[i].count}", null, null);
+            // No button: InventoryPuller grabs the row itself when it's pointed at and gripped.
+            if (used) rows[i].Bind(entries[i].item, $"x{entries[i].count}  ·  grip to pull out", null, null);
         }
     }
 }

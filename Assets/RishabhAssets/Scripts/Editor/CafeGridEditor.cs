@@ -76,7 +76,7 @@ public class CafeGridEditor : Editor
                 var c = grid.CellToWorld(hover);
                 float s = grid.cellSize;
                 Handles.color = Color.cyan;
-                Handles.DrawWireCube(c + Vector3.up, new Vector3(s, 2f, s));
+                Handles.DrawWireCube(c + Vector3.up * s * 0.02f, new Vector3(s, s * 0.04f, s));
             }
             if (e.type == EventType.MouseMove) SceneView.RepaintAll();
         }
@@ -100,7 +100,7 @@ public class CafeGridEditor : Editor
             for (int y = 0; y < grid.Rows; y++)
             {
                 var cell = new Vector2Int(x, y);
-                Handles.Label(grid.CellToWorld(cell) + Vector3.up * 2f, $"{x},{y}", style);
+                Handles.Label(grid.CellToWorld(cell) + Vector3.up * grid.cellSize * 0.04f, $"{x},{y}", style);
             }
     }
 }

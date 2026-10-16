@@ -10,7 +10,7 @@ public class CafeGrid : MonoBehaviour
     [Tooltip("The four corner pillars. Their renderer bounds (or positions, if no renderer) define the grid area.")]
     public Transform[] corners = new Transform[4];
 
-    [Min(0.01f)] public float cellSize = 56f;
+    [Min(0.001f)] public float cellSize = 0.56f;
 
     [Tooltip("Shifts the grid origin (X, Z) away from the minimum corner.")]
     public Vector2 originOffset;
@@ -19,7 +19,7 @@ public class CafeGrid : MonoBehaviour
     public float floorOffsetY;
 
     [Tooltip("Absolute world Y of the floor for raised (counter) cells.")]
-    public float raisedFloorY = 81f;
+    public float raisedFloorY = 0.81f;
 
     [Tooltip("Derive the column/row counts from the corner area. Disable to set them by hand.")]
     public bool autoSize = true;
@@ -222,7 +222,7 @@ public class CafeGrid : MonoBehaviour
     void DrawGrid()
     {
         var o = Origin;
-        float y = FloorY + 0.5f;
+        float y = FloorY + cellSize * 0.01f;
         int cols = Columns, rws = Rows;
         float w = cols * cellSize, d = rws * cellSize;
 
@@ -248,7 +248,8 @@ public class CafeGrid : MonoBehaviour
     void DrawCell(Vector2Int cell, float floorY)
     {
         var o = Origin;
-        var center = new Vector3(o.x + (cell.x + 0.5f) * cellSize, floorY + 1f, o.y + (cell.y + 0.5f) * cellSize);
-        Gizmos.DrawCube(center, new Vector3(cellSize * 0.9f, 2f, cellSize * 0.9f));
+        float thickness = cellSize * 0.04f;
+        var center = new Vector3(o.x + (cell.x + 0.5f) * cellSize, floorY + thickness * 0.5f, o.y + (cell.y + 0.5f) * cellSize);
+        Gizmos.DrawCube(center, new Vector3(cellSize * 0.9f, thickness, cellSize * 0.9f));
     }
 }

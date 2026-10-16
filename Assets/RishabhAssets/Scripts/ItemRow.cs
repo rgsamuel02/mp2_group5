@@ -14,8 +14,11 @@ public class ItemRow : MonoBehaviour
     public Button button;
     public TMP_Text buttonText;
 
+    public ShopItem Item { get; private set; }
+
     public void Bind(ShopItem item, string detail, string buttonLabel, UnityAction onClick)
     {
+        Item = item;
         preview.sprite = item.preview;
         nameText.text = item.displayName;
         detailText.text = detail;
