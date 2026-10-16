@@ -1,0 +1,1625 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a887c8c3475cf94784bb95de2def3e3, type: 3}
+  m_Name: KitchenDatabase
+  m_EditorClassIdentifier: Assembly-CSharp::Steven.MP2A.KitchenDatabase
+  resources:
+  - id: 0
+    displayName: Gold
+    category: 0
+    color: {r: 1, g: 0.84, b: 0.2, a: 1}
+    startAmount: 220
+    showOnHud: 1
+    maxAmount: 0
+  - id: 1
+    displayName: Reputation
+    category: 0
+    color: {r: 1, g: 0.5, b: 0.8, a: 1}
+    startAmount: 10
+    showOnHud: 1
+    maxAmount: 0
+  - id: 2
+    displayName: Hygiene
+    category: 0
+    color: {r: 0.4, g: 0.9, b: 1, a: 1}
+    startAmount: 80
+    showOnHud: 1
+    maxAmount: 100
+  - id: 3
+    displayName: Chef's Temper
+    category: 0
+    color: {r: 1, g: 0.3, b: 0.15, a: 1}
+    startAmount: 0
+    showOnHud: 1
+    maxAmount: 100
+  - id: 4
+    displayName: Line Cooks
+    category: 0
+    color: {r: 0.6, g: 0.75, b: 1, a: 1}
+    startAmount: 2
+    showOnHud: 1
+    maxAmount: 0
+  - id: 5
+    displayName: Covers Served
+    category: 0
+    color: {r: 0.9, g: 0.9, b: 0.9, a: 1}
+    startAmount: 0
+    showOnHud: 1
+    maxAmount: 0
+  - id: 6
+    displayName: Sanitizer
+    category: 0
+    color: {r: 0.5, g: 0.9, b: 1, a: 1}
+    startAmount: 6
+    showOnHud: 0
+    maxAmount: 0
+  - id: 7
+    displayName: Cheese (bait)
+    category: 0
+    color: {r: 1, g: 0.85, b: 0.3, a: 1}
+    startAmount: 3
+    showOnHud: 0
+    maxAmount: 0
+  - id: 8
+    displayName: Spare Parts
+    category: 0
+    color: {r: 0.7, g: 0.7, b: 0.75, a: 1}
+    startAmount: 2
+    showOnHud: 0
+    maxAmount: 0
+  - id: 20
+    displayName: Beef Tenderloin
+    category: 1
+    color: {r: 0.65, g: 0.12, b: 0.12, a: 1}
+    startAmount: 2
+    showOnHud: 0
+    maxAmount: 0
+  - id: 21
+    displayName: Chicken
+    category: 1
+    color: {r: 0.95, g: 0.8, b: 0.6, a: 1}
+    startAmount: 1
+    showOnHud: 0
+    maxAmount: 0
+  - id: 22
+    displayName: Salmon
+    category: 1
+    color: {r: 1, g: 0.5, b: 0.35, a: 1}
+    startAmount: 1
+    showOnHud: 0
+    maxAmount: 0
+  - id: 23
+    displayName: Cod
+    category: 1
+    color: {r: 0.92, g: 0.92, b: 0.85, a: 1}
+    startAmount: 1
+    showOnHud: 0
+    maxAmount: 0
+  - id: 24
+    displayName: Scallops
+    category: 1
+    color: {r: 1, g: 0.92, b: 0.8, a: 1}
+    startAmount: 2
+    showOnHud: 0
+    maxAmount: 0
+  - id: 25
+    displayName: Lobster
+    category: 1
+    color: {r: 0.85, g: 0.15, b: 0.1, a: 1}
+    startAmount: 0
+    showOnHud: 0
+    maxAmount: 0
+  - id: 26
+    displayName: Potato
+    category: 1
+    color: {r: 0.75, g: 0.6, b: 0.35, a: 1}
+    startAmount: 4
+    showOnHud: 0
+    maxAmount: 0
+  - id: 27
+    displayName: Onion
+    category: 1
+    color: {r: 0.9, g: 0.8, b: 0.6, a: 1}
+    startAmount: 3
+    showOnHud: 0
+    maxAmount: 0
+  - id: 28
+    displayName: Carrot
+    category: 1
+    color: {r: 1, g: 0.5, b: 0.1, a: 1}
+    startAmount: 2
+    showOnHud: 0
+    maxAmount: 0
+  - id: 29
+    displayName: Mushroom
+    category: 1
+    color: {r: 0.8, g: 0.7, b: 0.55, a: 1}
+    startAmount: 2
+    showOnHud: 0
+    maxAmount: 0
+  - id: 30
+    displayName: Tomato
+    category: 1
+    color: {r: 0.9, g: 0.15, b: 0.1, a: 1}
+    startAmount: 3
+    showOnHud: 0
+    maxAmount: 0
+  - id: 31
+    displayName: Garlic
+    category: 1
+    color: {r: 0.97, g: 0.95, b: 0.88, a: 1}
+    startAmount: 2
+    showOnHud: 0
+    maxAmount: 0
+  - id: 32
+    displayName: Herbs
+    category: 1
+    color: {r: 0.3, g: 0.75, b: 0.25, a: 1}
+    startAmount: 2
+    showOnHud: 0
+    maxAmount: 0
+  - id: 33
+    displayName: Lemon
+    category: 1
+    color: {r: 1, g: 0.92, b: 0.2, a: 1}
+    startAmount: 2
+    showOnHud: 0
+    maxAmount: 0
+  - id: 34
+    displayName: Butter
+    category: 1
+    color: {r: 1, g: 0.93, b: 0.55, a: 1}
+    startAmount: 3
+    showOnHud: 0
+    maxAmount: 0
+  - id: 35
+    displayName: Egg
+    category: 1
+    color: {r: 0.98, g: 0.95, b: 0.88, a: 1}
+    startAmount: 4
+    showOnHud: 0
+    maxAmount: 0
+  - id: 36
+    displayName: Flour
+    category: 1
+    color: {r: 0.96, g: 0.95, b: 0.92, a: 1}
+    startAmount: 3
+    showOnHud: 0
+    maxAmount: 0
+  - id: 37
+    displayName: Arborio Rice
+    category: 1
+    color: {r: 0.95, g: 0.93, b: 0.85, a: 1}
+    startAmount: 1
+    showOnHud: 0
+    maxAmount: 0
+  - id: 38
+    displayName: Chocolate
+    category: 1
+    color: {r: 0.35, g: 0.2, b: 0.1, a: 1}
+    startAmount: 0
+    showOnHud: 0
+    maxAmount: 0
+  - id: 60
+    displayName: Mirepoix
+    category: 2
+    color: {r: 0.95, g: 0.6, b: 0.3, a: 1}
+    startAmount: 0
+    showOnHud: 0
+    maxAmount: 0
+  - id: 61
+    displayName: Duxelles
+    category: 2
+    color: {r: 0.4, g: 0.3, b: 0.2, a: 1}
+    startAmount: 0
+    showOnHud: 0
+    maxAmount: 0
+  - id: 62
+    displayName: Pastry Dough
+    category: 2
+    color: {r: 0.95, g: 0.85, b: 0.6, a: 1}
+    startAmount: 0
+    showOnHud: 0
+    maxAmount: 0
+  - id: 63
+    displayName: Fresh Pasta
+    category: 2
+    color: {r: 1, g: 0.88, b: 0.5, a: 1}
+    startAmount: 0
+    showOnHud: 0
+    maxAmount: 0
+  - id: 64
+    displayName: Cut Potatoes
+    category: 2
+    color: {r: 0.95, g: 0.85, b: 0.55, a: 1}
+    startAmount: 0
+    showOnHud: 0
+    maxAmount: 0
+  - id: 65
+    displayName: Stock
+    category: 2
+    color: {r: 0.7, g: 0.45, b: 0.2, a: 1}
+    startAmount: 0
+    showOnHud: 0
+    maxAmount: 0
+  - id: 66
+    displayName: Tomato Sauce
+    category: 2
+    color: {r: 0.8, g: 0.15, b: 0.08, a: 1}
+    startAmount: 0
+    showOnHud: 0
+    maxAmount: 0
+  - id: 67
+    displayName: Seared Beef
+    category: 2
+    color: {r: 0.45, g: 0.18, b: 0.1, a: 1}
+    startAmount: 0
+    showOnHud: 0
+    maxAmount: 0
+  - id: 100
+    displayName: Beef Wellington
+    category: 3
+    color: {r: 0.85, g: 0.6, b: 0.25, a: 1}
+    startAmount: 0
+    showOnHud: 0
+    maxAmount: 0
+  - id: 101
+    displayName: Pan-Seared Scallops
+    category: 3
+    color: {r: 0.95, g: 0.8, b: 0.55, a: 1}
+    startAmount: 0
+    showOnHud: 0
+    maxAmount: 0
+  - id: 102
+    displayName: Crispy Salmon
+    category: 3
+    color: {r: 1, g: 0.55, b: 0.35, a: 1}
+    startAmount: 0
+    showOnHud: 0
+    maxAmount: 0
+  - id: 103
+    displayName: Mushroom Risotto
+    category: 3
+    color: {r: 0.9, g: 0.85, b: 0.65, a: 1}
+    startAmount: 0
+    showOnHud: 0
+    maxAmount: 0
+  - id: 104
+    displayName: Lobster Spaghetti
+    category: 3
+    color: {r: 0.95, g: 0.45, b: 0.25, a: 1}
+    startAmount: 0
+    showOnHud: 0
+    maxAmount: 0
+  - id: 105
+    displayName: Roast Chicken
+    category: 3
+    color: {r: 0.8, g: 0.55, b: 0.25, a: 1}
+    startAmount: 0
+    showOnHud: 0
+    maxAmount: 0
+  - id: 106
+    displayName: Chocolate Souffle
+    category: 3
+    color: {r: 0.4, g: 0.22, b: 0.12, a: 1}
+    startAmount: 0
+    showOnHud: 0
+    maxAmount: 0
+  - id: 107
+    displayName: Fries
+    category: 3
+    color: {r: 1, g: 0.85, b: 0.35, a: 1}
+    startAmount: 0
+    showOnHud: 0
+    maxAmount: 0
+  - id: 108
+    displayName: Fish & Chips
+    category: 3
+    color: {r: 0.95, g: 0.75, b: 0.4, a: 1}
+    startAmount: 0
+    showOnHud: 0
+    maxAmount: 0
+  - id: 109
+    displayName: Onion Rings
+    category: 3
+    color: {r: 0.9, g: 0.7, b: 0.35, a: 1}
+    startAmount: 0
+    showOnHud: 0
+    maxAmount: 0
+  - id: 110
+    displayName: Grilled Steak
+    category: 3
+    color: {r: 0.5, g: 0.2, b: 0.12, a: 1}
+    startAmount: 0
+    showOnHud: 0
+    maxAmount: 0
+  - id: 111
+    displayName: Grilled Lobster
+    category: 3
+    color: {r: 0.95, g: 0.35, b: 0.2, a: 1}
+    startAmount: 0
+    showOnHud: 0
+    maxAmount: 0
+  - id: 112
+    displayName: Charred Veg
+    category: 3
+    color: {r: 0.55, g: 0.6, b: 0.25, a: 1}
+    startAmount: 0
+    showOnHud: 0
+    maxAmount: 0
+  - id: 113
+    displayName: Tomato Salad
+    category: 3
+    color: {r: 0.9, g: 0.3, b: 0.25, a: 1}
+    startAmount: 0
+    showOnHud: 0
+    maxAmount: 0
+  - id: 114
+    displayName: Garlic Mushrooms
+    category: 3
+    color: {r: 0.7, g: 0.6, b: 0.45, a: 1}
+    startAmount: 0
+    showOnHud: 0
+    maxAmount: 0
+  buildings:
+  - id: 1
+    displayName: Floor Tile
+    description: Quarry tile. Foundation for almost everything.
+    prefab: {fileID: 8425141048071264434, guid: d8c817e50d3b1f64e88a06682ad1cbfa, type: 3}
+    miniPrefab: {fileID: 5902136813672556136, guid: d5c4393000bf9c24683d60994029cb43, type: 3}
+    ghostPrefab: {fileID: 6709982357920904366, guid: 99cdf00cd00b72d45af7dc66a561769f, type: 3}
+    cost:
+    - id: 0
+      amount: 2
+    foundations: 
+    isPathway: 0
+    blocksMovement: 0
+    height: 0.02
+    catalogOrder: 0
+  - id: 2
+    displayName: Walkway Mat
+    description: Anti-fatigue mat / dining runner. Cooks and diners only walk on
+      these.
+    prefab: {fileID: 5441485616350792196, guid: ea4deec33d51c5749adda37a7484dc04, type: 3}
+    miniPrefab: {fileID: 510892684279306354, guid: d3f2995a99fbbbd4089e5285fd96e748, type: 3}
+    ghostPrefab: {fileID: 1305528257846243140, guid: f8c29079c53f7b8489930e2dde7d29fd, type: 3}
+    cost:
+    - id: 0
+      amount: 2
+    foundations: 01000000
+    isPathway: 1
+    blocksMovement: 0
+    height: 0.015
+    catalogOrder: 1
+  - id: 3
+    displayName: Gas Line
+    description: Gas hookup. Foundation for stoves, grills and fryers.
+    prefab: {fileID: 5330411533754697968, guid: da862eb6ac50557429a2e97b56d89ada, type: 3}
+    miniPrefab: {fileID: 6082407528668576478, guid: 229c31e37338d524e9922b9b3de73d60, type: 3}
+    ghostPrefab: {fileID: 3401986733960126288, guid: 300c7e53ddef5284fab4b82d33d09b37, type: 3}
+    cost:
+    - id: 0
+      amount: 10
+    foundations: 01000000
+    isPathway: 0
+    blocksMovement: 0
+    height: 0.04
+    catalogOrder: 2
+  - id: 4
+    displayName: Water Line
+    description: Plumbing hookup. Foundation for sinks and ice machines.
+    prefab: {fileID: 6158440707674812587, guid: 917f945cc04601c458f2482638de0e6c, type: 3}
+    miniPrefab: {fileID: 1748369556832586851, guid: e3d2b004000f1d94da7a0d915b8731ca, type: 3}
+    ghostPrefab: {fileID: 3061299599481221422, guid: f919ff6e27bafd54ab765c47aa8e09cc, type: 3}
+    cost:
+    - id: 0
+      amount: 10
+    foundations: 01000000
+    isPathway: 0
+    blocksMovement: 0
+    height: 0.04
+    catalogOrder: 3
+  - id: 5
+    displayName: Power Outlet
+    description: Power hookup. Foundation for ovens and fridges.
+    prefab: {fileID: 5859533173496554600, guid: ff8c52c7d1126d346bed9349fb7eb7be, type: 3}
+    miniPrefab: {fileID: 9200749081435896399, guid: b421c7c30890d2a48b9b7fb566d0a3c7, type: 3}
+    ghostPrefab: {fileID: 4341871912272763091, guid: a679b2b1e8a5203468053f93509f61ad, type: 3}
+    cost:
+    - id: 0
+      amount: 10
+    foundations: 01000000
+    isPathway: 0
+    blocksMovement: 0
+    height: 0.04
+    catalogOrder: 4
+  - id: 6
+    displayName: Prep Counter
+    description: Stainless counter. Foundation for cutting boards.
+    prefab: {fileID: 4992956439119827983, guid: 2ac956386acfa36489464298129d1fe1, type: 3}
+    miniPrefab: {fileID: 6501936788300081514, guid: 0c6309730249ddd409949f6941621aa8, type: 3}
+    ghostPrefab: {fileID: 3328804589645080443, guid: cae41852b33536c4a81ca3373e1fa7b1, type: 3}
+    cost:
+    - id: 0
+      amount: 15
+    foundations: 01000000
+    isPathway: 0
+    blocksMovement: 1
+    height: 0.9
+    catalogOrder: 5
+  - id: 7
+    displayName: Range Stove
+    description: Gas burner. Foundation for pans and pots.
+    prefab: {fileID: 531143562054285641, guid: ed1ae92b34019a749a145a90f1feac4e, type: 3}
+    miniPrefab: {fileID: 7877674717057716029, guid: 609ad08213329384eaf39cb2f8844867, type: 3}
+    ghostPrefab: {fileID: 6240194529024886603, guid: 11954d1ccce97f440b4687aa0ab07994, type: 3}
+    cost:
+    - id: 0
+      amount: 40
+    foundations: 03000000
+    isPathway: 0
+    blocksMovement: 1
+    height: 0.9
+    catalogOrder: 6
+  - id: 8
+    displayName: Char Grill
+    description: Steaks, lobster, veg.
+    prefab: {fileID: 1554964487915018011, guid: cfb5c5903476e2343b7b483c30f3afaf, type: 3}
+    miniPrefab: {fileID: 1753864083232807104, guid: 3c81550a0e7eb954d9b9a8ca3f4779d0, type: 3}
+    ghostPrefab: {fileID: 8913311935887682645, guid: 9f578327f73c77a43be18cc039eb0331, type: 3}
+    cost:
+    - id: 0
+      amount: 45
+    foundations: 03000000
+    isPathway: 0
+    blocksMovement: 1
+    height: 0.9
+    catalogOrder: 7
+  - id: 9
+    displayName: Deep Fryer
+    description: Fries, fish & chips, onion rings.
+    prefab: {fileID: 1025697372659468742, guid: 0a179a8b11fe9e24a8f9b8ee53cefad5, type: 3}
+    miniPrefab: {fileID: 7129164376592120458, guid: e1759f0460a952f4e8fd55cc9c8627af, type: 3}
+    ghostPrefab: {fileID: 5641344556022679268, guid: a5c5b4a92a8e9da4db52b2915886a020, type: 3}
+    cost:
+    - id: 0
+      amount: 45
+    foundations: 03000000
+    isPathway: 0
+    blocksMovement: 1
+    height: 0.9
+    catalogOrder: 8
+  - id: 10
+    displayName: Convection Oven
+    description: Wellington, roast chicken, souffle.
+    prefab: {fileID: 3525761630723114158, guid: 7220775052834ed4ba36adea18c25d11, type: 3}
+    miniPrefab: {fileID: 5178587749650007212, guid: ce79868d30971e648a6e514d1b3ab9ac, type: 3}
+    ghostPrefab: {fileID: 1797613505886471308, guid: 7e8b6bd7f36a6934cbc8e27e4fbf2bf6, type: 3}
+    cost:
+    - id: 0
+      amount: 60
+    foundations: 05000000
+    isPathway: 0
+    blocksMovement: 1
+    height: 0.9
+    catalogOrder: 9
+  - id: 11
+    displayName: Reach-in Fridge
+    description: Cold station. Hates heat, loves ice.
+    prefab: {fileID: 7728951880265585989, guid: 84c3403fc15db884d84c083a9aceb022, type: 3}
+    miniPrefab: {fileID: 2664878916487590389, guid: 0e3b48eed0623b349b38773741bd0987, type: 3}
+    ghostPrefab: {fileID: 745676148885939136, guid: 10fb55dc701fe2249984bee490270bda, type: 3}
+    cost:
+    - id: 0
+      amount: 50
+    foundations: 05000000
+    isPathway: 0
+    blocksMovement: 1
+    height: 0.9
+    catalogOrder: 10
+  - id: 12
+    displayName: Sink
+    description: Rinses neighbors, waters plants, refills the watering can.
+    prefab: {fileID: 3480016279142046264, guid: f8f315d236cbdb248b299cca71a11eaa, type: 3}
+    miniPrefab: {fileID: 804419752214760672, guid: 7865714a0e83cd742bdf684bd1704129, type: 3}
+    ghostPrefab: {fileID: 5993959355001256385, guid: 84fc240c97d27084387f0b98917b3063, type: 3}
+    cost:
+    - id: 0
+      amount: 30
+    foundations: 04000000
+    isPathway: 0
+    blocksMovement: 1
+    height: 0.9
+    catalogOrder: 11
+  - id: 13
+    displayName: Ice Machine
+    description: Makes ice cubes.
+    prefab: {fileID: 9190963179676671268, guid: 3b8504b18a51022439a5e551dc12b9e6, type: 3}
+    miniPrefab: {fileID: 2184263300149291364, guid: 83ddcb33c98b60748adbe87170b23696, type: 3}
+    ghostPrefab: {fileID: 526353094024514575, guid: e97c14fdd82936d40a7c6e8875874e08, type: 3}
+    cost:
+    - id: 0
+      amount: 40
+    foundations: 04000000
+    isPathway: 0
+    blocksMovement: 1
+    height: 0.9
+    catalogOrder: 12
+  - id: 14
+    displayName: Cutting Board
+    description: Prep station.
+    prefab: {fileID: 241836149251851220, guid: 51d290dc7b49bdc4c87c59e31019920b, type: 3}
+    miniPrefab: {fileID: 5341322268055977499, guid: 56386ff81d85e4d459d805dabcd9abb8, type: 3}
+    ghostPrefab: {fileID: 6112528144497639314, guid: 4397e4577f4d49d4f9dcc5899fd06002, type: 3}
+    cost:
+    - id: 0
+      amount: 8
+    foundations: 06000000
+    isPathway: 0
+    blocksMovement: 0
+    height: 0.04
+    catalogOrder: 13
+  - id: 15
+    displayName: Saute Pan
+    description: Searing station. Heated by the stove under it.
+    prefab: {fileID: 7327869951419668863, guid: 704f4da837361c04c91e9d8b8c82a908, type: 3}
+    miniPrefab: {fileID: 7438173776005214507, guid: ba99694c98e93b04ba30a0a3efcbd0ea, type: 3}
+    ghostPrefab: {fileID: 2720257751852458703, guid: 173a1135f14c4824ba8b5ee441bae2f0, type: 3}
+    cost:
+    - id: 0
+      amount: 12
+    foundations: 07000000
+    isPathway: 0
+    blocksMovement: 0
+    height: 0.08
+    catalogOrder: 14
+  - id: 16
+    displayName: Stockpot
+    description: Stocks, sauces, risotto, pasta.
+    prefab: {fileID: 7973779532340074158, guid: 22b1d8065eb404a42a24d060e206164d, type: 3}
+    miniPrefab: {fileID: 1847474376374480025, guid: 1aa63d824e8c1424289d11a94cdec92e, type: 3}
+    ghostPrefab: {fileID: 5798140664343934535, guid: 1cc63a8a8ec6cb1458af41a7d9271c17, type: 3}
+    cost:
+    - id: 0
+      amount: 15
+    foundations: 07000000
+    isPathway: 0
+    blocksMovement: 0
+    height: 0.32
+    catalogOrder: 15
+  - id: 17
+    displayName: Planter Box
+    description: Soil for herbs. Foundation for herb plants.
+    prefab: {fileID: 5972434755948488184, guid: e09c651d4840e484994c7d9084257731, type: 3}
+    miniPrefab: {fileID: 155786974000667064, guid: 0f530b053a56f5b4eb83fbce33698c9e, type: 3}
+    ghostPrefab: {fileID: 3977299036767914589, guid: 75e73ffac5d467d478ee4d7b7b5dbcf1, type: 3}
+    cost:
+    - id: 0
+      amount: 10
+    foundations: 01000000
+    isPathway: 0
+    blocksMovement: 1
+    height: 0.35
+    catalogOrder: 16
+  - id: 18
+    displayName: Herb Plant
+    description: Grows herbs while watered.
+    prefab: {fileID: 7619328297698610574, guid: f4d2fd3f9afb3db4c82cec2245a0600c, type: 3}
+    miniPrefab: {fileID: 1004975615346992988, guid: e33ff107a3b5a2b40b66e7d6860247eb, type: 3}
+    ghostPrefab: {fileID: 3578700003095031955, guid: e6b3750936c1af447a72fe4b7b2c7f3f, type: 3}
+    cost:
+    - id: 0
+      amount: 6
+    - id: 32
+      amount: 1
+    foundations: 11000000
+    isPathway: 0
+    blocksMovement: 0
+    height: 0.35
+    catalogOrder: 17
+  - id: 19
+    displayName: Dining Table
+    description: Seats a party. Foundation for a place setting.
+    prefab: {fileID: 2924174091913985205, guid: f0b5e0d0d1c012b409c95a366016af71, type: 3}
+    miniPrefab: {fileID: 5911174421612485877, guid: 60ff0d815ff47f04683b73de5127b2a4, type: 3}
+    ghostPrefab: {fileID: 5269345692665969642, guid: 7b4de6a26d8022d45b3910f29119424a, type: 3}
+    cost:
+    - id: 0
+      amount: 25
+    foundations: 01000000
+    isPathway: 0
+    blocksMovement: 1
+    height: 0.75
+    catalogOrder: 18
+  - id: 20
+    displayName: Place Setting
+    description: Set the table so diners will sit here.
+    prefab: {fileID: 6178170038935362183, guid: 6025fa78edc176e41b07d952dd06e434, type: 3}
+    miniPrefab: {fileID: 3428440665237395634, guid: 7311c14e8dbca8947a924a3444447e72, type: 3}
+    ghostPrefab: {fileID: 4888179334859013235, guid: 224f9b9741b917843be1c32ad35857e0, type: 3}
+    cost:
+    - id: 0
+      amount: 8
+    foundations: 13000000
+    isPathway: 0
+    blocksMovement: 0
+    height: 0.06
+    catalogOrder: 19
+  - id: 21
+    displayName: Mouse Trap
+    description: Catches rats that run into it.
+    prefab: {fileID: 6614577348024842198, guid: 62fc5df60918f0d4098c381009c598a8, type: 3}
+    miniPrefab: {fileID: 6878411479246555246, guid: b34ffe21c7f2473409a5413a4a9c6229, type: 3}
+    ghostPrefab: {fileID: 5376322984681455704, guid: 051d74f41281f7448ae07dae3f816d9c, type: 3}
+    cost:
+    - id: 0
+      amount: 5
+    - id: 7
+      amount: 1
+    foundations: 0000000001000000
+    isPathway: 0
+    blocksMovement: 0
+    height: 0.03
+    catalogOrder: 20
+  - id: 22
+    displayName: Trash Bin
+    description: Toss food scraps here. Stinks when full.
+    prefab: {fileID: 893943944643083705, guid: 1acd9f395ad7ff24d98b57c61159dd0f, type: 3}
+    miniPrefab: {fileID: 1777855733770633475, guid: fc54345016681c64284745ec0235a646, type: 3}
+    ghostPrefab: {fileID: 3580538511272323830, guid: 2058bca8124530b46b2e30377629080c, type: 3}
+    cost:
+    - id: 0
+      amount: 10
+    foundations: 01000000
+    isPathway: 0
+    blocksMovement: 1
+    height: 0.7
+    catalogOrder: 21
+  recipes:
+  - id: mirepoix
+    displayName: Mirepoix
+    stationKey: CuttingBoard
+    inputs:
+    - id: 27
+      amount: 1
+    - id: 28
+      amount: 1
+    outputs:
+    - id: 60
+      amount: 1
+    duration: 5
+    minHeat: 0
+    makesScraps: 1
+  - id: duxelles
+    displayName: Duxelles
+    stationKey: CuttingBoard
+    inputs:
+    - id: 29
+      amount: 2
+    - id: 31
+      amount: 1
+    - id: 32
+      amount: 1
+    outputs:
+    - id: 61
+      amount: 1
+    duration: 6
+    minHeat: 0
+    makesScraps: 1
+  - id: pastry
+    displayName: Pastry Dough
+    stationKey: CuttingBoard
+    inputs:
+    - id: 36
+      amount: 1
+    - id: 34
+      amount: 1
+    - id: 35
+      amount: 1
+    outputs:
+    - id: 62
+      amount: 1
+    duration: 6
+    minHeat: 0
+    makesScraps: 0
+  - id: pasta
+    displayName: Fresh Pasta
+    stationKey: CuttingBoard
+    inputs:
+    - id: 36
+      amount: 1
+    - id: 35
+      amount: 2
+    outputs:
+    - id: 63
+      amount: 1
+    duration: 6
+    minHeat: 0
+    makesScraps: 0
+  - id: cutfries
+    displayName: Cut Potatoes
+    stationKey: CuttingBoard
+    inputs:
+    - id: 26
+      amount: 2
+    outputs:
+    - id: 64
+      amount: 1
+    duration: 4
+    minHeat: 0
+    makesScraps: 1
+  - id: searbeef
+    displayName: Seared Beef
+    stationKey: SautePan
+    inputs:
+    - id: 20
+      amount: 1
+    - id: 34
+      amount: 1
+    outputs:
+    - id: 67
+      amount: 1
+    duration: 6
+    minHeat: 50
+    makesScraps: 0
+  - id: scallops
+    displayName: Pan-Seared Scallops
+    stationKey: SautePan
+    inputs:
+    - id: 24
+      amount: 2
+    - id: 34
+      amount: 1
+    - id: 33
+      amount: 1
+    outputs:
+    - id: 101
+      amount: 1
+    duration: 6
+    minHeat: 55
+    makesScraps: 0
+  - id: salmon
+    displayName: Crispy Salmon
+    stationKey: SautePan
+    inputs:
+    - id: 22
+      amount: 1
+    - id: 33
+      amount: 1
+    - id: 32
+      amount: 1
+    outputs:
+    - id: 102
+      amount: 1
+    duration: 7
+    minHeat: 55
+    makesScraps: 0
+  - id: garlicmush
+    displayName: Garlic Mushrooms
+    stationKey: SautePan
+    inputs:
+    - id: 29
+      amount: 2
+    - id: 31
+      amount: 1
+    - id: 34
+      amount: 1
+    outputs:
+    - id: 114
+      amount: 1
+    duration: 5
+    minHeat: 45
+    makesScraps: 0
+  - id: stock
+    displayName: Stock
+    stationKey: Stockpot
+    inputs:
+    - id: 60
+      amount: 1
+    - id: 32
+      amount: 1
+    outputs:
+    - id: 65
+      amount: 2
+    duration: 8
+    minHeat: 40
+    makesScraps: 0
+  - id: sauce
+    displayName: Tomato Sauce
+    stationKey: Stockpot
+    inputs:
+    - id: 30
+      amount: 2
+    - id: 31
+      amount: 1
+    outputs:
+    - id: 66
+      amount: 1
+    duration: 7
+    minHeat: 40
+    makesScraps: 0
+  - id: risotto
+    displayName: Mushroom Risotto
+    stationKey: Stockpot
+    inputs:
+    - id: 37
+      amount: 1
+    - id: 65
+      amount: 1
+    - id: 29
+      amount: 1
+    - id: 34
+      amount: 1
+    outputs:
+    - id: 103
+      amount: 1
+    duration: 10
+    minHeat: 45
+    makesScraps: 0
+  - id: lobsterpasta
+    displayName: Lobster Spaghetti
+    stationKey: Stockpot
+    inputs:
+    - id: 25
+      amount: 1
+    - id: 63
+      amount: 1
+    - id: 66
+      amount: 1
+    outputs:
+    - id: 104
+      amount: 1
+    duration: 9
+    minHeat: 45
+    makesScraps: 0
+  - id: wellington
+    displayName: Beef Wellington
+    stationKey: ConvectionOven
+    inputs:
+    - id: 67
+      amount: 1
+    - id: 61
+      amount: 1
+    - id: 62
+      amount: 1
+    outputs:
+    - id: 100
+      amount: 1
+    duration: 12
+    minHeat: 60
+    makesScraps: 0
+  - id: roastchicken
+    displayName: Roast Chicken
+    stationKey: ConvectionOven
+    inputs:
+    - id: 21
+      amount: 1
+    - id: 33
+      amount: 1
+    - id: 31
+      amount: 1
+    - id: 32
+      amount: 1
+    outputs:
+    - id: 105
+      amount: 1
+    duration: 10
+    minHeat: 60
+    makesScraps: 0
+  - id: souffle
+    displayName: Chocolate Souffle
+    stationKey: ConvectionOven
+    inputs:
+    - id: 38
+      amount: 1
+    - id: 35
+      amount: 2
+    - id: 34
+      amount: 1
+    outputs:
+    - id: 106
+      amount: 1
+    duration: 9
+    minHeat: 55
+    makesScraps: 0
+  - id: fries
+    displayName: Fries
+    stationKey: DeepFryer
+    inputs:
+    - id: 64
+      amount: 1
+    outputs:
+    - id: 107
+      amount: 2
+    duration: 5
+    minHeat: 60
+    makesScraps: 0
+  - id: fishchips
+    displayName: Fish & Chips
+    stationKey: DeepFryer
+    inputs:
+    - id: 23
+      amount: 1
+    - id: 36
+      amount: 1
+    - id: 64
+      amount: 1
+    outputs:
+    - id: 108
+      amount: 1
+    duration: 7
+    minHeat: 60
+    makesScraps: 0
+  - id: onionrings
+    displayName: Onion Rings
+    stationKey: DeepFryer
+    inputs:
+    - id: 27
+      amount: 1
+    - id: 36
+      amount: 1
+    - id: 35
+      amount: 1
+    outputs:
+    - id: 109
+      amount: 2
+    duration: 5
+    minHeat: 60
+    makesScraps: 0
+  - id: steak
+    displayName: Grilled Steak
+    stationKey: CharGrill
+    inputs:
+    - id: 20
+      amount: 1
+    - id: 32
+      amount: 1
+    outputs:
+    - id: 110
+      amount: 1
+    duration: 8
+    minHeat: 55
+    makesScraps: 0
+  - id: grilllobster
+    displayName: Grilled Lobster
+    stationKey: CharGrill
+    inputs:
+    - id: 25
+      amount: 1
+    - id: 34
+      amount: 1
+    - id: 33
+      amount: 1
+    outputs:
+    - id: 111
+      amount: 1
+    duration: 8
+    minHeat: 55
+    makesScraps: 0
+  - id: charveg
+    displayName: Charred Veg
+    stationKey: CharGrill
+    inputs:
+    - id: 27
+      amount: 1
+    - id: 28
+      amount: 1
+    - id: 30
+      amount: 1
+    outputs:
+    - id: 112
+      amount: 1
+    duration: 5
+    minHeat: 45
+    makesScraps: 0
+  - id: tomatosalad
+    displayName: Tomato Salad
+    stationKey: ReachInFridge
+    inputs:
+    - id: 30
+      amount: 2
+    - id: 32
+      amount: 1
+    - id: 33
+      amount: 1
+    outputs:
+    - id: 113
+      amount: 1
+    duration: 4
+    minHeat: 0
+    makesScraps: 0
+  - id: buy_produce
+    displayName: Produce Box
+    stationKey: Supplier
+    inputs:
+    - id: 0
+      amount: 18
+    outputs:
+    - id: 26
+      amount: 3
+    - id: 27
+      amount: 3
+    - id: 28
+      amount: 2
+    - id: 30
+      amount: 3
+    - id: 31
+      amount: 2
+    - id: 33
+      amount: 2
+    duration: 0
+    minHeat: 0
+    makesScraps: 0
+  - id: buy_butcher
+    displayName: Butcher Box
+    stationKey: Supplier
+    inputs:
+    - id: 0
+      amount: 40
+    outputs:
+    - id: 20
+      amount: 2
+    - id: 21
+      amount: 2
+    duration: 0
+    minHeat: 0
+    makesScraps: 0
+  - id: buy_seafood
+    displayName: Seafood Box
+    stationKey: Supplier
+    inputs:
+    - id: 0
+      amount: 55
+    outputs:
+    - id: 22
+      amount: 1
+    - id: 23
+      amount: 1
+    - id: 24
+      amount: 2
+    - id: 25
+      amount: 1
+    duration: 0
+    minHeat: 0
+    makesScraps: 0
+  - id: buy_dairy
+    displayName: Dairy & Dry Box
+    stationKey: Supplier
+    inputs:
+    - id: 0
+      amount: 22
+    outputs:
+    - id: 34
+      amount: 3
+    - id: 35
+      amount: 4
+    - id: 36
+      amount: 3
+    - id: 37
+      amount: 2
+    - id: 38
+      amount: 1
+    duration: 0
+    minHeat: 0
+    makesScraps: 0
+  - id: buy_sanitizer
+    displayName: Sanitizer
+    stationKey: Supplier
+    inputs:
+    - id: 0
+      amount: 6
+    outputs:
+    - id: 6
+      amount: 5
+    duration: 0
+    minHeat: 0
+    makesScraps: 0
+  - id: buy_cheese
+    displayName: Trap Cheese
+    stationKey: Supplier
+    inputs:
+    - id: 0
+      amount: 4
+    outputs:
+    - id: 7
+      amount: 3
+    duration: 0
+    minHeat: 0
+    makesScraps: 0
+  - id: buy_parts
+    displayName: Spare Parts
+    stationKey: Supplier
+    inputs:
+    - id: 0
+      amount: 12
+    outputs:
+    - id: 8
+      amount: 2
+    duration: 0
+    minHeat: 0
+    makesScraps: 0
+  - id: hire_cook
+    displayName: Hire Line Cook
+    stationKey: Staff
+    inputs:
+    - id: 0
+      amount: 35
+    outputs:
+    - id: 4
+      amount: 1
+    duration: 0
+    minHeat: 0
+    makesScraps: 0
+  dishes:
+  - dish: 100
+    price: 70
+    orderWeight: 0.6
+  - dish: 101
+    price: 48
+    orderWeight: 1
+  - dish: 102
+    price: 44
+    orderWeight: 1
+  - dish: 103
+    price: 40
+    orderWeight: 0.9
+  - dish: 104
+    price: 58
+    orderWeight: 0.6
+  - dish: 105
+    price: 38
+    orderWeight: 0.9
+  - dish: 106
+    price: 30
+    orderWeight: 0.7
+  - dish: 107
+    price: 10
+    orderWeight: 1.4
+  - dish: 108
+    price: 28
+    orderWeight: 1.2
+  - dish: 109
+    price: 12
+    orderWeight: 1.2
+  - dish: 110
+    price: 52
+    orderWeight: 1
+  - dish: 111
+    price: 56
+    orderWeight: 0.6
+  - dish: 112
+    price: 16
+    orderWeight: 1.2
+  - dish: 113
+    price: 14
+    orderWeight: 1.4
+  - dish: 114
+    price: 15
+    orderWeight: 1.2
+  neighborRules:
+  - label: Heat leaks into the fridge
+    a: 7
+    statA: 0
+    deltaA: -1
+    b: 11
+    statB: 7
+    deltaB: -3
+    color: {r: 1, g: 0.25, b: 0.2, a: 1}
+    tutorialId: fridge
+  - label: Oven heat leaks into the fridge
+    a: 10
+    statA: 0
+    deltaA: -1
+    b: 11
+    statB: 7
+    deltaB: -3
+    color: {r: 1, g: 0.25, b: 0.2, a: 1}
+    tutorialId: fridge
+  - label: Grill heat leaks into the fridge
+    a: 8
+    statA: 0
+    deltaA: -1
+    b: 11
+    statB: 7
+    deltaB: -3
+    color: {r: 1, g: 0.25, b: 0.2, a: 1}
+    tutorialId: fridge
+  - label: Fryer heat leaks into the fridge
+    a: 9
+    statA: 0
+    deltaA: -1
+    b: 11
+    statB: 7
+    deltaB: -3
+    color: {r: 1, g: 0.25, b: 0.2, a: 1}
+    tutorialId: fridge
+  - label: Hot line! +Heat
+    a: 7
+    statA: 0
+    deltaA: 1
+    b: 8
+    statB: 0
+    deltaB: 1
+    color: {r: 1, g: 0.45, b: 0.1, a: 1}
+    tutorialId: 
+  - label: Hot line! +Heat
+    a: 7
+    statA: 0
+    deltaA: 1
+    b: 10
+    statB: 0
+    deltaB: 1
+    color: {r: 1, g: 0.45, b: 0.1, a: 1}
+    tutorialId: 
+  - label: Grease splatter
+    a: 9
+    statA: 6
+    deltaA: -0.5
+    b: 7
+    statB: 1
+    deltaB: -1.5
+    color: {r: 0.75, g: 0.6, b: 0.2, a: 1}
+    tutorialId: 
+  - label: Grease splatter
+    a: 8
+    statA: 1
+    deltaA: -1
+    b: 9
+    statB: 6
+    deltaB: -0.5
+    color: {r: 0.75, g: 0.6, b: 0.2, a: 1}
+    tutorialId: 
+  - label: Grease on the counter
+    a: 9
+    statA: 6
+    deltaA: -0.3
+    b: 6
+    statB: 1
+    deltaB: -1.5
+    color: {r: 0.75, g: 0.6, b: 0.2, a: 1}
+    tutorialId: 
+  - label: Smoke & char
+    a: 8
+    statA: 1
+    deltaA: -0.8
+    b: 6
+    statB: 1
+    deltaB: -1.2
+    color: {r: 0.75, g: 0.6, b: 0.2, a: 1}
+    tutorialId: 
+  - label: 'Rinse: +Clean'
+    a: 12
+    statA: 8
+    deltaA: -1
+    b: 6
+    statB: 1
+    deltaB: 3
+    color: {r: 0.35, g: 0.95, b: 1, a: 1}
+    tutorialId: sink
+  - label: 'Rinse: +Clean'
+    a: 12
+    statA: 8
+    deltaA: -1
+    b: 14
+    statB: 1
+    deltaB: 3
+    color: {r: 0.35, g: 0.95, b: 1, a: 1}
+    tutorialId: sink
+  - label: 'Wipe down: +Clean'
+    a: 12
+    statA: 8
+    deltaA: -1
+    b: 7
+    statB: 1
+    deltaB: 2
+    color: {r: 0.35, g: 0.95, b: 1, a: 1}
+    tutorialId: sink
+  - label: 'Watering: +Moisture'
+    a: 12
+    statA: 8
+    deltaA: -1
+    b: 17
+    statB: 10
+    deltaB: 3
+    color: {r: 0.35, g: 0.95, b: 1, a: 1}
+    tutorialId: 
+  - label: 'Watering: +Moisture'
+    a: 12
+    statA: 8
+    deltaA: -1
+    b: 18
+    statB: 10
+    deltaB: 3
+    color: {r: 0.35, g: 0.95, b: 1, a: 1}
+    tutorialId: herbs
+  - label: Ice cools the oil
+    a: 13
+    statA: 9
+    deltaA: -1
+    b: 9
+    statB: 0
+    deltaB: -2
+    color: {r: 0.55, g: 0.8, b: 1, a: 1}
+    tutorialId: ice
+  - label: Ice chills the fridge
+    a: 13
+    statA: 9
+    deltaA: -1
+    b: 11
+    statB: 7
+    deltaB: 3
+    color: {r: 0.55, g: 0.8, b: 1, a: 1}
+    tutorialId: ice
+  - label: Water feed
+    a: 13
+    statA: 8
+    deltaA: 2
+    b: 12
+    statB: 8
+    deltaB: -1
+    color: {r: 0.35, g: 0.95, b: 1, a: 1}
+    tutorialId: ice
+  - label: Herbs wilt near the flame
+    a: 18
+    statA: 10
+    deltaA: -2
+    b: 7
+    statB: 0
+    deltaB: -0.5
+    color: {r: 1, g: 0.25, b: 0.2, a: 1}
+    tutorialId: herbs
+  - label: Bin stinks up the counter
+    a: 22
+    statA: 18
+    deltaA: 0.5
+    b: 6
+    statB: 1
+    deltaB: -1.5
+    color: {r: 0.75, g: 0.6, b: 0.2, a: 1}
+    tutorialId: trash
+  - label: Diners smell the bin
+    a: 22
+    statA: 18
+    deltaA: 0.5
+    b: 19
+    statB: 14
+    deltaB: -2
+    color: {r: 1, g: 0.25, b: 0.2, a: 1}
+    tutorialId: trash
+  - label: Trap guards the bin
+    a: 21
+    statA: 16
+    deltaA: -0.05
+    b: 22
+    statB: 18
+    deltaB: -0.5
+    color: {r: 0.45, g: 1, b: 0.45, a: 1}
+    tutorialId: mousetrap
+  - label: Fresh herbs calm diners
+    a: 19
+    statA: 14
+    deltaA: 0.8
+    b: 18
+    statB: 10
+    deltaB: -0.3
+    color: {r: 0.45, g: 1, b: 0.45, a: 1}
+    tutorialId: 
+  tutorials:
+  - id: welcome
+    title: WELCOME TO THE INFERNO LINE
+    body: You're the Head Chef. Install equipment, prep and cook, keep the kitchen
+      clean and safe, and serve every table before they walk out. Poke YES, CHEF!
+      to close a tip.
+  - id: catalog
+    title: EQUIPMENT CATALOG
+    body: 'Grab a miniature and hold it over the kitchen floor: a full-size ghost
+      snaps to the grid. Release to install it for the price on its tag. Squeeze
+      TRIGGER while holding to stamp copies (great for rows of mats).'
+  - id: grid_snap
+    title: THE 60 CM KITCHEN GRID
+    body: Everything snaps to the floor grid. Turn the mini in your hand to rotate
+      the ghost in 90-degree steps; the arrow on the ghost marks the front.
+  - id: foundation
+    title: FOUNDATIONS FIRST
+    body: 'Equipment stacks: Tiles under everything. Gas Line under stoves, grills,
+      fryers. Water Line under sinks and ice machines. Power Outlet under ovens and
+      fridges. Counter under cutting boards. Stove under pans and pots. Planter under
+      herbs. Table under place settings.'
+  - id: pantry_board
+    title: THE PANTRY BOARD
+    body: 'Every resource you own: gold, reputation, hygiene, temper, your brigade,
+      raw ingredients, prepped components and finished dishes. Rows flash green or
+      red when they change.'
+  - id: crafting
+    title: FIRING A TICKET
+    body: 'The tickets above a station are its recipes; green means you have the
+      ingredients. Poke (or grip) a ticket to fire it: ingredients are spent, Progress
+      fills, and the result lands in the pantry.'
+  - id: heat
+    title: HEAT
+    body: Lit burners gain Heat every second; turn the knob off and they cool. Hot
+      recipes need a minimum Heat. Very hot + greasy stations can catch fire!
+  - id: neighbor
+    title: NEIGHBORS INTERACT
+    body: 'Equipment on touching grid cells affects each other every second: sinks
+      rinse counters, hot stations heat each other, fridges suffer next to heat,
+      bins stink up neighbors. Watch the glowing arcs.'
+  - id: fridge
+    title: REACH-IN FRIDGE
+    body: 'Chill rises while it is powered. Heat sources next to it drain Chill;
+      an ice machine next to it boosts it. It is also your cold station: fire the
+      Tomato Salad ticket here.'
+  - id: sink
+    title: SINK
+    body: A sink cleans neighboring counters, boards and stoves and waters neighboring
+      plants, spending WaterLevel. Dip the watering can in to refill it.
+  - id: herbs
+    title: HERB PLANT
+    body: Grows while it has Moisture (faster with planter Nutrients). Water it or
+      put it next to a sink. Snip it with the shears at 50+ Growth for Herbs. If
+      it dries out, it dies.
+  - id: watering_can
+    title: WATERING CAN
+    body: Tilt the spout over a herb plant or planter to water it. Dip it into a
+      sink to refill its WaterLevel.
+  - id: shears
+    title: KITCHEN SHEARS
+    body: Touch a grown herb plant (Growth 50+) to snip 50 Growth into Herbs.
+  - id: spray
+    title: SANITIZER SPRAY
+    body: Hold TRIGGER to spray. Mist that hits a station raises its Cleanliness.
+      Uses Sanitizer - buy more from the supplier.
+  - id: extinguisher
+    title: FIRE EXTINGUISHER
+    body: Hold TRIGGER to blast foam. Every blob that hits a grease fire lowers its
+      Intensity. Pressure recharges by itself.
+  - id: grease_fire
+    title: GREASE FIRE!
+    body: Intensity grows every second and burns the station's Integrity. At 0 Integrity
+      the station is destroyed. Foam it down with the extinguisher!
+  - id: rat
+    title: RAT!
+    body: Rats plan a path around your equipment toward crates and food scraps. Reaching
+      a crate steals from it and lowers Hygiene. Whack it with the rolling pin or
+      put mouse traps on its route.
+  - id: mousetrap
+    title: MOUSE TRAP
+    body: A rat that runs into a baited trap is caught (+Hygiene, -1 Bait). Poke
+      the trap's ticket to re-bait it with Cheese.
+  - id: crate
+    title: SUPPLY CRATE
+    body: Deliveries pile up at the back door and lose Freshness over time. Swing
+      the cleaver into one to smash it into loose ingredients.
+  - id: cleaver
+    title: CLEAVER
+    body: Swing it into a supply crate to smash it open.
+  - id: ingredients
+    title: LOOSE INGREDIENTS
+    body: Touch them with the harvest basket or drop them in the pantry chute to
+      add them to the pantry. They spoil if left lying around. Tossing one into a
+      stockpot adds Flavor instead.
+  - id: basket
+    title: HARVEST BASKET
+    body: Touch loose ingredients or ripe mushrooms with the basket to collect them.
+  - id: mushrooms
+    title: WILD MUSHROOMS
+    body: They sprout in the damp corner of the loading dock and grow on their own.
+      Harvest them with the basket once Growth is 40+, before they rot.
+  - id: customer
+    title: DINERS ARRIVING
+    body: Parties walk ONLY on the carpet runners (walkway mats) to a free, set table.
+      No runner route, no customers!
+  - id: table
+    title: ORDER IN!
+    body: A seated party orders a dish and its Patience starts dropping. Their ticket
+      is now clipped to the rail at the pass.
+  - id: order_rail
+    title: TICKET RAIL
+    body: Each seated table clips its order here. When that dish is in your pantry,
+      poke the ticket to plate it onto the conveyor.
+  - id: conveyor
+    title: PASS CONVEYOR
+    body: Plated dishes ride the belt out to the dining room. Grab the plate and
+      carry it to the table that ordered it.
+  - id: plate_delivery
+    title: SERVICE!
+    body: Touch the plate to its table. Hot (Warmth) and correct dishes pay more
+      gold and reputation. Dropped plates are ruined.
+  - id: line_cooks
+    title: YOUR BRIGADE
+    body: 'Line Cooks are a resource you can see: each idle cook stands in the staff
+      area. Hire more at the Staff Board.'
+  - id: call_cook
+    title: CALLING A COOK
+    body: The cook plans a route along the walkway mats to the station and joins
+      its Crew. Crew cooks faster and re-fires the last ticket by itself.
+  - id: walkway
+    title: WALKWAY MATS
+    body: Cooks and diners only walk on mats and runners. Lay them to connect the
+      staff area, stations, front door and tables.
+  - id: ice
+    title: ICE MACHINE
+    body: Makes Ice while it has water and drops cubes in its tray. Throw a cube
+      into the fryer or grill to cool it, or into the fridge to chill it.
+  - id: trash
+    title: TRASH & SCRAPS
+    body: 'Prep leaves food scraps. Toss them in a bin before they rot or a rat finds
+      them. A full bin stinks: poke its ticket to empty it.'
+  - id: death
+    title: GONE FOR GOOD
+    body: When a vital stat (Freshness, Integrity, Moisture, Health, Intensity, Patience...)
+      hits zero, that thing is destroyed.
+  - id: supplier
+    title: SUPPLIER BOARD
+    body: Trade gold for ingredient boxes, sanitizer, trap cheese and spare parts.
+      Each ticket is an instant exchange.
+  - id: staff_board
+    title: STAFF BOARD
+    body: 'Hire a Line Cook for gold: a new cook appears in the staff area, ready
+      to be called to a station.'
+  - id: wrench
+    title: WRENCH
+    body: Touch a damaged station to repair 25 Integrity for 1 Spare Part.
+  - id: rolling_pin
+    title: ROLLING PIN
+    body: Swing it at a rat to knock its Health down.
+  - id: mallet
+    title: DEMOLITION MALLET
+    body: Swing it at equipment to remove the top piece of that cell (50% refund).
+  - id: temper
+    title: CHEF'S TEMPER
+    body: Fires, walkouts and dropped plates raise your Temper; it cools down slowly.
+      At 100 you have a meltdown and lose Reputation.
+  - id: hygiene
+    title: HYGIENE
+    body: Rats, rot and a stinking bin lower Hygiene. Below 25 the health inspector
+      docks Reputation.
+  - id: crew
+    title: CREW JOINED
+    body: This station now has a cook. More Crew = faster Progress, and it keeps
+      firing the last ticket automatically.
+  - id: caretaking
+    title: CARETAKING
+    body: Looking after equipment (watering, cleaning, repairing, re-baiting, changing
+      oil) boosts its stats, sometimes for a resource.
+  - id: harvest
+    title: HARVEST
+    body: Gathering turns things in the world into pantry resources.
+  - id: collision
+    title: COLLISION!
+    body: 'Some things react when they bump into each other: one is used up and the
+      other''s stats change (ice into oil, foam into fire, diners into tables, cooks
+      into stations).'
+  - id: intermittent
+    title: SOMETHING NEW APPEARED
+    body: Deliveries, rats, mushrooms and diners turn up at random times. Keep an
+      eye on the back door and the dining room.
+  - id: fryer
+    title: DEEP FRYER
+    body: Oil Quality drops with every batch and from splatter. Change the oil with
+      its service ticket. Spent oil + high heat = fire.
+  - id: pass
+    title: THE PASS
+    body: The heart of service. Orders arrive on the ticket rail, plates leave on
+      the conveyor.
+  - id: office
+    title: CHEF'S OFFICE PANEL
+    body: 'Shortcuts for demos: add gold, stock the pantry, spawn diners, rats or
+      deliveries, start a fire, hire a cook, reset the tips.'
+  - id: planter
+    title: PLANTER BOX
+    body: Holds Moisture and Nutrients for the herb plant growing in it. Feed it
+      with its service ticket.
+  - id: cookware
+    title: PANS & POTS
+    body: Cookware takes its Heat from the stove underneath. Toss a loose ingredient
+      into a stockpot for extra Flavor (faster cooking).
