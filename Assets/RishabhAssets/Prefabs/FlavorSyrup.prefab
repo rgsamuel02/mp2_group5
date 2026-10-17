@@ -1162,10 +1162,10 @@ MonoBehaviour:
   restY: 9.48
   returnSpeed: 1.5
   spout: {fileID: 2516475095710989055}
-  cupRadius: 0.08
-  maxDropHeight: 0.5
+  cupRadius: 0.2
+  maxDropHeight: 0.63
   extraPressers: []
-  touchMargin: 0.4
+  touchMargin: 0.6
 --- !u!114 &2251625746579272846
 MonoBehaviour:
   m_ObjectHideFlags: 0
