@@ -1165,7 +1165,7 @@ MonoBehaviour:
   cupRadius: 0.2
   maxDropHeight: 0.63
   extraPressers: []
-  touchMargin: 0.6
+  touchMargin: 2.5
 --- !u!114 &2251625746579272846
 MonoBehaviour:
   m_ObjectHideFlags: 0
