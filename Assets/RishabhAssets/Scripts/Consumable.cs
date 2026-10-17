@@ -24,6 +24,7 @@ public abstract class Consumable : MonoBehaviour
         if (UsesLeft <= 0) return false;
         UsesLeft--;
         RefreshLabel();
+        TutorialPopup.NotifyUsed(this);
         if (UsesLeft == 0) Destroy(gameObject);
         return true;
     }

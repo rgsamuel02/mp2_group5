@@ -10,6 +10,10 @@ public class Splat : MonoBehaviour
     public Vector2Int Cell { get; set; }
 
     public event Action<Splat> Cleaned;
+    /// <summary>Raised whenever a broom sweeps up any splat.</summary>
+    public static event Action<Splat> AnySwept;
+
+    bool cleaned;
 
     void OnTriggerEnter(Collider other)
     {
@@ -18,7 +22,11 @@ public class Splat : MonoBehaviour
 
     public void Clean()
     {
+        // Several broom colliders can touch in one step; only count the sweep once.
+        if (cleaned) return;
+        cleaned = true;
         Cleaned?.Invoke(this);
+        AnySwept?.Invoke(this);
         Destroy(gameObject);
     }
 }

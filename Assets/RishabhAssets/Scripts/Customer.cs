@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 /// <summary>
@@ -16,12 +17,24 @@ public class Customer : MonoBehaviour
     [Tooltip("Seconds between retries when there's no path (e.g. the table is being carried).")]
     public float retryDelay = 0.5f;
 
+    [Tooltip("Seconds a seated customer waits for coffee before giving up and leaving.")]
+    [Min(0.1f)] public float patienceSeconds = 30f;
+    [Tooltip("Shows Patience above the customer while they wait. Hidden otherwise.")]
+    public TMP_Text patienceLabel;
+    public string patienceFormat = "Patience: {0}s";
+
     public State CurrentState { get; private set; }
     public SeatingTable Table { get; private set; }
     public int SeatIndex { get; private set; } = -1;
+    /// <summary>Seconds left before a seated customer gives up. Counts down only while seated and unserved.</summary>
+    public float Patience { get; private set; }
+    /// <summary>True once a cup has started sliding toward this customer.</summary>
+    public bool IsBeingServed { get; private set; }
 
     public event Action<Customer> SatDown;
     public event Action<Customer> Left;
+    /// <summary>Raised when a seated customer runs out of patience and leaves without coffee.</summary>
+    public static event Action<Customer> AnyGaveUp;
     /// <summary>Raised for every customer that sits down, for systems that don't track customers individually.</summary>
     public static event Action<Customer> AnySatDown;
     /// <summary>Raised when any customer finishes a cup, just before they leave. Hook rewards in here.</summary>
@@ -58,6 +71,12 @@ public class Customer : MonoBehaviour
     bool walkedThroughDoor;
 
     /// <summary>Starts the visit. <paramref name="table"/>'s seat must already be reserved for this customer.</summary>
+    void Awake()
+    {
+        Patience = patienceSeconds;
+        SetPatienceVisible(false);
+    }
+
     public void Begin(CafeGrid grid, Vector3 doorPoint, Vector3 outward, SeatingTable table, int seat)
     {
         this.grid = grid;
@@ -75,6 +94,7 @@ public class Customer : MonoBehaviour
     public void Leave()
     {
         if (CurrentState != State.Seated) return;
+        SetPatienceVisible(false);
 
         // Step off the sofa onto the free cell nearest the seat.
         var standCell = GridPathfinder.NearestWalkable(grid, transform.position);
@@ -109,6 +129,10 @@ public class Customer : MonoBehaviour
                 UpdateWalkToSeat();
                 break;
 
+            case State.Seated:
+                UpdatePatience();
+                break;
+
             case State.Leaving:
                 UpdateWalkToDoor();
                 break;
@@ -124,6 +148,34 @@ public class Customer : MonoBehaviour
                 }
                 break;
         }
+    }
+
+    void UpdatePatience()
+    {
+        if (IsBeingServed) return;
+
+        // Patience: Euler step down every frame while waiting; at zero the customer gives up.
+        Patience = Mathf.Max(0f, Patience - Time.deltaTime);
+        if (patienceLabel) patienceLabel.text = string.Format(patienceFormat, Mathf.CeilToInt(Patience));
+        if (Patience <= 0f)
+        {
+            AnyGaveUp?.Invoke(this);
+            Leave();
+        }
+    }
+
+    /// <summary>Called when a cup starts sliding to this customer: stops the patience countdown.</summary>
+    public void BeginBeingServed()
+    {
+        IsBeingServed = true;
+        SetPatienceVisible(false);
+    }
+
+    void SetPatienceVisible(bool visible)
+    {
+        // Look the canvas up including inactive ones: TMP_Text.canvas can't find a canvas once it's hidden.
+        var c = patienceLabel ? patienceLabel.GetComponentInParent<Canvas>(true) : null;
+        if (c) c.gameObject.SetActive(visible);
     }
 
     void UpdateWalkToSeat()
@@ -203,8 +255,12 @@ public class Customer : MonoBehaviour
     {
         transform.position = seat.position;
         Face(seat.forward);
-        Table.SitDown(this, SeatIndex);
+        Patience = patienceSeconds;
         CurrentState = State.Seated;
+        SetPatienceVisible(true);
+        if (patienceLabel) patienceLabel.text = string.Format(patienceFormat, Mathf.CeilToInt(Patience));
+        // Sitting may immediately start a waiting cup, so the state must already be Seated.
+        Table.SitDown(this, SeatIndex);
         SatDown?.Invoke(this);
         AnySatDown?.Invoke(this);
     }

@@ -17,6 +17,8 @@ public class SplatSpawner : MonoBehaviour
     [Min(1)] public int maxSplats = 20;
     [Tooltip("Height above the cell's floor.")]
     public float heightAboveFloor = 0.01f;
+    [Tooltip("Splats scattered on random cells when the game starts.")]
+    [Min(0)] public int initialSplats = 4;
 
     readonly Dictionary<Vector2Int, Splat> splats = new Dictionary<Vector2Int, Splat>();
     readonly List<Vector2Int> candidates = new List<Vector2Int>();
@@ -24,9 +26,12 @@ public class SplatSpawner : MonoBehaviour
 
     public int ActiveCount => splats.Count;
 
-    void Start()
+    System.Collections.IEnumerator Start()
     {
         timer = NextWait();
+        // Wait a frame so the starting furniture has claimed its cells before we pick free ones.
+        yield return null;
+        for (int i = 0; i < initialSplats; i++) TrySpawn();
     }
 
     void Update()

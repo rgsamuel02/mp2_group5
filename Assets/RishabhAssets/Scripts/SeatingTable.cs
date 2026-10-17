@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
@@ -16,6 +17,9 @@ public class SeatingTable : MonoBehaviour
     public Transform[] cupAnchors = new Transform[2];
     [Tooltip("A cup let go within this distance (meters) of a free cup anchor snaps onto it.")]
     public float cupSnapRadius = 0.25f;
+
+    public TMP_Text statsLabel;
+    public string statsFormat = "Seats Filled: {0}/{1}";
 
     static readonly List<SeatingTable> all = new List<SeatingTable>();
     public static IReadOnlyList<SeatingTable> All => all;
@@ -41,6 +45,17 @@ public class SeatingTable : MonoBehaviour
         }
     }
 
+    /// <summary>Seats with a customer actually sitting in them.</summary>
+    public int SeatsFilled
+    {
+        get
+        {
+            int n = 0;
+            foreach (var s in isSeated) if (s) n++;
+            return n;
+        }
+    }
+
     public int FreeSeatCount
     {
         get
@@ -56,6 +71,7 @@ public class SeatingTable : MonoBehaviour
         reservedBy = new Customer[seats.Length];
         isSeated = new bool[seats.Length];
         cups = new CoffeeCup[cupAnchors.Length];
+        RefreshLabel();
     }
 
     void OnEnable() => all.Add(this);
@@ -154,8 +170,14 @@ public class SeatingTable : MonoBehaviour
         return result;
     }
 
+    void RefreshLabel()
+    {
+        if (statsLabel) statsLabel.text = string.Format(statsFormat, SeatsFilled, seats.Length);
+    }
+
     void RefreshLock()
     {
+        RefreshLabel();
         // Disabling the grab interactable is what stops the player picking the table up.
         var grab = GetComponent<XRGrabInteractable>();
         if (grab) grab.enabled = !IsLocked;

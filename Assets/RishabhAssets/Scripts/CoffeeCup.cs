@@ -97,6 +97,7 @@ public class CoffeeCup : MonoBehaviour
     IEnumerator Drink(Customer customer)
     {
         IsBeingDrunk = true;
+        if (customer) customer.BeginBeingServed();
         // Can't be picked up while it's being drunk.
         if (grab) grab.enabled = false;
 

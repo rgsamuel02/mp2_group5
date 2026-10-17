@@ -5,12 +5,17 @@ using UnityEngine;
 /// <summary>
 /// Pays the player and raises Customer Satisfaction whenever a customer finishes a cup.
 /// Flavored cups pay more; mess on the floor (live <see cref="Splat"/>s) lowers the satisfaction gained.
+/// Also keeps the TV's Customers Served and Splats Swept tallies.
 /// </summary>
 public class ServingRewards : MonoBehaviour
 {
     public PlayerWallet wallet;
     public TMP_Text satisfactionText;
     public string satisfactionFormat = "Customer Satisfaction: {0}";
+    public TMP_Text servedText;
+    public string servedFormat = "Customers Served: {0}";
+    public TMP_Text splatsSweptText;
+    public string splatsSweptFormat = "Splats Swept: {0}";
 
     [Header("Money")]
     public int plainPayment = 200;
@@ -23,24 +28,35 @@ public class ServingRewards : MonoBehaviour
     public int flavoredMinSatisfaction = 2;
 
     public int Satisfaction { get; private set; }
+    public int CustomersServed { get; private set; }
+    public int SplatsSwept { get; private set; }
     public event Action<int> SatisfactionChanged;
 
     void OnEnable()
     {
         Customer.AnyServed += OnServed;
+        Splat.AnySwept += OnSwept;
         RefreshLabel();
     }
 
     void OnDisable()
     {
         Customer.AnyServed -= OnServed;
+        Splat.AnySwept -= OnSwept;
     }
 
     void OnServed(Customer customer, CoffeeCup cup)
     {
         bool flavored = cup && cup.IsFlavored;
         wallet.Add(flavored ? flavoredPayment : plainPayment);
+        CustomersServed++;
         AddSatisfaction(SatisfactionFor(flavored));
+    }
+
+    void OnSwept(Splat splat)
+    {
+        SplatsSwept++;
+        RefreshLabel();
     }
 
     /// <summary>Satisfaction earned for one cup given how many splats are currently on the floor.</summary>
@@ -62,5 +78,7 @@ public class ServingRewards : MonoBehaviour
     void RefreshLabel()
     {
         if (satisfactionText) satisfactionText.text = string.Format(satisfactionFormat, Satisfaction);
+        if (servedText) servedText.text = string.Format(servedFormat, CustomersServed);
+        if (splatsSweptText) splatsSweptText.text = string.Format(splatsSweptFormat, SplatsSwept);
     }
 }
