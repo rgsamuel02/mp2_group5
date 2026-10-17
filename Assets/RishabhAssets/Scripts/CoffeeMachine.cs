@@ -6,6 +6,7 @@ using UnityEngine;
 /// Brews a cup into a free anchor slot whenever a <see cref="BeanPack"/> touches the machine.
 /// Needs a trigger collider on this object or a child (the "BeanIntake" volume) and a Rigidbody on this object.
 /// Stats: Brew Progress (advances every frame while brewing) and Cups Ready, shown on <see cref="statsLabel"/>.
+/// The machine can't be picked up while it's brewing or holding a cup.
 /// </summary>
 public class CoffeeMachine : MonoBehaviour
 {
@@ -30,6 +31,7 @@ public class CoffeeMachine : MonoBehaviour
 
     Slot[] slots;
     GridOccupant occupant;
+    MoveLock moveLock;
     // Bean packs currently touching us; each must leave before it can be used again.
     readonly HashSet<BeanPack> touching = new HashSet<BeanPack>();
 
@@ -70,6 +72,19 @@ public class CoffeeMachine : MonoBehaviour
         slots = new Slot[cupAnchors.Length];
         for (int i = 0; i < slots.Length; i++) slots[i] = new Slot();
         occupant = GetComponent<GridOccupant>();
+        // The grab collider is one box around the whole machine, which would hide the cups in it from the
+        // controller ray, so it's switched off while locked.
+        moveLock = MoveLock.For(gameObject, true);
+    }
+
+    /// <summary>True while brewing or holding a cup; the machine must be empty to be moved.</summary>
+    public bool IsBusy
+    {
+        get
+        {
+            foreach (var s in slots) if (s.brewing || s.cup) return true;
+            return false;
+        }
     }
 
     void Update()
@@ -96,6 +111,7 @@ public class CoffeeMachine : MonoBehaviour
                 s.cup = null;
         }
         touching.RemoveWhere(b => !b);
+        moveLock.SetLocked(IsBusy);
         RefreshLabel();
     }
 

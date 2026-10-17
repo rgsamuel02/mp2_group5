@@ -72,6 +72,7 @@ GameObject:
   - component: {fileID: 963903355259210239}
   - component: {fileID: 2122070691191745842}
   - component: {fileID: 2878999840467074679}
+  - component: {fileID: 2233934933140061964}
   m_Layer: 0
   m_Name: Sofa0
   m_TagString: Untagged
@@ -153,6 +154,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &2233934933140061964
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2449616130338172704}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.4365976, y: 0.60440624, z: 0.9500077}
+  m_Center: {x: -0.00012040138, y: -0.095849015, z: -0.05638331}
 --- !u!1 &2671496656273523839
 GameObject:
   m_ObjectHideFlags: 0
@@ -164,6 +186,7 @@ GameObject:
   - component: {fileID: 2410925562057188633}
   - component: {fileID: 2994256135018382571}
   - component: {fileID: 7084545973494993951}
+  - component: {fileID: 4970195503465310134}
   m_Layer: 0
   m_Name: Table
   m_TagString: Untagged
@@ -244,6 +267,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &4970195503465310134
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2671496656273523839}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.3663726, y: 1.0690066, z: 0.6440538}
+  m_Center: {x: 0.0018540919, y: -0.0020907526, z: -0.19819106}
 --- !u!1 &2882538437109653725
 GameObject:
   m_ObjectHideFlags: 0
@@ -485,6 +529,7 @@ GameObject:
   - component: {fileID: 648513110224700226}
   - component: {fileID: 4756752323787735651}
   - component: {fileID: 1426471404463023879}
+  - component: {fileID: 3401141992940240154}
   m_Layer: 0
   m_Name: Sofa1
   m_TagString: Untagged
@@ -566,6 +611,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &3401141992940240154
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7212105979013222951}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.4365972, y: 0.5985811, z: 0.95000744}
+  m_Center: {x: 0.00012266636, y: 0.09739282, z: -0.058472157}
 --- !u!1 &7545785953906579232
 GameObject:
   m_ObjectHideFlags: 0

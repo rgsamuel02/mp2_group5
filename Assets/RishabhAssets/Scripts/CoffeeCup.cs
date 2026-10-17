@@ -7,6 +7,7 @@ using UnityEngine.XR.Interaction.Toolkit.Interactables;
 /// <summary>
 /// A brewed cup of coffee. Flavoring it with syrup tints it red. Let go near a <see cref="SeatingTable"/>'s cup
 /// anchor and it snaps there; the customer in the matching seat drinks it (now, or when they sit down).
+/// Let go anywhere else and it falls. Fresh cups start docked (kinematic) in the machine's slot.
 /// </summary>
 public class CoffeeCup : MonoBehaviour
 {
@@ -66,6 +67,17 @@ public class CoffeeCup : MonoBehaviour
     {
         foreach (var table in SeatingTable.All)
             if (table.TrySnapCup(this)) return;
+
+        // Not on a table spot: drop like a normal object.
+        SetDocked(false);
+    }
+
+    /// <summary>Docked cups (in a machine slot or on a table spot) hold still; loose cups fall under gravity.</summary>
+    void SetDocked(bool docked)
+    {
+        if (!TryGetComponent<Rigidbody>(out var body)) return;
+        body.isKinematic = docked;
+        body.useGravity = !docked;
     }
 
     void LateUpdate()
@@ -83,6 +95,7 @@ public class CoffeeCup : MonoBehaviour
     {
         Table = table;
         anchorIndex = index;
+        SetDocked(true);
         var a = table.cupAnchors[index];
         transform.SetPositionAndRotation(a.position, a.rotation);
     }

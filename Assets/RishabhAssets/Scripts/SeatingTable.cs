@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 /// <summary>
 /// Seats on a Sofa &amp; Table. Customers reserve a seat when they spawn and sit on its anchor when they arrive.
-/// While anyone is seated, the table can't be picked up. Each seat has a matching cup anchor: a cup there is
+/// While anyone is seated or any cup is on it, the table can't be picked up. Each seat has a matching cup anchor: a cup there is
 /// drunk by whoever sits in that seat.
 /// </summary>
 public class SeatingTable : MonoBehaviour
@@ -35,12 +34,13 @@ public class SeatingTable : MonoBehaviour
     // Looked up lazily: CafeGrid.Spawn adds the GridOccupant after this component's Awake has run.
     public GridOccupant Occupant => occupant ? occupant : occupant = GetComponent<GridOccupant>();
 
-    /// <summary>True while at least one customer is seated.</summary>
+    /// <summary>True while a customer is seated or a cup is waiting; the table must be empty to be moved.</summary>
     public bool IsLocked
     {
         get
         {
             foreach (var s in isSeated) if (s) return true;
+            foreach (var c in cups) if (c) return true;
             return false;
         }
     }
@@ -121,6 +121,7 @@ public class SeatingTable : MonoBehaviour
 
         cups[best] = cup;
         cup.AttachTo(this, best);
+        RefreshLock();
         TryServe(best);
         return true;
     }
@@ -130,6 +131,7 @@ public class SeatingTable : MonoBehaviour
     {
         for (int i = 0; i < cups.Length; i++)
             if (cups[i] == cup) cups[i] = null;
+        RefreshLock();
     }
 
     void TryServe(int index)
@@ -178,9 +180,8 @@ public class SeatingTable : MonoBehaviour
     void RefreshLock()
     {
         RefreshLabel();
-        // Disabling the grab interactable is what stops the player picking the table up.
-        var grab = GetComponent<XRGrabInteractable>();
-        if (grab) grab.enabled = !IsLocked;
+        // The table's colliders stay on so dropped cups can land on it; only grabbing is blocked.
+        MoveLock.For(gameObject, false).SetLocked(IsLocked);
     }
 
     void OnDrawGizmos()
