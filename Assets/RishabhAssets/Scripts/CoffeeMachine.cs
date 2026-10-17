@@ -2,20 +2,14 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-/// <summary>
-/// Brews a cup into a free anchor slot whenever a <see cref="BeanPack"/> touches the machine.
-/// Needs a trigger collider on this object or a child (the "BeanIntake" volume) and a Rigidbody on this object.
-/// Stats: Brew Progress (advances every frame while brewing) and Cups Ready, shown on <see cref="statsLabel"/>.
-/// The machine can't be picked up while it's brewing or holding a cup.
-/// </summary>
+// Brews a cup into a free slot when a BeanPack touches the BeanIntake trigger.
+// Can't be moved while brewing or holding a cup.
 public class CoffeeMachine : MonoBehaviour
 {
-    [Tooltip("Where brewed cups appear. Each one holds a single cup.")]
     public Transform[] cupAnchors = new Transform[0];
     public CoffeeCup cupPrefab;
-    [Tooltip("Seconds for Brew Progress to go from 0% to 100%. The slot is reserved meanwhile.")]
     [Min(0.01f)] public float brewSeconds = 5f;
-    [Tooltip("A cup further than this from its anchor no longer blocks the slot.")]
+    [Tooltip("A cup further than this from its anchor no longer occupies the slot.")]
     public float slotRadius = 0.05f;
 
     public TMP_Text statsLabel;
@@ -25,28 +19,17 @@ public class CoffeeMachine : MonoBehaviour
     {
         public CoffeeCup cup;
         public bool brewing;
-        public float progress; // 0..1
+        public float progress;
         public bool IsFree => !brewing && !cup;
     }
 
     Slot[] slots;
     GridOccupant occupant;
     MoveLock moveLock;
-    // Bean packs currently touching us; each must leave before it can be used again.
+    // Each bean pack must leave the intake before it can be used again.
     readonly HashSet<BeanPack> touching = new HashSet<BeanPack>();
 
-    public int FreeSlots
-    {
-        get
-        {
-            int n = 0;
-            foreach (var s in slots) if (s.IsFree) n++;
-            return n;
-        }
-    }
-
-    /// <summary>Cups sitting in their slots waiting to be taken.</summary>
-    public int CupsReady
+    int CupsReady
     {
         get
         {
@@ -56,8 +39,8 @@ public class CoffeeMachine : MonoBehaviour
         }
     }
 
-    /// <summary>Progress (0..1) of the furthest-along brew, or -1 when nothing is brewing.</summary>
-    public float BrewProgress
+    // Furthest-along brew (0..1), or -1 when idle.
+    float BrewProgress
     {
         get
         {
@@ -67,18 +50,7 @@ public class CoffeeMachine : MonoBehaviour
         }
     }
 
-    void Awake()
-    {
-        slots = new Slot[cupAnchors.Length];
-        for (int i = 0; i < slots.Length; i++) slots[i] = new Slot();
-        occupant = GetComponent<GridOccupant>();
-        // The grab collider is one box around the whole machine, which would hide the cups in it from the
-        // controller ray, so it's switched off while locked.
-        moveLock = MoveLock.For(gameObject, true);
-    }
-
-    /// <summary>True while brewing or holding a cup; the machine must be empty to be moved.</summary>
-    public bool IsBusy
+    bool IsBusy
     {
         get
         {
@@ -87,13 +59,20 @@ public class CoffeeMachine : MonoBehaviour
         }
     }
 
+    void Awake()
+    {
+        slots = new Slot[cupAnchors.Length];
+        for (int i = 0; i < slots.Length; i++) slots[i] = new Slot();
+        occupant = GetComponent<GridOccupant>();
+        // The grab collider encloses the slots and would block the ray to the cups, so it's off while locked.
+        moveLock = MoveLock.For(gameObject, true);
+    }
+
     void Update()
     {
         for (int i = 0; i < slots.Length; i++)
         {
             var s = slots[i];
-
-            // Brew Progress: Euler step every frame; at 100% the cup is done and the stat resets.
             if (s.brewing)
             {
                 s.progress += Time.deltaTime / brewSeconds;
@@ -106,7 +85,6 @@ public class CoffeeMachine : MonoBehaviour
                 }
             }
 
-            // A cup that's been picked up or moved away frees its slot.
             if (s.cup && (s.cup.IsHeld || (s.cup.transform.position - cupAnchors[i].position).sqrMagnitude > slotRadius * slotRadius))
                 s.cup = null;
         }
@@ -118,8 +96,7 @@ public class CoffeeMachine : MonoBehaviour
     void OnTriggerEnter(Collider other)
     {
         var beans = other.GetComponentInParent<BeanPack>();
-        if (!beans || !touching.Add(beans)) return;
-        TryBrew(beans);
+        if (beans && touching.Add(beans)) TryBrew(beans);
     }
 
     void OnTriggerExit(Collider other)
@@ -128,19 +105,16 @@ public class CoffeeMachine : MonoBehaviour
         if (beans) touching.Remove(beans);
     }
 
-    /// <summary>Uses one scoop of <paramref name="beans"/> to start a cup, if a slot is free.</summary>
-    public bool TryBrew(BeanPack beans)
+    void TryBrew(BeanPack beans)
     {
-        // Don't brew while the machine itself is being carried or sitting in the inventory.
-        if (occupant && !occupant.isPlaced) return false;
+        if (occupant && !occupant.isPlaced) return;
 
         int free = System.Array.FindIndex(slots, s => s.IsFree);
-        if (free < 0 || !beans.Consume()) return false;
+        if (free < 0 || !beans.Consume()) return;
 
         slots[free].brewing = true;
         slots[free].progress = 0f;
         TutorialPopup.NotifyUsed(this);
-        return true;
     }
 
     void RefreshLabel()

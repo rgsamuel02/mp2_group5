@@ -1,8 +1,6 @@
 using UnityEngine;
 
-/// <summary>
-/// Marks the Broom tool so spills can tell when they've been swept.
-/// </summary>
+// Marker so a Splat can tell it was swept.
 public class Broom : MonoBehaviour
 {
 }

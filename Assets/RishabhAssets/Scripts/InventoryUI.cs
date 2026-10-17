@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// Mirrors <see cref="PlayerInventory"/> into the inventory list on the wall screen.
-/// </summary>
+// Mirrors PlayerInventory into the inventory list on the TV.
 public class InventoryUI : MonoBehaviour
 {
     public PlayerInventory inventory;
@@ -18,17 +16,13 @@ public class InventoryUI : MonoBehaviour
         Rebuild();
     }
 
-    void OnDisable()
-    {
-        inventory.Changed -= Rebuild;
-    }
+    void OnDisable() => inventory.Changed -= Rebuild;
 
-    /// <summary>True if <paramref name="row"/> is one of this list's visible rows.</summary>
     public bool Owns(ItemRow row) => row && row.gameObject.activeSelf && rows.Contains(row);
 
     void Rebuild()
     {
-        // Reuse rows rather than destroying them; Destroy is deferred, so stale rows would linger this frame.
+        // Rows are reused: Destroy is deferred, so destroyed rows would linger for a frame.
         var entries = inventory.Entries;
         while (rows.Count < entries.Count) rows.Add(Instantiate(rowPrefab, content));
 
@@ -36,8 +30,7 @@ public class InventoryUI : MonoBehaviour
         {
             bool used = i < entries.Count;
             rows[i].gameObject.SetActive(used);
-            // No button: InventoryPuller grabs the row itself when it's pointed at and gripped.
-            if (used) rows[i].Bind(entries[i].item, $"x{entries[i].count}  ·  grip to pull out", null, null);
+            if (used) rows[i].Bind(entries[i].item, $"x{entries[i].count}  ·  grip to pull out");
         }
     }
 }

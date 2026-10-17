@@ -2,9 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// Items the player owns but has not yet pulled out of the wall. Duplicate purchases stack.
-/// </summary>
+// Items bought but not yet pulled out of the wall. Duplicates stack.
 public class PlayerInventory : MonoBehaviour
 {
     [Serializable]
@@ -19,16 +17,15 @@ public class PlayerInventory : MonoBehaviour
     public IReadOnlyList<Entry> Entries => entries;
     public event Action Changed;
 
-    public void Add(ShopItem item, int amount = 1)
+    public void Add(ShopItem item)
     {
-        if (!item || amount <= 0) return;
+        if (!item) return;
         var entry = entries.Find(e => e.item == item);
-        if (entry == null) entries.Add(new Entry { item = item, count = amount });
-        else entry.count += amount;
+        if (entry == null) entries.Add(new Entry { item = item, count = 1 });
+        else entry.count++;
         Changed?.Invoke();
     }
 
-    /// <summary>Removes one of <paramref name="item"/>; returns false if none are owned.</summary>
     public bool Remove(ShopItem item)
     {
         var entry = entries.Find(e => e.item == item);
@@ -36,11 +33,5 @@ public class PlayerInventory : MonoBehaviour
         if (--entry.count <= 0) entries.Remove(entry);
         Changed?.Invoke();
         return true;
-    }
-
-    public int Count(ShopItem item)
-    {
-        var entry = entries.Find(e => e.item == item);
-        return entry == null ? 0 : entry.count;
     }
 }

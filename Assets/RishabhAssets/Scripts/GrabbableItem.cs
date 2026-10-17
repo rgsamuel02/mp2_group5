@@ -2,10 +2,7 @@ using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
-/// <summary>
-/// A purchased item that can be held with an XR controller and dropped onto the grid.
-/// While held, a translucent box shows the footprint it will snap to (green = valid, red = blocked).
-/// </summary>
+// A purchased item that can be held and dropped onto the grid, with a translucent box previewing where it will snap.
 public class GrabbableItem : MonoBehaviour
 {
     public ShopItem item;
@@ -26,23 +23,19 @@ public class GrabbableItem : MonoBehaviour
     Vector2Int targetAnchor;
     int targetTurns;
 
-    // Where it sat before being picked up, so an invalid drop can put it back.
     bool wasPlaced;
     Vector2Int previousAnchor;
     int previousTurns;
 
-    /// <summary>Adds the physics, collider and grab components an item prefab needs to be held.</summary>
     public static GrabbableItem Create(ShopItem item, Vector3 position, CafeGrid grid, PlayerInventory inventory, Material previewMaterial)
     {
         var go = Instantiate(item.prefab, position, item.prefab.transform.rotation, grid ? grid.transform : null);
 
         var occupant = go.GetComponent<GridOccupant>();
         if (!occupant) occupant = go.AddComponent<GridOccupant>();
-        occupant.item = item;
         occupant.footprint = item.footprint;
 
-        // XRGrabInteractable collects colliders in Awake, so they must exist before it is added.
-        // Trigger volumes (e.g. the coffee machine's bean intake) don't count: grabbing needs a solid collider.
+        // XRGrabInteractable gathers colliders in Awake, and needs a solid (non-trigger) one.
         if (!System.Array.Exists(go.GetComponentsInChildren<Collider>(), c => !c.isTrigger)) AddBoundsCollider(go, occupant);
 
         var body = go.GetComponent<Rigidbody>();
@@ -67,11 +60,11 @@ public class GrabbableItem : MonoBehaviour
 
     static void AddBoundsCollider(GameObject go, GridOccupant occupant)
     {
-        if (!occupant.TryGetBounds(out var world)) { go.AddComponent<BoxCollider>(); return; }
         var box = go.AddComponent<BoxCollider>();
+        if (!occupant.TryGetBounds(out var world)) return;
         var t = go.transform;
-        box.center = t.InverseTransformPoint(world.center);
         var s = t.lossyScale;
+        box.center = t.InverseTransformPoint(world.center);
         box.size = new Vector3(world.size.x / Mathf.Abs(s.x), world.size.y / Mathf.Abs(s.y), world.size.z / Mathf.Abs(s.z));
     }
 
@@ -114,7 +107,7 @@ public class GrabbableItem : MonoBehaviour
             return;
         }
 
-        // Snap the held yaw to the nearest quarter turn relative to the prefab's own rotation.
+        // Held yaw snaps to the nearest quarter turn.
         var relative = transform.rotation * Quaternion.Inverse(occupant.BaseRotation);
         targetTurns = ((Mathf.RoundToInt(relative.eulerAngles.y / 90f) % 4) + 4) % 4;
         var size = CafeGrid.RotatedSize(item.footprint, targetTurns);
@@ -122,7 +115,6 @@ public class GrabbableItem : MonoBehaviour
         var center = occupant.TryGetBounds(out var b) ? b.center : transform.position;
         targetValid = grid.TrySnap(center, size, out targetAnchor, out var snapped);
 
-        // Only show the box while the footprint is at least partly over the grid.
         hasTarget = false;
         foreach (var c in grid.FootprintCells(targetAnchor, size))
             if (grid.InBounds(c)) { hasTarget = true; break; }
@@ -144,23 +136,18 @@ public class GrabbableItem : MonoBehaviour
 
         if (!item.gridPlaceable)
         {
-            // Tools like the Broom just drop where they're let go.
             body.isKinematic = false;
             body.useGravity = true;
             return;
         }
 
         if (hasTarget && targetValid && grid.Occupy(occupant, targetAnchor, targetTurns))
-        {
             grid.AlignToFootprint(occupant);
-        }
         else if (wasPlaced && grid.Occupy(occupant, previousAnchor, previousTurns))
-        {
             grid.AlignToFootprint(occupant);
-        }
         else
         {
-            // Never placed and dropped somewhere invalid: send it back into the wall.
+            // Never placed and dropped somewhere invalid: back into the wall.
             if (inventory) inventory.Add(item);
             Destroy(gameObject);
         }

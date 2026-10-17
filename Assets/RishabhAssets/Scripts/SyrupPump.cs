@@ -2,53 +2,43 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
-/// <summary>
-/// A flavor-syrup bottle with a pump. Pressing the pump head (the "Cylinder") all the way down with a controller
-/// flavors an unflavored <see cref="CoffeeCup"/> under the spout and spends one use.
-/// </summary>
+// Pressing the pump head fully down with a controller fingertip flavors an unflavored cup under the spout.
 public class SyrupPump : Consumable
 {
-    [Tooltip("The pump head that moves. Positions below are this object's local Y, relative to the bottle.")]
+    [Tooltip("Moves along this object's local Y between pressedY and restY.")]
     public Transform pumpHead;
     public float pressedY = 9.15f;
     public float restY = 9.48f;
-    [Tooltip("How fast the head slides back up, in the bottle's local units per second.")]
+    [Tooltip("Local units per second.")]
     public float returnSpeed = 1.5f;
 
-    [Tooltip("Where syrup comes out. A cup must be below this to be flavored.")]
     public Transform spout;
-    [Tooltip("Horizontal distance (meters) from the spout within which a cup counts as underneath.")]
+    [Tooltip("Max horizontal distance (m) from the spout for a cup to count as underneath.")]
     public float cupRadius = 0.08f;
-    [Tooltip("How far below the spout (meters) a cup can be and still catch the syrup.")]
     public float maxDropHeight = 0.5f;
-
-    [Tooltip("Extra transforms that can press the pump (controller poke points are found automatically).")]
-    public List<Transform> extraPressers = new List<Transform>();
-    [Tooltip("Sideways slack (bottle-local units) around the pump head that still counts as touching it.")]
+    [Tooltip("Sideways slack (local units) around the head that still counts as touching it.")]
     public float touchMargin = 0.4f;
 
     readonly List<Transform> pressers = new List<Transform>();
     readonly HashSet<Transform> contacts = new HashSet<Transform>();
-    float topOffset;       // From the head's pivot up to its top surface, in local units.
+    float topOffset;
     Vector2 headMinXZ, headMaxXZ;
-    bool armed = true;     // Re-armed once the head returns to the top, so one press = one pump.
+    bool armed = true;
     float findTimer;
 
-    public float HeadY => pumpHead.localPosition.y;
+    float HeadY => pumpHead.localPosition.y;
 
     protected override void Awake()
     {
         base.Awake();
         if (!pumpHead) pumpHead = transform.Find("Cylinder");
 
-        // Measure the head at rest in bottle-local space so pressing works however the bottle is posed.
+        // Measure the head at rest in bottle-local space.
         SetHeadY(restY);
-        var r = pumpHead.GetComponent<Renderer>();
-        if (r)
+        if (pumpHead.TryGetComponent<Renderer>(out var r))
         {
-            var b = r.bounds;
-            var lo = transform.InverseTransformPoint(b.min);
-            var hi = transform.InverseTransformPoint(b.max);
+            var lo = transform.InverseTransformPoint(r.bounds.min);
+            var hi = transform.InverseTransformPoint(r.bounds.max);
             var mn = Vector3.Min(lo, hi);
             var mx = Vector3.Max(lo, hi);
             topOffset = mx.y - restY;
@@ -61,7 +51,6 @@ public class SyrupPump : Consumable
     {
         if ((findTimer -= Time.deltaTime) <= 0f) { findTimer = 1f; FindPressers(); }
 
-        // The lowest fingertip pressing the head decides how far it's pushed in.
         float target = restY;
         float headTop = HeadY + topOffset;
         foreach (var p in pressers)
@@ -70,20 +59,18 @@ public class SyrupPump : Consumable
             var local = transform.InverseTransformPoint(p.position);
             bool overHead = local.x >= headMinXZ.x - touchMargin && local.x <= headMaxXZ.x + touchMargin &&
                             local.z >= headMinXZ.y - touchMargin && local.z <= headMaxXZ.y + touchMargin;
-            bool belowTop = local.y <= headTop + 0.05f;
 
-            // Contact starts only at the top surface (so reaching up from under the bottle doesn't count),
-            // then sticks however deep the tip goes until it lifts off or slides off the side.
-            if (!overHead || !belowTop) contacts.Remove(p);
+            // Contact must start at the top surface (not from below), then sticks until the tip lifts or slides off.
+            if (!overHead || local.y > headTop + 0.05f) contacts.Remove(p);
             else if (local.y >= headTop - 0.3f) contacts.Add(p);
 
             if (contacts.Contains(p)) target = Mathf.Min(target, local.y - topOffset);
         }
 
         float y = HeadY;
-        y = target < y ? target : Mathf.MoveTowards(y, restY, returnSpeed * Time.deltaTime);
-        SetHeadY(y);
+        SetHeadY(target < y ? target : Mathf.MoveTowards(y, restY, returnSpeed * Time.deltaTime));
 
+        // One full press = one pump; re-armed once the head is back up.
         if (armed && HeadY <= pressedY + 0.005f)
         {
             armed = false;
@@ -97,20 +84,17 @@ public class SyrupPump : Consumable
 
     void SetHeadY(float y)
     {
-        // Clamped so the head can't sink through the bottle or pop off the top.
         var p = pumpHead.localPosition;
         p.y = Mathf.Clamp(y, pressedY, restY);
         pumpHead.localPosition = p;
     }
 
-    /// <summary>One full pump: flavors the nearest unflavored cup under the spout, if any, and spends a use.</summary>
-    public bool Pump()
+    void Pump()
     {
         var cup = FindCupUnderSpout();
-        if (!cup) return false;
+        if (!cup) return;
         cup.SetFlavored();
         Consume();
-        return true;
     }
 
     CoffeeCup FindCupUnderSpout()
@@ -131,7 +115,6 @@ public class SyrupPump : Consumable
     void FindPressers()
     {
         pressers.Clear();
-        pressers.AddRange(extraPressers);
         foreach (var poke in FindObjectsByType<XRPokeInteractor>(FindObjectsSortMode.None))
             pressers.Add(poke.attachTransform ? poke.attachTransform : poke.transform);
     }

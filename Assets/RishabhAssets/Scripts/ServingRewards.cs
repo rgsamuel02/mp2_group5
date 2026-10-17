@@ -1,12 +1,8 @@
-using System;
 using TMPro;
 using UnityEngine;
 
-/// <summary>
-/// Pays the player and raises Customer Satisfaction whenever a customer finishes a cup.
-/// Flavored cups pay more; mess on the floor (live <see cref="Splat"/>s) lowers the satisfaction gained.
-/// Also keeps the TV's Customers Served and Splats Swept tallies.
-/// </summary>
+// Pays the player and raises Customer Satisfaction when a cup is drunk, and keeps the TV's tallies.
+// Satisfaction gained = base - splats / 2, clamped to [min, base].
 public class ServingRewards : MonoBehaviour
 {
     public PlayerWallet wallet;
@@ -21,22 +17,19 @@ public class ServingRewards : MonoBehaviour
     public int plainPayment = 200;
     public int flavoredPayment = 250;
 
-    [Header("Satisfaction (base - splats / 2, clamped)")]
+    [Header("Satisfaction")]
     public int plainSatisfaction = 10;
     public int plainMinSatisfaction = 1;
     public int flavoredSatisfaction = 20;
     public int flavoredMinSatisfaction = 2;
 
-    public int Satisfaction { get; private set; }
-    public int CustomersServed { get; private set; }
-    public int SplatsSwept { get; private set; }
-    public event Action<int> SatisfactionChanged;
+    int satisfaction, customersServed, splatsSwept;
 
     void OnEnable()
     {
         Customer.AnyServed += OnServed;
         Splat.AnySwept += OnSwept;
-        RefreshLabel();
+        RefreshLabels();
     }
 
     void OnDisable()
@@ -49,36 +42,25 @@ public class ServingRewards : MonoBehaviour
     {
         bool flavored = cup && cup.IsFlavored;
         wallet.Add(flavored ? flavoredPayment : plainPayment);
-        CustomersServed++;
-        AddSatisfaction(SatisfactionFor(flavored));
+
+        int splats = FindObjectsByType<Splat>(FindObjectsSortMode.None).Length;
+        int max = flavored ? flavoredSatisfaction : plainSatisfaction;
+        int min = flavored ? flavoredMinSatisfaction : plainMinSatisfaction;
+        satisfaction += Mathf.Clamp(max - splats / 2, min, max);
+        customersServed++;
+        RefreshLabels();
     }
 
     void OnSwept(Splat splat)
     {
-        SplatsSwept++;
-        RefreshLabel();
+        splatsSwept++;
+        RefreshLabels();
     }
 
-    /// <summary>Satisfaction earned for one cup given how many splats are currently on the floor.</summary>
-    public int SatisfactionFor(bool flavored)
+    void RefreshLabels()
     {
-        int splats = FindObjectsByType<Splat>(FindObjectsSortMode.None).Length;
-        int max = flavored ? flavoredSatisfaction : plainSatisfaction;
-        int min = flavored ? flavoredMinSatisfaction : plainMinSatisfaction;
-        return Mathf.Clamp(max - splats / 2, min, max);
-    }
-
-    public void AddSatisfaction(int amount)
-    {
-        Satisfaction += amount;
-        RefreshLabel();
-        SatisfactionChanged?.Invoke(Satisfaction);
-    }
-
-    void RefreshLabel()
-    {
-        if (satisfactionText) satisfactionText.text = string.Format(satisfactionFormat, Satisfaction);
-        if (servedText) servedText.text = string.Format(servedFormat, CustomersServed);
-        if (splatsSweptText) splatsSweptText.text = string.Format(splatsSweptFormat, SplatsSwept);
+        if (satisfactionText) satisfactionText.text = string.Format(satisfactionFormat, satisfaction);
+        if (servedText) servedText.text = string.Format(servedFormat, customersServed);
+        if (splatsSweptText) splatsSweptText.text = string.Format(splatsSweptFormat, splatsSwept);
     }
 }

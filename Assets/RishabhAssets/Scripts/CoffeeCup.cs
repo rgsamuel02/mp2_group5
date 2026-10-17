@@ -4,15 +4,11 @@ using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
-/// <summary>
-/// A brewed cup of coffee. Flavoring it with syrup tints it red. Let go near a <see cref="SeatingTable"/>'s cup
-/// anchor and it snaps there; the customer in the matching seat drinks it (now, or when they sit down).
-/// Let go anywhere else and it falls. Fresh cups start docked (kinematic) in the machine's slot.
-/// </summary>
+// A brewed cup. Released near a table's cup spot it snaps there and is drunk by that seat's customer;
+// released anywhere else it falls. Syrup tints it red.
 public class CoffeeCup : MonoBehaviour
 {
     public Color flavoredTint = new Color(1f, 0.35f, 0.35f, 1f);
-    [Tooltip("Seconds the cup takes to slide into the customer when they drink it.")]
     [Min(0.01f)] public float drinkSeconds = 0.75f;
 
     static readonly List<CoffeeCup> all = new List<CoffeeCup>();
@@ -20,22 +16,18 @@ public class CoffeeCup : MonoBehaviour
 
     public bool IsFlavored { get; private set; }
     public bool IsBeingDrunk { get; private set; }
-    /// <summary>The table this cup is sitting on, if it's been snapped to one.</summary>
-    public SeatingTable Table { get; private set; }
+    public bool IsHeld => grab && grab.isSelected;
 
     XRGrabInteractable grab;
+    SeatingTable table;
     int anchorIndex = -1;
-
-    public bool IsHeld => grab && grab.isSelected;
 
     void Awake()
     {
         grab = GetComponent<XRGrabInteractable>();
-        if (grab)
-        {
-            grab.selectEntered.AddListener(OnGrabbed);
-            grab.selectExited.AddListener(OnReleased);
-        }
+        if (!grab) return;
+        grab.selectEntered.AddListener(OnGrabbed);
+        grab.selectExited.AddListener(OnReleased);
     }
 
     void OnEnable() => all.Add(this);
@@ -43,36 +35,31 @@ public class CoffeeCup : MonoBehaviour
     void OnDisable()
     {
         all.Remove(this);
-        if (Table) Table.RemoveCup(this);
+        if (table) table.RemoveCup(this);
     }
 
     void OnDestroy()
     {
-        if (grab)
-        {
-            grab.selectEntered.RemoveListener(OnGrabbed);
-            grab.selectExited.RemoveListener(OnReleased);
-        }
+        if (!grab) return;
+        grab.selectEntered.RemoveListener(OnGrabbed);
+        grab.selectExited.RemoveListener(OnReleased);
     }
 
     void OnGrabbed(SelectEnterEventArgs args)
     {
-        // Picking a cup off a table frees its spot.
-        if (Table) Table.RemoveCup(this);
-        Table = null;
+        if (table) table.RemoveCup(this);
+        table = null;
         anchorIndex = -1;
     }
 
     void OnReleased(SelectExitEventArgs args)
     {
-        foreach (var table in SeatingTable.All)
-            if (table.TrySnapCup(this)) return;
-
-        // Not on a table spot: drop like a normal object.
+        foreach (var t in SeatingTable.All)
+            if (t.TrySnapCup(this)) return;
         SetDocked(false);
     }
 
-    /// <summary>Docked cups (in a machine slot or on a table spot) hold still; loose cups fall under gravity.</summary>
+    // Docked cups (machine slot or table spot) hold still; loose cups fall.
     void SetDocked(bool docked)
     {
         if (!TryGetComponent<Rigidbody>(out var body)) return;
@@ -82,36 +69,32 @@ public class CoffeeCup : MonoBehaviour
 
     void LateUpdate()
     {
-        // Ride along with the table if it gets moved while the cup is waiting on it.
-        if (Table && !IsBeingDrunk && !IsHeld)
+        // Ride along if the table is moved while the cup waits on it.
+        if (table && !IsBeingDrunk && !IsHeld)
         {
-            var a = Table.cupAnchors[anchorIndex];
+            var a = table.cupAnchors[anchorIndex];
             transform.SetPositionAndRotation(a.position, a.rotation);
         }
     }
 
-    /// <summary>Called by <see cref="SeatingTable"/> when the cup snaps onto one of its anchors.</summary>
     public void AttachTo(SeatingTable table, int index)
     {
-        Table = table;
+        this.table = table;
         anchorIndex = index;
         SetDocked(true);
         var a = table.cupAnchors[index];
         transform.SetPositionAndRotation(a.position, a.rotation);
     }
 
-    /// <summary>Slides the cup into <paramref name="customer"/>, then despawns it and sends them on their way.</summary>
     public void BeginDrinking(Customer customer)
     {
-        if (IsBeingDrunk) return;
-        StartCoroutine(Drink(customer));
+        if (!IsBeingDrunk) StartCoroutine(Drink(customer));
     }
 
     IEnumerator Drink(Customer customer)
     {
         IsBeingDrunk = true;
         if (customer) customer.BeginBeingServed();
-        // Can't be picked up while it's being drunk.
         if (grab) grab.enabled = false;
 
         var start = transform.position;
@@ -125,8 +108,8 @@ public class CoffeeCup : MonoBehaviour
             yield return null;
         }
 
-        if (Table) Table.RemoveCup(this);
-        Table = null;
+        if (table) table.RemoveCup(this);
+        table = null;
         if (customer) customer.Serve(this);
         Destroy(gameObject);
     }
@@ -146,15 +129,5 @@ public class CoffeeCup : MonoBehaviour
         }
     }
 
-    public bool TryGetBounds(out Bounds bounds)
-    {
-        bounds = default;
-        bool any = false;
-        foreach (var r in GetComponentsInChildren<Renderer>())
-        {
-            if (!any) { bounds = r.bounds; any = true; }
-            else bounds.Encapsulate(r.bounds);
-        }
-        return any;
-    }
+    public bool TryGetBounds(out Bounds bounds) => RendererBounds.TryGet(gameObject, out bounds);
 }

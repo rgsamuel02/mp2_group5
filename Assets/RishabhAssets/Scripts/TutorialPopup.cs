@@ -1,22 +1,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// A how-to popup shown on the first instance of an item, hidden the first time that item is used.
-/// Once a tutorial has been completed, later instances never show it. While one instance is showing it,
-/// other instances don't; if that instance disappears unused (e.g. returned to the inventory), the next one shows it.
-/// </summary>
+// How-to popup shown on the first instance of an item and hidden on first use. Only one instance shows it at a time,
+// and once completed no instance shows it again. If the showing instance disappears unused, the next one takes over.
 public class TutorialPopup : MonoBehaviour
 {
     [Tooltip("Instances sharing this id share one tutorial.")]
     public string tutorialId;
-    [Tooltip("The popup to show and hide (usually the TutorialCanvas child).")]
     public GameObject popup;
 
     static readonly HashSet<string> completed = new HashSet<string>();
     static readonly Dictionary<string, TutorialPopup> showing = new Dictionary<string, TutorialPopup>();
 
-    // Statics survive between Play sessions when domain reload is off, so clear them on every start.
+    // Statics survive Play sessions when domain reload is off.
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     static void ResetTutorials()
     {
@@ -24,7 +20,10 @@ public class TutorialPopup : MonoBehaviour
         showing.Clear();
     }
 
-    public bool IsShowing => popup && popup.activeSelf;
+    public static void NotifyUsed(Component item)
+    {
+        if (item && item.TryGetComponent<TutorialPopup>(out var t)) t.MarkUsed();
+    }
 
     void Awake()
     {
@@ -34,22 +33,17 @@ public class TutorialPopup : MonoBehaviour
         if (show) showing[tutorialId] = this;
     }
 
-    void OnDestroy()
-    {
-        if (showing.TryGetValue(tutorialId, out var s) && s == this) showing.Remove(tutorialId);
-    }
+    void OnDestroy() => StopShowing();
 
-    /// <summary>The player has used this item: the tutorial is done for good.</summary>
-    public void MarkUsed()
+    void MarkUsed()
     {
         completed.Add(tutorialId);
         if (popup) popup.SetActive(false);
-        if (showing.TryGetValue(tutorialId, out var s) && s == this) showing.Remove(tutorialId);
+        StopShowing();
     }
 
-    /// <summary>Completes the tutorial on <paramref name="item"/>, if it has one.</summary>
-    public static void NotifyUsed(Component item)
+    void StopShowing()
     {
-        if (item && item.TryGetComponent<TutorialPopup>(out var t)) t.MarkUsed();
+        if (showing.TryGetValue(tutorialId, out var s) && s == this) showing.Remove(tutorialId);
     }
 }

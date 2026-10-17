@@ -3,9 +3,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-/// <summary>
-/// One row in the shop or inventory list: preview, name, detail text and an optional button.
-/// </summary>
+// One shop or inventory row: preview, name, detail and an optional button.
 public class ItemRow : MonoBehaviour
 {
     public Image preview;
@@ -16,25 +14,19 @@ public class ItemRow : MonoBehaviour
 
     public ShopItem Item { get; private set; }
 
-    public void Bind(ShopItem item, string detail, string buttonLabel, UnityAction onClick)
+    public void Bind(ShopItem item, string detail, string buttonLabel = null, UnityAction onClick = null)
     {
         Item = item;
         preview.sprite = item.preview;
         nameText.text = item.displayName;
         detailText.text = detail;
 
-        bool hasButton = onClick != null;
-        button.gameObject.SetActive(hasButton);
+        button.gameObject.SetActive(onClick != null);
         button.onClick.RemoveAllListeners();
-        if (hasButton)
-        {
-            button.onClick.AddListener(onClick);
-            if (buttonText) buttonText.text = buttonLabel;
-        }
+        if (onClick == null) return;
+        button.onClick.AddListener(onClick);
+        if (buttonText) buttonText.text = buttonLabel;
     }
 
-    public void SetInteractable(bool interactable)
-    {
-        button.interactable = interactable;
-    }
+    public void SetInteractable(bool interactable) => button.interactable = interactable;
 }

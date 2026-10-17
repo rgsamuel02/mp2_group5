@@ -1,16 +1,17 @@
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-/// <summary>
-/// Inspector + Scene view tools for <see cref="CafeGrid"/>: paint raised cells by clicking them.
-/// </summary>
+// Scene-view painting of raised cells and cell coordinate labels for CafeGrid.
 [CustomEditor(typeof(CafeGrid))]
 public class CafeGridEditor : Editor
 {
-    enum PaintMode { Off, Raised }
-
-    static PaintMode mode;
+    static bool painting;
     static bool showLabels = true;
+
+    // Cells toggled this drag, so dragging doesn't flip a cell back and forth.
+    readonly HashSet<Vector2Int> strokeCells = new HashSet<Vector2Int>();
+    bool strokeAdds;
 
     public override void OnInspectorGUI()
     {
@@ -22,34 +23,26 @@ public class CafeGridEditor : Editor
 
         EditorGUILayout.Space();
         EditorGUILayout.LabelField("Scene View Painting", EditorStyles.boldLabel);
-        mode = (PaintMode)GUILayout.Toolbar((int)mode, new[] { "Off", "Paint Raised" });
+        painting = GUILayout.Toolbar(painting ? 1 : 0, new[] { "Off", "Paint Raised" }) == 1;
         showLabels = EditorGUILayout.Toggle("Show Cell Coordinates", showLabels);
-        if (mode != PaintMode.Off)
+        if (painting)
             EditorGUILayout.HelpBox("Click (or drag) over cells in the Scene view to toggle them. Hold Shift to only clear.", MessageType.Info);
 
         if (GUILayout.Button("Clear Raised Cells")) { Undo.RecordObject(grid, "Clear Raised Cells"); grid.raisedCells.Clear(); }
         SceneView.RepaintAll();
     }
 
-    void OnDisable()
-    {
-        mode = PaintMode.Off;
-    }
-
-    // Cells toggled during the current drag, so dragging doesn't flip a cell back and forth.
-    readonly System.Collections.Generic.HashSet<Vector2Int> strokeCells = new System.Collections.Generic.HashSet<Vector2Int>();
-    bool strokeAdds;
+    void OnDisable() => painting = false;
 
     void OnSceneGUI()
     {
         var grid = (CafeGrid)target;
-
         if (showLabels) DrawLabels(grid);
-        if (mode == PaintMode.Off) return;
+        if (!painting) return;
 
         HandleUtility.AddDefaultControl(GUIUtility.GetControlID(FocusType.Passive));
         var e = Event.current;
-        if (e.alt || e.button != 0) return; // leave orbiting / panning alone
+        if (e.alt || e.button != 0) return;
 
         if ((e.type == EventType.MouseDown || e.type == EventType.MouseDrag) && TryGetHoveredCell(grid, e.mousePosition, out var cell))
         {
@@ -73,20 +66,19 @@ public class CafeGridEditor : Editor
         {
             if (TryGetHoveredCell(grid, e.mousePosition, out var hover))
             {
-                var c = grid.CellToWorld(hover);
                 float s = grid.cellSize;
                 Handles.color = Color.cyan;
-                Handles.DrawWireCube(c + Vector3.up * s * 0.02f, new Vector3(s, s * 0.04f, s));
+                Handles.DrawWireCube(grid.CellToWorld(hover) + Vector3.up * s * 0.02f, new Vector3(s, s * 0.04f, s));
             }
             if (e.type == EventType.MouseMove) SceneView.RepaintAll();
         }
     }
 
+    // Picks on the counter-top plane so cells line up with the counter being clicked.
     static bool TryGetHoveredCell(CafeGrid grid, Vector2 mousePos, out Vector2Int cell)
     {
         cell = default;
         var ray = HandleUtility.GUIPointToWorldRay(mousePos);
-        // Pick on the counter-top plane so cells line up with the counter you're clicking on.
         var plane = new Plane(Vector3.up, new Vector3(0f, grid.raisedFloorY, 0f));
         if (!plane.Raycast(ray, out float dist)) return false;
         cell = grid.WorldToCell(ray.GetPoint(dist));
@@ -98,9 +90,6 @@ public class CafeGridEditor : Editor
         var style = new GUIStyle(EditorStyles.miniLabel) { alignment = TextAnchor.MiddleCenter, normal = { textColor = Color.white } };
         for (int x = 0; x < grid.Columns; x++)
             for (int y = 0; y < grid.Rows; y++)
-            {
-                var cell = new Vector2Int(x, y);
-                Handles.Label(grid.CellToWorld(cell) + Vector3.up * grid.cellSize * 0.04f, $"{x},{y}", style);
-            }
+                Handles.Label(grid.CellToWorld(new Vector2Int(x, y)) + Vector3.up * grid.cellSize * 0.04f, $"{x},{y}", style);
     }
 }

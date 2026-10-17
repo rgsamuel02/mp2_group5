@@ -1,10 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// Shortest paths over <see cref="CafeGrid"/> cells. Walkable cells are floor-level (not raised) and unoccupied.
-/// Moves in 8 directions; diagonals can't cut past a blocked corner.
-/// </summary>
+// Shortest paths over floor-level, unoccupied grid cells. 8-way moves; diagonals can't cut blocked corners.
 public static class GridPathfinder
 {
     static readonly Vector2Int[] Directions =
@@ -16,17 +13,11 @@ public static class GridPathfinder
     public static bool IsWalkable(CafeGrid grid, Vector2Int cell) =>
         grid.InBounds(cell) && !grid.IsRaised(cell) && !grid.IsOccupied(cell);
 
-    /// <summary>
-    /// Path from <paramref name="start"/> to whichever reachable goal is cheapest, including both ends.
-    /// The start cell itself doesn't need to be walkable (e.g. something was placed on it).
-    /// Returns null if no goal is reachable.
-    /// </summary>
-    public static List<Vector2Int> FindPath(CafeGrid grid, Vector2Int start, ICollection<Vector2Int> goals)
+    // Path including both ends, or null. The start cell needn't be walkable (something may have been placed on it).
+    public static List<Vector2Int> FindPath(CafeGrid grid, Vector2Int start, Vector2Int goal)
     {
-        if (goals == null || goals.Count == 0) return null;
-        if (goals.Contains(start)) return new List<Vector2Int> { start };
+        if (start == goal) return new List<Vector2Int> { start };
 
-        // Dijkstra: the grid is small, and it handles multiple goals without a special heuristic.
         var cost = new Dictionary<Vector2Int, float> { [start] = 0f };
         var cameFrom = new Dictionary<Vector2Int, Vector2Int>();
         var closed = new HashSet<Vector2Int>();
@@ -40,8 +31,7 @@ public static class GridPathfinder
             var current = open[best];
             open.RemoveAt(best);
             if (!closed.Add(current)) continue;
-
-            if (goals.Contains(current)) return Reconstruct(cameFrom, current);
+            if (current == goal) return Reconstruct(cameFrom, current);
 
             foreach (var d in Directions)
             {
@@ -62,10 +52,6 @@ public static class GridPathfinder
         return null;
     }
 
-    public static List<Vector2Int> FindPath(CafeGrid grid, Vector2Int start, Vector2Int goal) =>
-        FindPath(grid, start, new HashSet<Vector2Int> { goal });
-
-    /// <summary>Walkable cell nearest to a world position (by straight-line distance), or null if none exist.</summary>
     public static Vector2Int? NearestWalkable(CafeGrid grid, Vector3 world)
     {
         Vector2Int? best = null;

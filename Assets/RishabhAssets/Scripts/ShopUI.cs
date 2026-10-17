@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// Fills the shop list with the catalog and moves purchases into the player's inventory.
-/// </summary>
+// Lists the catalog on the TV; buying moves an item into the inventory.
 public class ShopUI : MonoBehaviour
 {
     public List<ShopItem> catalog = new List<ShopItem>();
@@ -20,18 +18,16 @@ public class ShopUI : MonoBehaviour
         {
             if (!item) continue;
             var row = Instantiate(rowPrefab, content);
-            var captured = item;
-            row.Bind(item, $"{item.price}¥", "Buy", () => Buy(captured));
+            row.Bind(item, $"{item.price}¥", "Buy", () => Buy(item));
             rows.Add((row, item));
         }
-        wallet.BalanceChanged += _ => RefreshAffordability();
+        wallet.BalanceChanged += RefreshAffordability;
         RefreshAffordability();
     }
 
-    public void Buy(ShopItem item)
+    void Buy(ShopItem item)
     {
-        if (!wallet.TrySpend(item.price)) return;
-        inventory.Add(item);
+        if (wallet.TrySpend(item.price)) inventory.Add(item);
     }
 
     void RefreshAffordability()

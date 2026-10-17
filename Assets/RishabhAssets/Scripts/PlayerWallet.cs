@@ -2,30 +2,28 @@ using System;
 using TMPro;
 using UnityEngine;
 
-/// <summary>
-/// Holds the player's money and keeps the balance label up to date.
-/// </summary>
 public class PlayerWallet : MonoBehaviour
 {
     public int startingBalance = 500;
     public TMP_Text balanceText;
     public string balanceFormat = "Current Balance: {0}¥";
 
-    public int Balance { get; private set; }
-    public event Action<int> BalanceChanged;
+    public event Action BalanceChanged;
+
+    int balance;
 
     void Awake()
     {
-        Balance = startingBalance;
+        balance = startingBalance;
         RefreshLabel();
     }
 
-    public bool CanAfford(int amount) => Balance >= amount;
+    public bool CanAfford(int amount) => balance >= amount;
 
     public bool TrySpend(int amount)
     {
         if (amount < 0 || !CanAfford(amount)) return false;
-        Balance -= amount;
+        balance -= amount;
         Notify();
         return true;
     }
@@ -33,18 +31,18 @@ public class PlayerWallet : MonoBehaviour
     public void Add(int amount)
     {
         if (amount <= 0) return;
-        Balance += amount;
+        balance += amount;
         Notify();
     }
 
     void Notify()
     {
         RefreshLabel();
-        BalanceChanged?.Invoke(Balance);
+        BalanceChanged?.Invoke();
     }
 
     void RefreshLabel()
     {
-        if (balanceText) balanceText.text = string.Format(balanceFormat, Balance);
+        if (balanceText) balanceText.text = string.Format(balanceFormat, balance);
     }
 }
