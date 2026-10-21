@@ -243,9 +243,9 @@ MonoBehaviour:
   growth: 0
   age: 0
   herbYield: 0
-  growthPerSecond: 0.5
-  moistureLossPerSecond: 0.5
-  healthLossWhenDry: 5
+  growthPerSecond: 1
+  moistureLossPerSecond: 1.5
+  healthLossWhenDry: 20
   waterAddedPerAction: 50
   matureAt: 100
   matureVisualAt: 100

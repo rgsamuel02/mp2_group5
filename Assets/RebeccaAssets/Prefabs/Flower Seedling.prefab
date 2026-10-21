@@ -111,9 +111,9 @@ MonoBehaviour:
   age: 0
   bloom: 0
   flowerCount: 0
-  growthPerSecond: 0.25
-  moistureLossPerSecond: 0.15
-  healthLossWhenDry: 1
+  growthPerSecond: 1
+  moistureLossPerSecond: 1.5
+  healthLossWhenDry: 20
   waterAddedPerAction: 50
   matureAt: 100
   matureVisualAt: 100
