@@ -114,7 +114,7 @@ MonoBehaviour:
   healthLossWhenDry: 20
   waterAddedPerAction: 30
   matureAt: 100
-  tomatoYield: 3
+  tomatoYield: 15
   youngTomatoPlantPrefab: {fileID: 180336659550616498, guid: 6402709babab77242abba40b63209315, type: 3}
   tomatoPlantPrefab: {fileID: 8597325850313553600, guid: 3c1fe8c1fd9fa2f4aa98b72bc2479ebb, type: 3}
   youngStageAt: 34

@@ -249,6 +249,6 @@ MonoBehaviour:
   waterAddedPerAction: 50
   matureAt: 100
   matureVisualAt: 100
-  maximumYield: 5
+  maximumYield: 30
   seedlingVisual: {fileID: 6252522317207959490}
-  matureHerbPrefab: {fileID: 3919874784970273056, guid: 426e47183914ba942aa5997c63807888, type: 3}
+  matureHerbPrefab: {fileID: 5922975722640304976, guid: 9b401281f0bded843b38bdf5578055c5, type: 3}
