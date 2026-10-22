@@ -232,6 +232,18 @@ public class Scr_Plant : MonoBehaviour
         }
 
         inventory.AddTomatoes(tomatoYield);
+
+        Scr_Ach achievements =
+            FindFirstObjectByType<Scr_Ach>();
+
+        if (achievements != null)
+        {
+            achievements.RegisterHarvest(
+                GardenResource.Tomatoes,
+                tomatoYield
+            );
+        }
+
         Destroy(gameObject);
     }
 

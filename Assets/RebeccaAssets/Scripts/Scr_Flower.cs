@@ -204,6 +204,17 @@ public class Scr_Flower : MonoBehaviour
 
         Debug.Log("Harvested " + amount + " flowers.");
 
+        Scr_Ach achievements =
+            FindFirstObjectByType<Scr_Ach>();
+
+        if (achievements != null)
+        {
+            achievements.RegisterHarvest(
+                GardenResource.Flowers,
+                flowerCount
+            );
+        }
+
         growth = 0f;
         bloom = 0f;
         flowerCount = 0;

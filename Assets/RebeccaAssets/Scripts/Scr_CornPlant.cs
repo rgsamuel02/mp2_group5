@@ -199,6 +199,17 @@ public class Scr_CornPlant : MonoBehaviour
 
         Debug.Log("Harvested " + amount + " corn.");
 
+        Scr_Ach achievements =
+            FindFirstObjectByType<Scr_Ach>();
+
+        if (achievements != null)
+        {
+            achievements.RegisterHarvest(
+                GardenResource.Corn,
+                amount
+            );
+        }
+
         growth = 0f;
         herbYield = 0;
         UpdateVisualStage();

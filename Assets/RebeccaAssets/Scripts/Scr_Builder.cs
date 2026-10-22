@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
 using System.Collections;
+using TMPro;
 
 public class Scr_Builder : MonoBehaviour
 {
@@ -36,8 +37,10 @@ public class Scr_Builder : MonoBehaviour
 
     private Scr_Inventory inventory;
 
-    public ParticleSystem waterSpray;
-    public ParticleSystem fertilizerSpray;
+    public GameObject resourcePopupPanel;
+    public TMP_Text resourcePopupText;
+    public float popupDuration = 3f;
+    private Coroutine popupCoroutine;
 
     private void Start()
     {
@@ -362,6 +365,7 @@ public class Scr_Builder : MonoBehaviour
         float nearestPlantDistance = Mathf.Min(
             tomatoDistance, cornDistance, flowerDistance);
 
+        
         if (bin != null && binDistance <= nearestPlantDistance)
         {
             if (inventory == null)
@@ -404,8 +408,19 @@ public class Scr_Builder : MonoBehaviour
             return;
         }
 
-        if (inventory == null || !inventory.UseWater(waterPerAction))
+        if (inventory == null)
+        {
+            Debug.LogError("Garden inventory is missing.");
             return;
+        }
+
+        if (!inventory.UseWater(waterPerAction))
+        {
+            ShowResourcePopup(
+                "You're out of water!\nGo to the water bin to refill."
+            );
+            return;
+        }
 
         if (tomatoDistance <= cornDistance &&
             tomatoDistance <= flowerDistance)
@@ -595,10 +610,17 @@ public class Scr_Builder : MonoBehaviour
             return;
         }
 
-        if (inventory == null ||
-            !inventory.UseFertilizer(fertilizerPerAction))
+        if (inventory == null)
         {
-            Debug.Log("You don't have enough fertilizer.");
+            Debug.LogError("Garden inventory is missing.");
+            return;
+        }
+
+        if (!inventory.UseFertilizer(fertilizerPerAction))
+        {
+            ShowResourcePopup(
+                "You're out of fertilizer!\nGo to the fertilizer bin to refill."
+            );
             return;
         }
 
@@ -612,35 +634,6 @@ public class Scr_Builder : MonoBehaviour
         Debug.Log("Plant fertilized.");
     }
 
-    private void StartWaterEffect()
-    {
-        if (waterSpray != null && !waterSpray.isPlaying)
-            waterSpray.Play();
-    }
-
-    private void StopWaterEffect()
-    {
-        if (waterSpray != null)
-            waterSpray.Stop(
-                true,
-                ParticleSystemStopBehavior.StopEmittingAndClear
-            );
-    }
-
-    private void StartFertilizerEffect()
-    {
-        if (fertilizerSpray != null && !fertilizerSpray.isPlaying)
-            fertilizerSpray.Play();
-    }
-
-    private void StopFertilizerEffect()
-    {
-        if (fertilizerSpray != null)
-            fertilizerSpray.Stop(
-                true,
-                ParticleSystemStopBehavior.StopEmittingAndClear
-            );
-    }
     private void TryHarvestPlant()
     {
         if (!TryGetHit(out RaycastHit hit))
@@ -780,6 +773,25 @@ public class Scr_Builder : MonoBehaviour
         plant.Harvest();
     }
 
+    private void ShowResourcePopup(string message)
+    {
+        if (popupCoroutine != null)
+            StopCoroutine(popupCoroutine);
 
+        resourcePopupText.text = message;
+        resourcePopupPanel.SetActive(true);
+
+        popupCoroutine = StartCoroutine(HideResourcePopupAfterDelay());
+    }
+
+    private System.Collections.IEnumerator HideResourcePopupAfterDelay()
+    {
+        yield return new WaitForSeconds(popupDuration);
+
+        if (resourcePopupPanel != null)
+            resourcePopupPanel.SetActive(false);
+
+        popupCoroutine = null;
+    }
 
 }
