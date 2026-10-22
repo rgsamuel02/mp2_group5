@@ -58,7 +58,7 @@ public class Scr_Ach : MonoBehaviour
                     cornAchievementUnlocked = true;
                     ShowAchievement(
                         "Coffee Champion!",
-                        "You've harvested 150 coffee beans!"
+                        "You've harvested 150 coffee berries!"
                     );
                 }
                 break;
