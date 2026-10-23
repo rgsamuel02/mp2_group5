@@ -8,9 +8,9 @@ public class Scr_Ach : MonoBehaviour
     public TMP_Text achievementText;
     public float popupDuration = 3f;
 
-    public int tMilestone = 100;
-    public int cMilestone = 150;
-    public int fMilestone = 30;
+    public int tMilestone = 30;
+    public int cMilestone = 60;
+    public int fMilestone = 5;
 
     private int tomatoesHarvested;
     private int cornHarvested;
@@ -44,7 +44,7 @@ public class Scr_Ach : MonoBehaviour
                     tomatoAchievementUnlocked = true;
                     ShowAchievement(
                         "Tiptop Tomatoes!",
-                        "You've harvested 100 tomatoes!"
+                        "You've harvested 30 tomatoes! You can now sell them to the restaurant!"
                     );
                 }
                 break;
@@ -58,7 +58,7 @@ public class Scr_Ach : MonoBehaviour
                     cornAchievementUnlocked = true;
                     ShowAchievement(
                         "Coffee Champion!",
-                        "You've harvested 150 coffee berries!"
+                        "You've harvested 60 coffee cherries! You can now sell them to the cafe!"
                     );
                 }
                 break;
@@ -72,7 +72,7 @@ public class Scr_Ach : MonoBehaviour
                     flowerAchievementUnlocked = true;
                     ShowAchievement(
                         "Fantastic Flowers!",
-                        "You've harvested 30 flowers!"
+                        "You've harvested 5 flowers! You can now sell them to the orchestra!"
                     );
                 }
                 break;

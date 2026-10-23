@@ -185,19 +185,18 @@ public class Scr_CornPlant : MonoBehaviour
             return;
         }
 
-        if (inventory == null)
-            inventory = FindFirstObjectByType<Scr_Inventory>();
-
-        if (inventory == null)
-        {
-            Debug.LogError("Scr_Inventory was not found.");
-            return;
-        }
-
         int amount = herbYield;
         inventory.AddResource(GardenResource.Corn, amount);
 
         Debug.Log("Harvested " + amount + " corn.");
+
+        Scr_GardenEconomy economy =
+            FindFirstObjectByType<Scr_GardenEconomy>();
+
+        if (economy != null)
+        {
+            economy.RegisterHarvest(GardenResource.Corn, 30);
+        }
 
         Scr_Ach achievements =
             FindFirstObjectByType<Scr_Ach>();

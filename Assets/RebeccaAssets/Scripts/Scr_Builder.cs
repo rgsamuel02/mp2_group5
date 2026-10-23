@@ -7,7 +7,6 @@ using TMPro;
 public class Scr_Builder : MonoBehaviour
 {
     public XRRayInteractor rayInteractor;
-    public InputActionReference placeAction;
     public InputActionReference selectPlotAction;
     public InputActionReference selectSeedlingAction;
     public InputActionReference selectCornAction;
@@ -15,6 +14,7 @@ public class Scr_Builder : MonoBehaviour
     public InputActionReference waterAction;
     public InputActionReference fertilizerAction;
     public InputActionReference harvestAction;
+    public InputActionReference sellAction;
 
     public GameObject gardenPlotPrefab;
     public GameObject seedlingPrefab;
@@ -28,8 +28,7 @@ public class Scr_Builder : MonoBehaviour
     public LayerMask groundLayer;
 
     public float interactionRadius = 1.5f;
-
-    [Min(1)] public int seedsPerPlant = 1;
+    
     [Min(1)] public int waterPerAction = 1;
     [Min(1)] public int fertilizerPerAction = 1;
 
@@ -50,8 +49,7 @@ public class Scr_Builder : MonoBehaviour
         {
             Debug.LogError("Scr_Builder could not find Scr_Inventory.");
         }
-        
-        Enable(placeAction, OnPlace);
+
         Enable(selectPlotAction, OnSelectPlot);
         Enable(selectSeedlingAction, OnSelectSeedling);
         Enable(selectCornAction, OnSelectCorn);
@@ -59,6 +57,7 @@ public class Scr_Builder : MonoBehaviour
         Enable(waterAction, OnWater);
         Enable(fertilizerAction, OnFertilize);
         Enable(harvestAction, OnHarvest);
+        Enable(sellAction, OnSell);
     }
 
 
@@ -72,12 +71,6 @@ public class Scr_Builder : MonoBehaviour
 
 
     // VR input callbacks
-
-    private void OnPlace(InputAction.CallbackContext context)
-    {
-        TryPlaceObject();
-    }
-
     private void OnSelectPlot(InputAction.CallbackContext context)
     {
         SelectPrefab(gardenPlotPrefab, "Garden plot");
@@ -115,6 +108,25 @@ public class Scr_Builder : MonoBehaviour
     private void OnHarvest(InputAction.CallbackContext context)
     {
         TryHarvestPlant();
+    }
+    private void OnSell(InputAction.CallbackContext context)
+    {
+        if (!TryGetHit(out RaycastHit hit))
+        {
+            Debug.Log("Point at a selling station first.");
+            return;
+        }
+
+        Scr_GardenSellingStation station =
+            hit.collider.GetComponentInParent<Scr_GardenSellingStation>();
+
+        if (station == null)
+        {
+            Debug.Log("Point at a restaurant, cafe, or orchestra selling station.");
+            return;
+        }
+
+        station.SellOneBatch();
     }
 
     private void SelectPrefab(GameObject prefab, string label)
@@ -231,9 +243,6 @@ public class Scr_Builder : MonoBehaviour
             Debug.LogError("Scr_Inventory is missing.");
             return;
         }
-
-        if (!inventory.UseSeeds(seedsPerPlant))
-            return;
 
         Vector3 plantPosition = cellCenter;
         plantPosition.y = seedlingHeight;
@@ -506,9 +515,6 @@ public class Scr_Builder : MonoBehaviour
             Debug.Log("The nearest plot is occupied. Point toward another plot.");
             return;
         }
-
-        if (!inventory.UseSeeds(seedsPerPlant))
-            return;
 
         Vector3 plantPosition = cellCenter;
         plantPosition.y = seedlingHeight;

@@ -216,6 +216,7 @@ public class Scr_Plant : MonoBehaviour
         if (isDead)
         {
             Debug.Log("This plant is dead and cannot be harvested.");
+            Destroy(gameObject);
             return;
         }
 
@@ -225,13 +226,15 @@ public class Scr_Plant : MonoBehaviour
             return;
         }
 
-        if (inventory == null)
-        {
-            Debug.LogError("GardenInventory was not found.");
-            return;
-        }
-
         inventory.AddTomatoes(tomatoYield);
+        
+        Scr_GardenEconomy economy =
+            FindFirstObjectByType<Scr_GardenEconomy>();
+
+        if (economy != null)
+        {
+            economy.RegisterHarvest(GardenResource.Tomatoes, 15);
+        }
 
         Scr_Ach achievements =
             FindFirstObjectByType<Scr_Ach>();
