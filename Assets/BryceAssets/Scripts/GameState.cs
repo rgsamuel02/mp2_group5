@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
+using Unity.XR.CoreUtils;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 
 public class GameState : MonoBehaviour
@@ -20,6 +22,10 @@ public class GameState : MonoBehaviour
     public GameObject audience;
     public TrashSpawner trashSpawner;
     public List<Material> breakStates;
+    public XROrigin xro;
+    bool unlockedGarden = false;
+    int numCustomers = 0;
+    int level = 1;
 
     private void Awake()
     {
@@ -33,6 +39,7 @@ public class GameState : MonoBehaviour
         Instance = this;
         menu.LoadMenu("Welcome to your new job as an orchestra manager! You must hire instruments to improve the sound, but be careful; you don't want to have too much of one type of sound.\n\nYou can purchase instruments over at stage left. How about you start with a violin to be the concertmaster?\n\nPress B to close this menu.");
         DontDestroyOnLoad(gameObject); // Optional: Keeps it alive across scenes
+        DontDestroyOnLoad(xro);
     }
 
     public MenuManager menu;
@@ -94,6 +101,15 @@ public class GameState : MonoBehaviour
 
         if (income < 0) return; // if we bought or otherwise lost money for some reason don't spawn a customer
 
+        numCustomers++;
+
+        if (numCustomers >= 30 && !unlockedGarden)
+        {
+            // TODO make Garden integration
+            menu.LoadMenu("OMGOMGOMG");
+            unlockedGarden = true;
+        }
+
         if (firstCustomer && !menu.IsOpen())
         {
             menu.LoadMenu("Congratulations! You got your first customer. Each customer will pay an amount based on the instrument they came to see. You can see how much an instrument will sell tickets for by pointing at their grid space and pressing X\n\nPress B to close this menu.");
@@ -103,8 +119,22 @@ public class GameState : MonoBehaviour
         // verify that there is an empty seat
         for (int i = 0; i < occupiedSeats.Length; i++)
         {
+            if (level == 1)
+            {
+                level += 1;
+                SceneManager.LoadScene("BryceSceneLvl2");
+                menu.LoadMenu($"You filled the house to complete the first level! Great job.\n\nYour rank is {ComputeRank()}\n\nPress B to close this menu.");
+                List<Instrument> insts = new List<Instrument>(instruments);
+                for (int j = 0; j < insts.Count; j++)
+                {
+                    insts[j].DestroyInstrument();
+                }
+            }
             if (!occupiedSeats[i]) break;
-            if (i == occupiedSeats.Length - 1) return;
+            if (i == occupiedSeats.Length - 1) {
+                
+                return;
+            }
         }
 
         GameObject newPerson = Instantiate(person, audience.transform);
@@ -116,6 +146,17 @@ public class GameState : MonoBehaviour
         }
         newPerson.GetComponent<Person>().SetTarget(seat);
         occupiedSeats[seat] = true;
+    }
+
+    string ComputeRank()
+    {
+        float rank = GetEnjoyment() * money;
+        if (rank >= 100) return "S";
+        if (rank >= 90) return "A";
+        if (rank >= 80) return "B";
+        if (rank >= 70) return "C";
+        if (rank >= 60) return "D";
+        return "F";
     }
 
     public float GetMoney()

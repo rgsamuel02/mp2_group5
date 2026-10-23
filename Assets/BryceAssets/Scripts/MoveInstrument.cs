@@ -73,7 +73,7 @@ public class MoveInstrument : MonoBehaviour
         }
         else if (thirdPurchase)
         {
-            GameState.Instance.menu.LoadMenu("As you keep buying instruments, you may notice some synergize with each other. This is based on if they neighbor an instrument they would neighbor in a real orchestra. You'll have to experiment to see what instruments synergize.\n\nPress B to close this menu.");
+            GameState.Instance.menu.LoadMenu("As you keep buying instruments, you may notice some synergize with each other. This is based on if they neighbor an instrument they would neighbor in a real orchestra. You'll have to experiment to see what instruments synergize.\n\nTry getting 30 customers, you may unlock a way of making money a little faster!\n\nPress B to close this menu.");
             thirdPurchase = false;
         }
         selected = Instantiate(prefab, GameState.Instance.parent);
