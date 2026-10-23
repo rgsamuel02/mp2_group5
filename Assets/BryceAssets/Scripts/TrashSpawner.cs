@@ -5,7 +5,7 @@ public class TrashSpawner : MonoBehaviour
 {
     public List <GameObject> trashPrefabs;
     public GameObject AudienceArea;
-    bool firstSpawn = true;
+    static bool firstSpawn = true;
 
 
     public void Start()
@@ -26,7 +26,7 @@ public class TrashSpawner : MonoBehaviour
             GameState.Instance.menu.LoadMenu("Some rude audience members will leave trash behind.\n\nBetter clean it up to make sure people have a good time or you won't get paid as much.\n\nI bet you get material from it though.\n\nPress B to close this menu.");
             firstSpawn = false;
         }
-        Instantiate(trashPrefabs[Random.Range(0, 3)], GameState.Instance.parent).transform.position = new Vector3(x, 0, z);
+        Instantiate(trashPrefabs[Random.Range(0, 3)], new Vector3(x, 0, z), Quaternion.identity);
         GameState.Instance.CreateTrash();
     }
 }

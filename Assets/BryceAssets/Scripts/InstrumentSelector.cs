@@ -34,7 +34,7 @@ public class InstrumentSelector : MonoBehaviour
             if (targetInstrument != null) targetInstrument.Repair();
             else {
                 ray.TryGetCurrent3DRaycastHit(out RaycastHit hit);
-                UnityEngine.Vector2 grid = MoveInstrument.GetNearestGridPoint(hit.point - GameState.Instance.parent.position);
+                UnityEngine.Vector2 grid = MoveInstrument.GetNearestGridPoint(hit.point);
                 Debug.Log(grid);
                 targetInstrument = GameState.Instance.GetInstrumentAt((int) grid.x, (int) grid.y);
                 if (targetInstrument != null)

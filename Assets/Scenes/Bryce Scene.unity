@@ -199,17 +199,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4429821022422427880, guid: 4358a25f2d950b14dbb678024ca02c34, type: 3}
   m_PrefabInstance: {fileID: 8048913269060416497}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &504039280 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1178791450436251564, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
-  m_PrefabInstance: {fileID: 8869953550907144258}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e0cb9aa70a22847b5925ee5f067c10a9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &514768852 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4429821022422427880, guid: 4358a25f2d950b14dbb678024ca02c34, type: 3}
@@ -9852,7 +9841,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af622634860394a41928443b3594890e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameState
-  parent: {fileID: 3861114080966091834}
   person: {fileID: 6728605689000482610, guid: b9c89dc24d6e581439a497b0117ef558, type: 3}
   audience: {fileID: 1845819324284846517}
   trashSpawner: {fileID: 1477092123804119994}
@@ -9860,8 +9848,8 @@ MonoBehaviour:
   - {fileID: 2100000, guid: de80d13f15929bc4d9f72233c15bd450, type: 2}
   - {fileID: 2100000, guid: 35cf49468bf91914587d64ef7ee85fd9, type: 2}
   - {fileID: 2100000, guid: 40ad99c38a64f674eb910bbd266764e7, type: 2}
-  xro: {fileID: 504039280}
   menu: {fileID: 2899511406926059015}
+  nextLevel: {fileID: -1644001223835636349, guid: e0ca4504471ca124088e1e2cfe6804ae, type: 3}
   stats: {fileID: 288774044344278193}
 --- !u!1 &6308966224727250759
 GameObject:
