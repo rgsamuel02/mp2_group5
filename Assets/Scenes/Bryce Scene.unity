@@ -154,6 +154,61 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4429821022422427880, guid: 4358a25f2d950b14dbb678024ca02c34, type: 3}
   m_PrefabInstance: {fileID: 4669422600881914816}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &262132617
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 262132619}
+  - component: {fileID: 262132618}
+  m_Layer: 0
+  m_Name: ShowVases
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &262132618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 262132617}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b6e8221c70374aab9934ea96c7aebc2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ShowVases
+  tempVases:
+  - {fileID: 820158437}
+  - {fileID: 854361028}
+  - {fileID: 1932105111}
+  - {fileID: 268815574}
+  - {fileID: 1753042477}
+  - {fileID: 539784353}
+  - {fileID: 782871751}
+  - {fileID: 658237297}
+  - {fileID: 1075910424}
+  - {fileID: 1115262539}
+--- !u!4 &262132619
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 262132617}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.68859, y: 0, z: 6.36952}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &265077366 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4429821022422427880, guid: 4358a25f2d950b14dbb678024ca02c34, type: 3}
@@ -226,6 +281,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 4c5f40342d54a49fb9bc58b590a49a66, type: 3}
       propertyPath: m_Name
       value: WallVase (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 4c5f40342d54a49fb9bc58b590a49a66, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -466,6 +525,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: WallVase (5)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 4c5f40342d54a49fb9bc58b590a49a66, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -675,6 +738,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: WallVase (7)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 4c5f40342d54a49fb9bc58b590a49a66, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -869,6 +936,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: WallVase (6)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 4c5f40342d54a49fb9bc58b590a49a66, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1062,6 +1133,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 4c5f40342d54a49fb9bc58b590a49a66, type: 3}
       propertyPath: m_Name
       value: WallVase
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 4c5f40342d54a49fb9bc58b590a49a66, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1306,6 +1381,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: WallVase (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 4c5f40342d54a49fb9bc58b590a49a66, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1546,6 +1625,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: WallVase (8)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 4c5f40342d54a49fb9bc58b590a49a66, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1749,6 +1832,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 4c5f40342d54a49fb9bc58b590a49a66, type: 3}
       propertyPath: m_Name
       value: WallVase (9)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 4c5f40342d54a49fb9bc58b590a49a66, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1974,6 +2061,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: WallVase (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 4c5f40342d54a49fb9bc58b590a49a66, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2192,6 +2283,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 4c5f40342d54a49fb9bc58b590a49a66, type: 3}
       propertyPath: m_Name
       value: WallVase (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 4c5f40342d54a49fb9bc58b590a49a66, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -11745,6 +11840,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 35cf49468bf91914587d64ef7ee85fd9, type: 2}
   - {fileID: 2100000, guid: 40ad99c38a64f674eb910bbd266764e7, type: 2}
   level: 1
+  rowMultiplier: 0100000001000000010000000100000001000000
   menu: {fileID: 2899511406926059015}
   nextLevel: {fileID: -1644001223835636349, guid: e0ca4504471ca124088e1e2cfe6804ae, type: 3}
   stats: {fileID: 288774044344278193}
@@ -16575,3 +16671,4 @@ SceneRoots:
   - {fileID: 1065505065015823702}
   - {fileID: 7721928702888056425}
   - {fileID: 1337263726711840647}
+  - {fileID: 262132619}
