@@ -17,6 +17,7 @@ public class HoldCoffee : MonoBehaviour
     {
         if (CoffeeTutorial.Instance != null)
         {
+            GameState.Instance.menu.LoadMenu("Good job! Now try it in the real hall. Customers may fall asleep during their stay, and you must give them coffee before they leave if they do. Coffee will cost 3 dollars though, so don't overspend on it!\n\nPress B to exit menu.");
             CoffeeTutorial.Complete();
         }
         GameObject thing = held.GetOldestInteractableSelected().transform.gameObject;

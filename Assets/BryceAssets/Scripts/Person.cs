@@ -1,4 +1,7 @@
 using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Interactables;
+using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
 public class Person : MonoBehaviour
 {
@@ -7,9 +10,16 @@ public class Person : MonoBehaviour
     float lifeSpan = 60;
     float speed = 1;
     float trashSpawnRate = 0.1f;
+    int timeToSleep = 50; // Expected value for how long it will take for them to fall asleep. The exact distribution is difficult to describe.
+    float spawnPrice;
+
+    public XRSocketInteractor held;
+    bool caffeinated = false;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
+        held.selectEntered.AddListener(StartSelect);
+
         System.Random r = new();
         Transform shirt = transform.Find("Shirt");
         shirt.GetComponent<MeshRenderer>().material.color = new((float) r.NextDouble(), (float) r.NextDouble(), (float) r.NextDouble());
@@ -30,6 +40,10 @@ public class Person : MonoBehaviour
 
     void Update()
     {
+        if (lifeSpan > 10 && Random.Range(0, (int) (timeToSleep / Time.deltaTime)) == 0 && !caffeinated && GameState.Instance.level > 1)
+        {
+            transform.Find("Canvas").gameObject.SetActive(true);
+        }
         lifeSpan -= Time.deltaTime;
         if (lifeSpan > 0) {
             while (transform.localPosition.z < targetZ) {
@@ -52,8 +66,43 @@ public class Person : MonoBehaviour
                 transform.SetLocalPositionAndRotation(transform.localPosition + new Vector3(0, 0, - speed * Time.deltaTime), Quaternion.identity);
                 return;
             }
+            if (IsAsleep())
+            {
+                GameState.Instance.AddPay(-spawnPrice * 2);
+            }
             Destroy(gameObject);
             GameState.Instance.FreeSeat(target);
         }
+    }
+
+    public void SetSpawnPrice(float i)
+    {
+        spawnPrice = i;
+    }
+
+    bool IsAsleep()
+    {
+        return transform.Find("Canvas").gameObject.activeInHierarchy;
+    }
+
+    void StartSelect(SelectEnterEventArgs arg0)
+    {
+        if (CoffeeTutorial.Instance != null)
+        {
+            GameState.Instance.menu.LoadMenu("Good job! Now try it in the real hall. Customers may fall asleep during their stay, and you must give them coffee before they leave if they do. Coffee will cost 3 dollars though, so don't overspend on it!\n\nPress B to exit menu.");
+            CoffeeTutorial.Complete();
+        }
+        if (IsAsleep()) {
+            GameObject thing = held.GetOldestInteractableSelected().transform.gameObject;
+            thing.GetComponent<XRGrabInteractable>().interactionLayers = InteractionLayerMask.GetMask("Coffee");
+            transform.Find("Canvas").gameObject.SetActive(false);
+            caffeinated = true;
+        }
+        else
+        {
+            GameState.Instance.menu.LoadMenu("People who are awake don't need coffee! You should save your money.\n\nPress B to exit menu.");
+            held.interactionManager.SelectExit(held, held.GetOldestInteractableSelected());
+        }
+        // ilm.
     }
 }

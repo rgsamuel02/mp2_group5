@@ -23,10 +23,13 @@ public class GameState : MonoBehaviour
     public List<Material> breakStates;
     bool unlockedGarden = false;
     int numCustomers = 0;
-    int level = 1;
+    public int level = 1;
+    public int[] rowMultiplier = {1, 1, 1, 1, 1};
+
 
     private void Awake()
     {
+        if (level == 1 && unlockedGarden) ShowVases.MakeVasesActive();
         // If an instance already exists and it's not this one, destroy it
         if (Instance != null && Instance != this)
         {
@@ -101,7 +104,7 @@ public class GameState : MonoBehaviour
     {
         money += income;
 
-        if (income < 0) return; // if we bought or otherwise lost money for some reason don't spawn a customer
+        if (income <= 0) return; // if we bought or otherwise lost money for some reason don't spawn a customer
 
         numCustomers++;
 
@@ -109,6 +112,7 @@ public class GameState : MonoBehaviour
         {
             // TODO make Garden integration
             menu.LoadMenu("OMGOMGOMG");
+            ShowVases.MakeVasesActive();
             unlockedGarden = true;
         }
 
@@ -142,6 +146,10 @@ public class GameState : MonoBehaviour
         }
         newPerson.GetComponent<Person>().SetTarget(seat);
         occupiedSeats[seat] = true;
+        int row = seat / 10;
+        float adjustedIncome = rowMultiplier[row] * income;
+        money += (rowMultiplier[row] - 1) * income;
+        newPerson.GetComponent<Person>().SetSpawnPrice(adjustedIncome);
     }
 
     private void LoadNextLevel(InputAction.CallbackContext context)
