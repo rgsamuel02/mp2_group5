@@ -70,7 +70,7 @@ public class GameState : MonoBehaviour
     float high = 0, mid = 0, low = 0, brass = 0, woodwind = 0, strings = 0;
     float pitchEnjoyment = 1, timbreEnjoyment = 1;
     int trash = 10;
-    float money = 0.0f;
+    float money = 60.0f;
     int material = 0;
     public InputActionReference nextLevel;
 
@@ -108,13 +108,13 @@ public class GameState : MonoBehaviour
 
         numCustomers++;
 
-        if (numCustomers >= 30 && !unlockedGarden)
-        {
-            // TODO make Garden integration
-            menu.LoadMenu("OMGOMGOMG");
-            ShowVases.MakeVasesActive();
-            unlockedGarden = true;
-        }
+        // if (numCustomers >= 30 && !unlockedGarden)
+        // {
+        //     // TODO make Garden integration
+        //     menu.LoadMenu("OMGOMGOMG");
+        //     ShowVases.MakeVasesActive();
+        //     unlockedGarden = true;
+        // }
 
         if (firstCustomer && !menu.IsOpen())
         {
@@ -125,6 +125,13 @@ public class GameState : MonoBehaviour
         // verify that there is an empty seat
         for (int i = 0; i < occupiedSeats.Length; i++)
         {
+            if (level == 1 || level == 2)
+            {
+                menu.CloseMenu();
+                menu.LoadMenu($"You filled the house to complete the first level! Great job.\n\nYour rank is {ComputeRank()}\n\nPress B to go to the next level.");
+                nextLevel.action.performed += LoadNextLevel;
+                return;
+            }
             if (!occupiedSeats[i]) break;
             if (i == occupiedSeats.Length - 1)
             {

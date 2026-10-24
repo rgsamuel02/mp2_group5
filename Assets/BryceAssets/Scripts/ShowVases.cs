@@ -9,6 +9,10 @@ public class ShowVases : MonoBehaviour
     void Start()
     {
         vases = new(tempVases);
+        for (int i = 0; i < vases.Count; i++)
+        {
+            DontDestroyOnLoad(vases[i]);
+        }
     }
 
     public static void MakeVasesActive()

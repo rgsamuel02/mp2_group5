@@ -12,12 +12,20 @@ public class Person : MonoBehaviour
     float trashSpawnRate = 0.1f;
     int timeToSleep = 50; // Expected value for how long it will take for them to fall asleep. The exact distribution is difficult to describe.
     float spawnPrice;
+    int vipRarity = 10; // One in this many people are VIPs
+    bool vip = false;
+    public bool isTutorial = false;
 
     XRSocketInteractor held;
     bool caffeinated = false;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
+        if (Random.Range(0, vipRarity) == 0 && GameState.Instance.level >= 3) 
+        {
+            vip = true;
+            transform.Find("VIP").gameObject.SetActive(true);
+        }
         held = gameObject.GetComponent<XRSocketInteractor>();
         held.selectEntered.AddListener(StartSelect);
 
@@ -41,17 +49,17 @@ public class Person : MonoBehaviour
 
     void Update()
     {
-        if (lifeSpan > 10 && Random.Range(0, (int) (timeToSleep / Time.deltaTime)) == 0 && !caffeinated && GameState.Instance.level > 1)
+        if (lifeSpan > 10 && Random.Range(0, (int) (timeToSleep / Time.deltaTime)) == 0 && !caffeinated && GameState.Instance.level > 1 && !isTutorial)
         {
             transform.Find("Canvas").gameObject.SetActive(true);
         }
         lifeSpan -= Time.deltaTime;
         if (lifeSpan > 0) {
-            while (transform.localPosition.z < targetZ) {
+            if (transform.localPosition.z < targetZ) {
                 transform.SetLocalPositionAndRotation(transform.localPosition + new Vector3(0, 0, speed * Time.deltaTime), Quaternion.identity);
                 return;
             }
-            while (transform.localPosition.x > targetX) {
+            if (transform.localPosition.x > targetX) {
                 transform.SetLocalPositionAndRotation(transform.localPosition + new Vector3(-speed * Time.deltaTime, 0, 0), Quaternion.identity);
                 return;
             }
@@ -59,17 +67,26 @@ public class Person : MonoBehaviour
         }
         else
         {
-            while (transform.localPosition.x > -6.5) {
+            if (transform.localPosition.x > -6.5) {
                 transform.SetLocalPositionAndRotation(transform.localPosition + new Vector3(-speed * Time.deltaTime, 0, 0), Quaternion.identity);
                 return;
             }
-            while (transform.localPosition.z > -3) {
+            if (transform.localPosition.z > -2.25) {
                 transform.SetLocalPositionAndRotation(transform.localPosition + new Vector3(0, 0, - speed * Time.deltaTime), Quaternion.identity);
+                return;
+            }
+            if (vip && transform.localPosition.x > -16)
+            {
+                transform.SetLocalPositionAndRotation(transform.localPosition + new Vector3(-speed * Time.deltaTime, 0, 0), Quaternion.identity);
                 return;
             }
             if (IsAsleep())
             {
                 GameState.Instance.AddPay(-spawnPrice * 2);
+            }
+            if (vip)
+            {
+                GameState.Instance.AddPay(-spawnPrice * 5 * (MealManager.EatMeal() ? -1 : 1)); // bring in 5x more money if there is a meal; remove it if there is not.
             }
             if (held.GetOldestInteractableSelected() != null)
                 Destroy(held.GetOldestInteractableSelected().transform.gameObject);
