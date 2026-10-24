@@ -148,7 +148,6 @@ public class Instrument : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other.gameObject.name);
         if(other.gameObject.name.StartsWith("coin"))
         {
             happiness = 300;

@@ -125,15 +125,17 @@ public class GameState : MonoBehaviour
         // verify that there is an empty seat
         for (int i = 0; i < occupiedSeats.Length; i++)
         {
-            if (level == 1 && income > 0) {
-                
-                menu.CloseMenu();
-                menu.LoadMenu($"You filled the house to complete the first level! Great job.\n\nYour rank is {ComputeRank()}\n\nPress B to go to the next level.");
-                nextLevel.action.performed += LoadNextLevel;
+            if (!occupiedSeats[i]) break;
+            if (i == occupiedSeats.Length - 1)
+            {
+                if (level == 1)
+                {
+                    menu.CloseMenu();
+                    menu.LoadMenu($"You filled the house to complete the first level! Great job.\n\nYour rank is {ComputeRank()}\n\nPress B to go to the next level.");
+                    nextLevel.action.performed += LoadNextLevel;
+                }
                 return;
             }
-            if (!occupiedSeats[i]) break;
-            // if (i == occupiedSeats.Length - 1) {
             
         }
 
@@ -249,8 +251,6 @@ public class GameState : MonoBehaviour
             if (Math.Abs(instruments[i].x - x) > 1 || Math.Abs(instruments[i].y - y) > 1) continue;
             for (int j = 0; j < 9; j++)
             {
-                Debug.Log(i);
-                Debug.Log(j);
                 if (instruments[i].gridMask[j] && instruments[i].x + (j % 3) - 1 == x && instruments[i].y + (j / 3) - 1 == y) return instruments[i];
             }
         }

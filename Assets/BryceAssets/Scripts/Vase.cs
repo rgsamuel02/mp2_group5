@@ -22,6 +22,12 @@ public class Vase : MonoBehaviour
 
     private void FlowerPlaced(SelectEnterEventArgs arg0)
     {
+        if (!vase.GetOldestInteractableSelected().transform.gameObject.name.Contains("Rose"))
+        {
+            GameState.Instance.menu.LoadMenu("No food is allowed in the concert hall! Try some non-food prefabs.\n\nPress B to exit.");
+            vase.GetOldestInteractableSelected().transform.position = vase.GetOldestInteractableSelected().transform.position - new Vector3(0, 0.3f, 0);
+            vase.interactionManager.SelectExit(vase, vase.GetOldestInteractableSelected());
+        }
         GameState.Instance.rowMultiplier[row - 1] += 1;
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine.XR.Interaction.Toolkit.Utilities;
 
 public class CoffeeTutorial : MonoBehaviour
 {
-    public static bool isCompleted = true;
+    public static bool isCompleted = false;
     public XROrigin xro;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public static CoffeeTutorial Instance { get; private set; }

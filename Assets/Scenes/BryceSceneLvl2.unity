@@ -535,6 +535,7 @@ MonoBehaviour:
   trashSpawner: {fileID: 546574449}
   breakStates: []
   level: 1
+  rowMultiplier: 0100000001000000010000000100000001000000
   menu: {fileID: 1253668579}
   nextLevel: {fileID: 0}
   stats: {fileID: 2369330783140228254}
@@ -1641,7 +1642,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07509857574815f41b4293666533bd9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrashSpawner
-  trashPrefabs: []
+  trashPrefabs:
+  - {fileID: 6397688625762120436, guid: cf7a3cd29c88c254793ba59a9d5332e6, type: 3}
+  - {fileID: 7548508013084441466, guid: f506d746bf9909044b3b95418634e10a, type: 3}
+  - {fileID: 1079908122574028855, guid: e9a18db66f611584a962edc7cafdf4ce, type: 3}
   AudienceArea: {fileID: 4430918990588162458}
 --- !u!4 &546574450
 Transform:

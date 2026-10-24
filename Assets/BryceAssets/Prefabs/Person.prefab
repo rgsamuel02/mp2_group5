@@ -390,7 +390,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.5
+  m_Radius: 0.25
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &6728605689000482610
 GameObject:
@@ -405,7 +405,6 @@ GameObject:
   - component: {fileID: 516299716485324984}
   - component: {fileID: 1379954620838627319}
   - component: {fileID: 9170693173285621105}
-  - component: {fileID: 407390241546291615}
   m_Layer: 0
   m_Name: Person
   m_TagString: Untagged
@@ -542,19 +541,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 0
---- !u!114 &407390241546291615
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6728605689000482610}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c26de765aacfa7a44ad93e2aabd3bbd8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HoldCoffee
-  held: {fileID: 516299716485324984}
 --- !u!1 &8714902105798760392
 GameObject:
   m_ObjectHideFlags: 0

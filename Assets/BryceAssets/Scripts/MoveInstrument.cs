@@ -20,18 +20,18 @@ public class MoveInstrument : MonoBehaviour
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void OnEnable()
     {
-        placeButton.action.started += (ctx) =>
-        {
-            Place();
-        };
+        placeButton.action.started += Place;
         placeButton.action.Disable();
-        cancel.action.performed += (ctx) => {
-            confirm.action.performed -= confirmHandler;
-            confirm.action.Disable();
-        };
+        cancel.action.performed += Cancel;
         cancel.action.Enable();
+    }
+
+    void OnDisable()
+    {
+        placeButton.action.started -= Place;
+        cancel.action.performed -= Cancel;
     }
 
     public void Select(GameObject prefab)
@@ -117,7 +117,7 @@ public class MoveInstrument : MonoBehaviour
         return ret;
     }
 
-    bool Place()
+    void Place(InputAction.CallbackContext ctx)
     {
         if (firstPlace)
         {
@@ -127,13 +127,16 @@ public class MoveInstrument : MonoBehaviour
         Vector3 pos = selected.transform.localPosition + offset;
         int x = (int) Math.Round((GameState.GRID_SIZE / 2 + pos.x) / GameState.GRID_SIZE + 14);
         int y = (int) -Math.Round((pos.z - GameState.GRID_SIZE / 2) / GameState.GRID_SIZE + 1);
-        Debug.Log(x);
-        Debug.Log(y);
         if (GameState.Instance.Place(selected.GetComponent<Instrument>(), x, y)) {
             selected = null;
             placeButton.action.Disable();
-            return true;
         }
-        return false;
+        return;
+    }
+
+    void Cancel(InputAction.CallbackContext ctx)
+    {
+        confirm.action.performed -= confirmHandler;
+        confirm.action.Disable();
     }
 }

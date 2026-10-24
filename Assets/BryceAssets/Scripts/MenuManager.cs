@@ -7,13 +7,14 @@ public class MenuManager : MonoBehaviour
     public InputActionReference close;
     public TextMeshProUGUI text;
     
-    void Awake()
+    void OnEnable()
     {
-        close.action.performed += (ctx) =>
-        {
-            gameObject.SetActive(false);
-            close.action.Disable();
-        };
+        close.action.performed += CloseMenu;
+    }
+
+    void OnDisable()
+    {
+        close.action.performed -= CloseMenu;
     }
 
     public void LoadMenu(string t)
@@ -26,8 +27,15 @@ public class MenuManager : MonoBehaviour
     public void CloseMenu()
     {
         gameObject.SetActive(false);
-        close.action.Disable();
+        // close.action.Disable();
     }
+
+    public void CloseMenu(InputAction.CallbackContext ctx)
+    {
+        gameObject.SetActive(false);
+        // close.action.Disable();
+    }
+
     public bool IsOpen()
     {
         return gameObject.activeInHierarchy;

@@ -13,11 +13,12 @@ public class Person : MonoBehaviour
     int timeToSleep = 50; // Expected value for how long it will take for them to fall asleep. The exact distribution is difficult to describe.
     float spawnPrice;
 
-    public XRSocketInteractor held;
+    XRSocketInteractor held;
     bool caffeinated = false;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
+        held = gameObject.GetComponent<XRSocketInteractor>();
         held.selectEntered.AddListener(StartSelect);
 
         System.Random r = new();
@@ -70,6 +71,8 @@ public class Person : MonoBehaviour
             {
                 GameState.Instance.AddPay(-spawnPrice * 2);
             }
+            if (held.GetOldestInteractableSelected() != null)
+                Destroy(held.GetOldestInteractableSelected().transform.gameObject);
             Destroy(gameObject);
             GameState.Instance.FreeSeat(target);
         }
@@ -90,7 +93,9 @@ public class Person : MonoBehaviour
         if (CoffeeTutorial.Instance != null)
         {
             GameState.Instance.menu.LoadMenu("Good job! Now try it in the real hall. Customers may fall asleep during their stay, and you must give them coffee before they leave if they do. Coffee will cost 3 dollars though, so don't overspend on it!\n\nPress B to exit menu.");
+            Destroy(held.GetOldestInteractableSelected().transform.gameObject);
             CoffeeTutorial.Complete();
+            return;
         }
         if (IsAsleep()) {
             GameObject thing = held.GetOldestInteractableSelected().transform.gameObject;
@@ -101,6 +106,7 @@ public class Person : MonoBehaviour
         else
         {
             GameState.Instance.menu.LoadMenu("People who are awake don't need coffee! You should save your money.\n\nPress B to exit menu.");
+            held.GetOldestInteractableSelected().transform.position = held.GetOldestInteractableSelected().transform.position - new Vector3(0, 0.3f, 0);
             held.interactionManager.SelectExit(held, held.GetOldestInteractableSelected());
         }
         // ilm.
