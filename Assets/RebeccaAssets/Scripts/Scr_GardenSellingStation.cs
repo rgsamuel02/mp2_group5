@@ -1,34 +1,62 @@
+
 using UnityEngine;
 
 public class Scr_GardenSellingStation : MonoBehaviour
 {
+    [Header("Buyer Settings")]
     public GardenResource cropToSell = GardenResource.Tomatoes;
 
+    [Header("References")]
     public Scr_GardenEconomy economy;
 
-    // Call this method when the player interacts with this buyer.
-    public void SellOneBatch()
+    private void Awake()
     {
         if (economy == null)
         {
             economy = FindFirstObjectByType<Scr_GardenEconomy>();
         }
+    }
 
-        int available = economy.inventory.GetAmount(cropToSell);
+    public void SellOneBatch()
+    {
+        Debug.Log(
+            $"Selling station interacted with: {gameObject.name}"
+        );
 
-        if (available <= 0)
+        if (economy == null)
         {
-            Debug.Log("You don't have any " + cropToSell + " to sell.");
+            economy = FindFirstObjectByType<Scr_GardenEconomy>();
+        }
+
+        if (economy == null)
+        {
+            Debug.LogError(
+                "Selling station: GardenEconomyManager was not found."
+            );
             return;
         }
+
+        if (economy.inventory == null)
+        {
+            Debug.LogError(
+                "Selling station: Inventory is not assigned."
+            );
+            return;
+        }
+
+        int available =
+            economy.inventory.GetAmount(cropToSell);
+
+        Debug.Log(
+            $"Station sells {cropToSell}. Available: {available}"
+        );
 
         bool sold = economy.SellCrop(cropToSell, available);
 
         if (sold)
         {
             Debug.Log(
-                "Sale completed at " + gameObject.name +
-                ". Sold " + available + " " + cropToSell + "."
+                $"Sale completed at {gameObject.name}."
             );
         }
     }

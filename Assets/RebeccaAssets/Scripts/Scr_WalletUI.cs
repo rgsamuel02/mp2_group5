@@ -13,11 +13,24 @@ public class Scr_WalletUI : MonoBehaviour
         //idk
     }
 
+    
     private void Update()
     {
+        bool canSell =
+            economy.RestaurantUnlocked ||
+            economy.CafeUnlocked ||
+            economy.OrchestraUnlocked;
+
+        if (!canSell)
+        {
+            walletText.text = $"Wallet: ${wallet.BalanceDollars:F2}";
+            return;
+        }
+
         walletText.text =
-            $"Wallet: ${wallet.BalanceDollars:F2} / $300.00";
+            $"Wallet: ${wallet.TotalEarnedFromSalesDollars:F2} / $300.00";
     }
+
 
     private string GetStatus(bool unlocked)
     {

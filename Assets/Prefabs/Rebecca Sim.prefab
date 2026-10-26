@@ -27,7 +27,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 407637179221128873}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0.5}
   m_LocalScale: {x: 0.001, y: 0.001, z: 0.001}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -363,10 +363,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Scr_Ach
   achievementPanel: {fileID: 8643082531277448366}
   achievementText: {fileID: 4861945625376145205}
-  popupDuration: 3
-  tMilestone: 100
-  cMilestone: 150
-  fMilestone: 30
+  popupDuration: 7
+  tMilestone: 30
+  cMilestone: 60
+  fMilestone: 5
 --- !u!1 &2189526492161600534
 GameObject:
   m_ObjectHideFlags: 0
@@ -490,9 +490,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Scr_Inventory
   water: 20
   fertilizer: 10
-  tomatoes: 0
-  corn: 0
-  flowers: 0
+  tomatoes: 300
+  corn: 15
+  flowers: 10
 --- !u!1 &2339482974775303067
 GameObject:
   m_ObjectHideFlags: 0
@@ -616,10 +616,10 @@ MonoBehaviour:
   tomatoesHarvested: 0
   coffeeBeansHarvested: 0
   flowersHarvested: 0
-  restaurantUnlocked: 0
-  cafeUnlocked: 0
-  orchestraUnlocked: 0
-  challengeCompleted: 0
+  restaurantUnlocked: 1
+  cafeUnlocked: 1
+  orchestraUnlocked: 1
+  challengeCompleted: 1
 --- !u!1 &2430216400348116166
 GameObject:
   m_ObjectHideFlags: 0
@@ -649,7 +649,7 @@ Transform:
   m_GameObject: {fileID: 2430216400348116166}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 5, y: 2, z: 0}
+  m_LocalPosition: {x: 5, y: 0.8, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -746,7 +746,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2837922ac2c78494f83f78de1ae82ac3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Scr_GardenSellingStation
-  cropToSell: 4
+  cropToSell: 3
   economy: {fileID: 4087574172441949095}
 --- !u!1 &2769326042131226628
 GameObject:
@@ -820,7 +820,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2037864912370144376
 RectTransform:
   m_ObjectHideFlags: 0
@@ -838,7 +838,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0.2}
+  m_AnchoredPosition: {x: 0, y: 0.1}
   m_SizeDelta: {x: 600, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &2880450076048025821
@@ -1498,7 +1498,7 @@ Transform:
   m_GameObject: {fileID: 4557395131871956261}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2.5, y: 2, z: 0}
+  m_LocalPosition: {x: 2.5, y: 0.8, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1595,7 +1595,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2837922ac2c78494f83f78de1ae82ac3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Scr_GardenSellingStation
-  cropToSell: 5
+  cropToSell: 4
   economy: {fileID: 4087574172441949095}
 --- !u!1 &4716047606842421903
 GameObject:
@@ -1662,14 +1662,14 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'A: Place plot
+  m_text: 'X: Place plot
 
-    B: Place coffee plant seedling
+    Y: Place coffee plant seedling
 
-    X: Place tomato
+    A: Place tomato
     plant seedling
 
-    Y: Place flower seedling
+    B: Place flower seedling
 
 
     LH Trigger: Water plant
@@ -1883,7 +1883,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: -182.44154, y: -38.5952, z: -179.78839, w: -38.91945}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -1907,7 +1907,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &4860306535565239271
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1920,14 +1920,13 @@ RectTransform:
   m_LocalScale: {x: 0.001, y: 0.001, z: 0.001}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 4536291933795576255}
   - {fileID: 8579904663708400300}
   m_Father: {fileID: 2222432444931168567}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 400, y: 100}
+  m_AnchoredPosition: {x: 0, y: 0.1}
+  m_SizeDelta: {x: 600, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &4789007713783038611
 Canvas:
@@ -2031,7 +2030,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: -0.35, y: -0.2}
-  m_SizeDelta: {x: 300, y: 100}
+  m_SizeDelta: {x: 350, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &2087964743969162673
 Canvas:
@@ -2278,7 +2277,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 4536291933795576255}
   m_Father: {fileID: 4860306535565239271}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -2708,7 +2708,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1693970772424401222
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2726,8 +2726,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0.2}
-  m_SizeDelta: {x: 600, y: 100}
+  m_AnchoredPosition: {x: 0, y: 0.1}
+  m_SizeDelta: {x: 600, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &5767297653548459348
 Canvas:
@@ -3521,7 +3521,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -29.326271, y: 0, z: -34.082108, w: 0}
+  m_margin: {x: -66.6274, y: 0, z: -66.02411, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -3554,7 +3554,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8253393931040606176}
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0.5}
   m_LocalScale: {x: 0.0009999999, y: 0.0009999999, z: 0.0009999999}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3736,7 +3736,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 4860306535565239271}
+  m_Father: {fileID: 8579904663708400300}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -3837,7 +3837,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: -143.88336, y: 0, z: -141.48781, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -4009,7 +4009,7 @@ Transform:
   m_GameObject: {fileID: 8916077531212953124}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 7.5, y: 2, z: 0}
+  m_LocalPosition: {x: 7.5, y: 0.8, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4106,7 +4106,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2837922ac2c78494f83f78de1ae82ac3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Scr_GardenSellingStation
-  cropToSell: 3
+  cropToSell: 2
   economy: {fileID: 4087574172441949095}
 --- !u!1 &9002226904709554988
 GameObject:
@@ -4135,7 +4135,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9002226904709554988}
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0.5}
   m_LocalScale: {x: 0.0009999999, y: 0.0009999999, z: 0.0009999999}
   m_ConstrainProportionsScale: 0
   m_Children:

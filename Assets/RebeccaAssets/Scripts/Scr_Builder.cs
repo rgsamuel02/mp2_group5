@@ -50,6 +50,12 @@ public class Scr_Builder : MonoBehaviour
             Debug.LogError("Scr_Builder could not find Scr_Inventory.");
         }
 
+        if (resourcePopupPanel != null)
+        {
+            resourcePopupPanel.SetActive(false);
+        }
+
+
         Enable(selectPlotAction, OnSelectPlot);
         Enable(selectSeedlingAction, OnSelectSeedling);
         Enable(selectCornAction, OnSelectCorn);
@@ -109,20 +115,24 @@ public class Scr_Builder : MonoBehaviour
     {
         TryHarvestPlant();
     }
-    private void OnSell(InputAction.CallbackContext context)
+    private void OnSell(UnityEngine.InputSystem.InputAction.CallbackContext context)
     {
+        Debug.Log("Sell button pressed.");
+
         if (!TryGetHit(out RaycastHit hit))
         {
-            Debug.Log("Point at a selling station first.");
+            Debug.Log("Sell: Ray is not hitting anything.");
             return;
         }
+
+        Debug.Log("Sell ray hit: " + hit.collider.name);
 
         Scr_GardenSellingStation station =
             hit.collider.GetComponentInParent<Scr_GardenSellingStation>();
 
         if (station == null)
         {
-            Debug.Log("Point at a restaurant, cafe, or orchestra selling station.");
+            Debug.Log("Sell: The hit object is not a selling station.");
             return;
         }
 
@@ -779,16 +789,32 @@ public class Scr_Builder : MonoBehaviour
         plant.Harvest();
     }
 
+    
     private void ShowResourcePopup(string message)
     {
+        if (resourcePopupPanel == null || resourcePopupText == null)
+        {
+            Debug.LogError(
+                "Resource popup is missing! Assign Resource Popup Panel " +
+                "and Resource Popup Text in the Scr_Builder Inspector."
+            );
+            return;
+        }
+
         if (popupCoroutine != null)
+        {
             StopCoroutine(popupCoroutine);
+            popupCoroutine = null;
+        }
 
         resourcePopupText.text = message;
         resourcePopupPanel.SetActive(true);
 
+        Debug.Log("Showing resource popup: " + message);
+
         popupCoroutine = StartCoroutine(HideResourcePopupAfterDelay());
     }
+
 
     private System.Collections.IEnumerator HideResourcePopupAfterDelay()
     {
