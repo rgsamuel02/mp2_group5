@@ -64,7 +64,7 @@ public class MealTutorial : MonoBehaviour
         tutorialCleared = true;
         Destroy(gameObject);
         xro.transform.position = new(0, 0, 0);
-        GameState.Instance.menu.LoadMenu("You're an expert. Now let's try it for real. You can see the restaurant section on your left, but meals cost money now. Worse, if you make too many meals, you have to throw them away, but you are still paying! You will have to find the balance. Good luck!\n\nPress B to continue.");
+        GameState.Instance.menu.LoadMenu("You're an expert. Now let's try it for real. You can see the restaurant section on your left, but meals cost money now. 2 dollars in fact. Worse, if you make too many meals, you have to throw them away, but you are still paying! You will have to find the balance. Good luck!\n\nPress B to continue.");
     }
 
     public static bool EatMeal()

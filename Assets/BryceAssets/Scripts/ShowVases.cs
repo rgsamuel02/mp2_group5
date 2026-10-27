@@ -11,6 +11,7 @@ public class ShowVases : MonoBehaviour
         vases = new(tempVases);
         for (int i = 0; i < vases.Count; i++)
         {
+            vases[i].transform.SetParent(null);
             DontDestroyOnLoad(vases[i]);
         }
     }

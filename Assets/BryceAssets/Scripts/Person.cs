@@ -10,7 +10,7 @@ public class Person : MonoBehaviour
     float lifeSpan = 60;
     float speed = 1;
     float trashSpawnRate = 0.1f;
-    int timeToSleep = 50; // Expected value for how long it will take for them to fall asleep. The exact distribution is difficult to describe.
+    int timeToSleep = 400; // Expected value for how long it will take for them to fall asleep. The exact distribution is difficult to describe.
     float spawnPrice;
     int vipRarity = 10; // One in this many people are VIPs
     bool vip = false;
@@ -100,7 +100,7 @@ public class Person : MonoBehaviour
         spawnPrice = i;
     }
 
-    bool IsAsleep()
+    public bool IsAsleep()
     {
         return transform.Find("Canvas").gameObject.activeInHierarchy;
     }
@@ -109,13 +109,13 @@ public class Person : MonoBehaviour
     {
         if (CoffeeTutorial.Instance != null)
         {
-            GameState.Instance.menu.LoadMenu("Good job! Now try it in the real hall. Customers may fall asleep during their stay, and you must give them coffee before they leave if they do. Coffee will cost 3 dollars though, so don't overspend on it!\n\nPress B to exit menu.");
-            Destroy(held.GetOldestInteractableSelected().transform.gameObject);
+            GameState.Instance.menu.LoadMenu("Good job! Now try it in the real hall. Customers may fall asleep during their stay, and you must give them coffee before they leave if they do. Coffee will cost 2 dollars though, so don't overspend on it!\n\nPress B to exit menu.");
+            Destroy(arg0.interactableObject.transform.gameObject);
             CoffeeTutorial.Complete();
             return;
         }
         if (IsAsleep()) {
-            GameObject thing = held.GetOldestInteractableSelected().transform.gameObject;
+            GameObject thing = arg0.interactableObject.transform.gameObject;
             thing.GetComponent<XRGrabInteractable>().interactionLayers = InteractionLayerMask.GetMask("Coffee");
             transform.Find("Canvas").gameObject.SetActive(false);
             caffeinated = true;
@@ -123,8 +123,8 @@ public class Person : MonoBehaviour
         else
         {
             GameState.Instance.menu.LoadMenu("People who are awake don't need coffee! You should save your money.\n\nPress B to exit menu.");
-            held.GetOldestInteractableSelected().transform.position = held.GetOldestInteractableSelected().transform.position - new Vector3(0, 0.3f, 0);
-            held.interactionManager.SelectExit(held, held.GetOldestInteractableSelected());
+            arg0.interactableObject.transform.position -= new Vector3(0, 0.1f, 0);
+            held.interactionManager.SelectExit(held, arg0.interactableObject);
         }
         // ilm.
     }

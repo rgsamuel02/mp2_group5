@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
@@ -17,17 +18,21 @@ public class Vase : MonoBehaviour
 
     private void FlowerRemoved(SelectExitEventArgs arg0)
     {
+        GameObject obj = arg0.interactableObject.transform.gameObject;
+        SceneManager.MoveGameObjectToScene(obj, SceneManager.GetActiveScene());
         GameState.Instance.rowMultiplier[row - 1] -= 1;
     }
 
     private void FlowerPlaced(SelectEnterEventArgs arg0)
     {
-        if (!vase.GetOldestInteractableSelected().transform.gameObject.name.Contains("Rose"))
+        GameObject obj = arg0.interactableObject.transform.gameObject;
+        if (!obj.name.Contains("Rose"))
         {
             GameState.Instance.menu.LoadMenu("No food is allowed in the concert hall! Try some non-food prefabs.\n\nPress B to exit.");
-            vase.GetOldestInteractableSelected().transform.position = vase.GetOldestInteractableSelected().transform.position - new Vector3(0, 0.3f, 0);
-            vase.interactionManager.SelectExit(vase, vase.GetOldestInteractableSelected());
+            obj.transform.position -= new Vector3(0, 0.3f, 0);
+            vase.interactionManager.SelectExit(vase, arg0.interactableObject);
         }
+        DontDestroyOnLoad(obj.transform.gameObject);
         GameState.Instance.rowMultiplier[row - 1] += 1;
     }
 }

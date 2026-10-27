@@ -25,6 +25,8 @@ public class GameState : MonoBehaviour
     int numCustomers = 0;
     public int level = 1;
     public int[] rowMultiplier = {1, 1, 1, 1, 1};
+    bool boughtPiano = false;
+    public GameObject pianoTrophy;
 
 
     private void Awake()
@@ -37,6 +39,8 @@ public class GameState : MonoBehaviour
             Instance.audience = audience;
             Instance.trashSpawner = trashSpawner;
             Instance.menu = menu;
+            Instance.threshold = threshold;
+            if (boughtPiano) pianoTrophy.SetActive(true);
             Destroy(gameObject);
             return;
         }
@@ -44,6 +48,7 @@ public class GameState : MonoBehaviour
         Instance = this;
         menu.LoadMenu("Welcome to your new job as an orchestra manager! You must hire instruments to improve the sound, but be careful; you don't want to have too much of one type of sound.\n\nYou can purchase instruments over at stage left. How about you start with a violin to be the concertmaster?\n\nPress B to close this menu.");
         DontDestroyOnLoad(gameObject); // Optional: Keeps it alive across scenes
+        DontDestroyOnLoad(pianoTrophy); // Optional: Keeps it alive across scenes
     }
 
     public MenuManager menu;
@@ -65,18 +70,19 @@ public class GameState : MonoBehaviour
         100
     };
 
-    bool[] occupiedSeats = new bool[50];
+    Person[] occupiedSeats = new Person[50];
 
     float high = 0, mid = 0, low = 0, brass = 0, woodwind = 0, strings = 0;
     float pitchEnjoyment = 1, timbreEnjoyment = 1;
     int trash = 10;
-    float money = 60.0f;
+    float money = 0.0f;
     int material = 0;
     public InputActionReference nextLevel;
 
     List<Instrument> instruments = new();
 
     public TextMeshProUGUI stats;
+    public TextMeshProUGUI threshold;
 
     public void AdjustPitch(float h, float m, float l)
     {
@@ -108,13 +114,12 @@ public class GameState : MonoBehaviour
 
         numCustomers++;
 
-        // if (numCustomers >= 30 && !unlockedGarden)
-        // {
-        //     // TODO make Garden integration
-        //     menu.LoadMenu("OMGOMGOMG");
-        //     ShowVases.MakeVasesActive();
-        //     unlockedGarden = true;
-        // }
+        if (numCustomers >= 30 && !unlockedGarden)
+        {
+            menu.LoadMenu("Great work! You have had 30 customers visit your ensemble, but the place looks pretty drab. I bet you can put up some flowers to bring in a little more money from anyone who sits in the row with flowers.\n\nFor your next unlock, try to fill the hall and plant five flowers. Each flower costs $2. Good luck!\n\nPress B to close this menu.");
+            ShowVases.MakeVasesActive();
+            unlockedGarden = true;
+        }
 
         if (firstCustomer && !menu.IsOpen())
         {
@@ -123,38 +128,39 @@ public class GameState : MonoBehaviour
         }
 
         // verify that there is an empty seat
-        for (int i = 0; i < occupiedSeats.Length; i++)
+        if (CalculateFillPercent() == 1)
         {
-            if (level == 1 || level == 2)
-            {
-                menu.CloseMenu();
-                menu.LoadMenu($"You filled the house to complete the first level! Great job.\n\nYour rank is {ComputeRank()}\n\nPress B to go to the next level.");
-                nextLevel.action.performed += LoadNextLevel;
-                return;
-            }
-            if (!occupiedSeats[i]) break;
-            if (i == occupiedSeats.Length - 1)
-            {
-                if (level == 1)
+            if (level == 1) {
+                int decorationFlowers = CountFlowers();
+                if (decorationFlowers >= 5)
                 {
                     menu.CloseMenu();
-                    menu.LoadMenu($"You filled the house to complete the first level! Great job.\n\nYour rank is {ComputeRank()}\n\nPress B to go to the next level.");
+                    menu.LoadMenu($"You filled the house and planted five flowers to complete the first level! Great job.\n\nYour rank is {ComputeRank()}\n\nPress B to go to the next level.");
                     nextLevel.action.performed += LoadNextLevel;
                 }
                 return;
             }
-            
+            else if (level == 2)
+            {
+                if (AwakeAudienceMembers() == 50)
+                {
+                    menu.CloseMenu();
+                    menu.LoadMenu($"Wow you have a whole audience who is all awake! Great job.\n\nYour rank is {ComputeRank()}\n\nPress B to go to the next level.");
+                    nextLevel.action.performed += LoadNextLevel;
+                }
+            }
+            return;
         }
 
         GameObject newPerson = Instantiate(person, audience.transform);
         newPerson.transform.localPosition = new Vector3(6.5f, 0, -4.5f);
         int seat = UnityEngine.Random.Range(0, 50);
-        while (occupiedSeats[seat])
+        while (occupiedSeats[seat] != null)
         {
             seat = UnityEngine.Random.Range(0, 50);
         }
-        newPerson.GetComponent<Person>().SetTarget(seat);
-        occupiedSeats[seat] = true;
+        occupiedSeats[seat] = newPerson.GetComponent<Person>();
+        occupiedSeats[seat].SetTarget(seat);
         int row = seat / 10;
         float adjustedIncome = rowMultiplier[row] * income;
         money += (rowMultiplier[row] - 1) * income;
@@ -170,18 +176,18 @@ public class GameState : MonoBehaviour
         {
             insts[j].DestroyInstrument();
         }
-        occupiedSeats = new bool[50];
+        occupiedSeats = new Person[50];
         nextLevel.action.performed -= LoadNextLevel;
     }
 
     string ComputeRank()
     {
         float rank = GetEnjoyment() * money;
-        if (rank >= 100) return "S";
-        if (rank >= 90) return "A";
-        if (rank >= 80) return "B";
-        if (rank >= 70) return "C";
-        if (rank >= 60) return "D";
+        if (rank >= 100 * level) return "S";
+        if (rank >= 90 * level) return "A";
+        if (rank >= 80 * level) return "B";
+        if (rank >= 70 * level) return "C";
+        if (rank >= 60 * level) return "D";
         return "F";
     }
 
@@ -241,6 +247,12 @@ public class GameState : MonoBehaviour
 
     public bool Place(Instrument inst, int x, int y)
     {
+        if (inst.type == Instrument.InstrumentType.PIANO) 
+        {
+            boughtPiano = true; 
+            pianoTrophy.SetActive(true); 
+            menu.LoadMenu("Great job buying a piano! Let this trophy commemorate that you can afford every instrument in the orchestra\n\nPress B to close this menu");
+        }
         if (!Placeable(inst, x, y)) return false;
         inst.x = x;
         inst.y = y;
@@ -266,7 +278,7 @@ public class GameState : MonoBehaviour
 
     public void FreeSeat(int t)
     {
-        occupiedSeats[t] = false;
+        occupiedSeats[t] = null;
     }
 
     public void CreateTrash()
@@ -293,9 +305,50 @@ public class GameState : MonoBehaviour
     {
         material = m;
     }
+
+    int CountFlowers()
+    {
+        int decorationFlowers = 0;
+        for (int k = 0; k < rowMultiplier.Length; k++) decorationFlowers += rowMultiplier[k] - 1;
+        return decorationFlowers;
+    }
+
+    float CalculateFillPercent()
+    {
+        float numerator = 0;
+        float divisor = occupiedSeats.Length;
+        for (int i = 0; i < occupiedSeats.Length; i++)
+        {
+            if (occupiedSeats[i]) numerator++;
+        }
+        return numerator / divisor;
+    }
+
+    int AwakeAudienceMembers()
+    {
+        int awake = 0;
+        for (int i = 0; i < occupiedSeats.Length; i++)
+        {
+            if (occupiedSeats[i] != null && !occupiedSeats[i].IsAsleep()) awake++;
+        }
+        return awake;
+    }
+
     void Update()
     {
         stats.SetText(string.Format(template, money, material, high, mid, low, brass, woodwind, strings));
+        if (!unlockedGarden)
+        {
+            threshold.SetText($"Customers: {numCustomers}/30");
+        }
+        else if (level == 1)
+        {
+            threshold.SetText($"Audience Filled %: {CalculateFillPercent() * 100}\nFlowers Planted: {CountFlowers()}/5");
+        }
+        else if (level == 2)
+        {
+            threshold.SetText($"Audience Filled %: {CalculateFillPercent()}\nAwake Audience Members: {AwakeAudienceMembers()} / 50");
+        }
     }
 
     void CalculateNeighbors()
