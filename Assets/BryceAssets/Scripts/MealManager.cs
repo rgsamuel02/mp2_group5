@@ -1,0 +1,68 @@
+using System;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class MealManager : MonoBehaviour
+{
+    int mealsPerMinute = 1;
+    float timeToNextMeal = 60;
+    float costPerMeal = 2;
+    static GameObject[] meals = {null, null, null, null, null, null, null, null};
+    public Button plus, minus;
+    public GameObject mealPrefab;
+    public TextMeshProUGUI mealTextbox;
+
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
+        plus.onClick.AddListener(() => {
+            mealsPerMinute++;
+            mealTextbox.text = $"{mealsPerMinute}";
+            minus.interactable = true;
+            });
+        minus.onClick.AddListener(() => {
+            mealsPerMinute--;
+            mealTextbox.text = $"{mealsPerMinute}";
+            if (mealsPerMinute == 1) minus.interactable = false;
+            });
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        timeToNextMeal -= Time.deltaTime;
+        if (timeToNextMeal <= 0) {
+            SpawnMeal();
+            timeToNextMeal = 60f / mealsPerMinute;
+        }
+    }
+
+    private void SpawnMeal()
+    {
+        GameState.Instance.AddPay(-costPerMeal);
+        for (int i = 0; i < 8; i++)
+        {
+            if (meals[i] == null)
+            {
+                meals[i] = Instantiate(mealPrefab, gameObject.transform);
+                meals[i].transform.localPosition = new Vector3(-7.5f + i,1.05000007f,1.25f);
+                return;
+            }
+        }
+    }
+
+    public static bool EatMeal()
+    {
+        for (int i = 0; i < meals.Length; i++)
+        {
+            if (meals[i] != null)
+            {
+                Destroy(meals[i]);
+                meals[i] = null;
+                return true;
+            }
+        }
+        return false;
+    }
+}

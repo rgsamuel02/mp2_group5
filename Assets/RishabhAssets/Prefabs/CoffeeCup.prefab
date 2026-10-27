@@ -190,7 +190,7 @@ MonoBehaviour:
   m_InteractionManager: {fileID: 0}
   m_Colliders: []
   m_InteractionLayers:
-    m_Bits: 1
+    m_Bits: 8388609
   m_DistanceCalculationMode: 1
   m_SelectMode: 0
   m_FocusMode: 1
@@ -318,6 +318,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CoffeeCup
   flavoredTint: {r: 1, g: 0.35, b: 0.35, a: 1}
+  drinkSeconds: 0.75
 --- !u!1 &7711791733554056393
 GameObject:
   m_ObjectHideFlags: 0

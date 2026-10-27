@@ -5,7 +5,7 @@ public class Withdraw : MonoBehaviour
 {
     public Button b;
     public GameObject coin;
-    bool firstWithdraw = true;
+    static bool firstWithdraw = true;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -20,7 +20,7 @@ public class Withdraw : MonoBehaviour
             firstWithdraw = false;
         }
         if (GameState.Instance.GetMoney() < 1) return;
-        Instantiate(coin, GameState.Instance.parent).transform.localPosition = new(-7, 1, -1);
+        Instantiate(coin, new (-7, 1, -1), Quaternion.identity);
         GameState.Instance.AddPay(-1);
     }
 }

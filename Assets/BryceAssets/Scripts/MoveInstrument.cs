@@ -9,7 +9,7 @@ public class MoveInstrument : MonoBehaviour
     public InputActionReference confirm;
     public InputActionReference cancel;
     private Action<InputAction.CallbackContext> confirmHandler;
-    private bool firstSelect = true, firstPlace = true, secondPurchase = true, thirdPurchase = true;
+    private static bool firstSelect = true, firstPlace = true, secondPurchase = true, thirdPurchase = true;
     private GameObject selected = null;
 
     public InputActionReference placeButton;
@@ -20,18 +20,18 @@ public class MoveInstrument : MonoBehaviour
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void OnEnable()
     {
-        placeButton.action.started += (ctx) =>
-        {
-            Place();
-        };
+        placeButton.action.started += Place;
         placeButton.action.Disable();
-        cancel.action.performed += (ctx) => {
-            confirm.action.performed -= confirmHandler;
-            confirm.action.Disable();
-        };
+        cancel.action.performed += Cancel;
         cancel.action.Enable();
+    }
+
+    void OnDisable()
+    {
+        placeButton.action.started -= Place;
+        cancel.action.performed -= Cancel;
     }
 
     public void Select(GameObject prefab)
@@ -76,7 +76,7 @@ public class MoveInstrument : MonoBehaviour
             GameState.Instance.menu.LoadMenu("As you keep buying instruments, you may notice some synergize with each other. This is based on if they neighbor an instrument they would neighbor in a real orchestra. You'll have to experiment to see what instruments synergize.\n\nTry getting 30 customers, you may unlock a way of making money a little faster!\n\nPress B to close this menu.");
             thirdPurchase = false;
         }
-        selected = Instantiate(prefab, GameState.Instance.parent);
+        selected = Instantiate(prefab);
         selectedMat = selected.GetComponent<MeshRenderer>().material;
         placeButton.action.Enable();
         offset = prefab.GetComponent<Transform>().Find("offset").localPosition;
@@ -95,7 +95,7 @@ public class MoveInstrument : MonoBehaviour
     {
         if (selected == null) return;
         raycast.TryGetCurrent3DRaycastHit(out RaycastHit hit);
-        Vector2 target = GetNearestGridPoint(hit.point - GameState.Instance.parent.position);
+        Vector2 target = GetNearestGridPoint(hit.point);
         if (GameState.Instance.Placeable(selected.GetComponent<Instrument>(), (int) target.x, (int) target.y))
         {
             placeButton.action.Enable();
@@ -117,7 +117,7 @@ public class MoveInstrument : MonoBehaviour
         return ret;
     }
 
-    bool Place()
+    void Place(InputAction.CallbackContext ctx)
     {
         if (firstPlace)
         {
@@ -127,13 +127,16 @@ public class MoveInstrument : MonoBehaviour
         Vector3 pos = selected.transform.localPosition + offset;
         int x = (int) Math.Round((GameState.GRID_SIZE / 2 + pos.x) / GameState.GRID_SIZE + 14);
         int y = (int) -Math.Round((pos.z - GameState.GRID_SIZE / 2) / GameState.GRID_SIZE + 1);
-        Debug.Log(x);
-        Debug.Log(y);
         if (GameState.Instance.Place(selected.GetComponent<Instrument>(), x, y)) {
             selected = null;
             placeButton.action.Disable();
-            return true;
         }
-        return false;
+        return;
+    }
+
+    void Cancel(InputAction.CallbackContext ctx)
+    {
+        confirm.action.performed -= confirmHandler;
+        confirm.action.Disable();
     }
 }
