@@ -16,6 +16,7 @@ public class ServingRewards : MonoBehaviour
     [Header("Money")]
     public int plainPayment = 200;
     public int flavoredPayment = 250;
+    public int souffleBonus = 30;
 
     [Header("Satisfaction")]
     public int plainSatisfaction = 10;
@@ -28,6 +29,7 @@ public class ServingRewards : MonoBehaviour
     void OnEnable()
     {
         Customer.AnyServed += OnServed;
+        Splat.AnySwept -= OnSwept;
         Splat.AnySwept += OnSwept;
         RefreshLabels();
     }
@@ -41,12 +43,15 @@ public class ServingRewards : MonoBehaviour
     void OnServed(Customer customer, CoffeeCup cup)
     {
         bool flavored = cup && cup.IsFlavored;
-        wallet.Add(flavored ? flavoredPayment : plainPayment);
+        bool hadSouffle = customer && customer.HasConsumedSouffle;
+        wallet.Add((flavored ? flavoredPayment : plainPayment) + (hadSouffle ? souffleBonus : 0));
 
         int splats = FindObjectsByType<Splat>(FindObjectsSortMode.None).Length;
         int max = flavored ? flavoredSatisfaction : plainSatisfaction;
         int min = flavored ? flavoredMinSatisfaction : plainMinSatisfaction;
-        satisfaction += Mathf.Clamp(max - splats / 2, min, max);
+        int delta = Mathf.Clamp(max - splats / 2, min, max);
+        if (hadSouffle) delta += (max - delta) / 2;
+        satisfaction += delta;
         customersServed++;
         RefreshLabels();
     }

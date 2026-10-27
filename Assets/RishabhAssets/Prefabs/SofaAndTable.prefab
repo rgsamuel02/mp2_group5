@@ -36,7 +36,9 @@ Transform:
   - {fileID: 6560038173628848900}
   - {fileID: 6515771229247120731}
   - {fileID: 7597424338804820377}
+  - {fileID: 5545586591830796765}
   - {fileID: 3802890168492102133}
+  - {fileID: 2611473685958608409}
   - {fileID: 4093278428478870008}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -58,6 +60,9 @@ MonoBehaviour:
   cupAnchors:
   - {fileID: 7597424338804820377}
   - {fileID: 3802890168492102133}
+  souffleAnchors:
+  - {fileID: 5545586591830796765}
+  - {fileID: 2611473685958608409}
   cupSnapRadius: 0.25
   statsLabel: {fileID: 5160413537047289787}
   statsFormat: 'Seats Filled: {0}/{1}'
@@ -175,6 +180,37 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.4365976, y: 0.60440624, z: 0.9500077}
   m_Center: {x: -0.00012040138, y: -0.095849015, z: -0.05638331}
+--- !u!1 &2526892000196563082
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5545586591830796765}
+  m_Layer: 0
+  m_Name: SouffleAnchor0
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5545586591830796765
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2526892000196563082}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 31.5, y: 65.38358, z: -26.516087}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6521954900497405682}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2671496656273523839
 GameObject:
   m_ObjectHideFlags: 0
@@ -706,6 +742,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09aaadbd8201b1745ba37170c361fcaa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Billboard
+--- !u!1 &7592334243110563226
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2611473685958608409}
+  m_Layer: 0
+  m_Name: SouffleAnchor1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2611473685958608409
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7592334243110563226}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: -0.00000004371139}
+  m_LocalPosition: {x: 31.5, y: 65.38358, z: 26.934242}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6521954900497405682}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7653569340485883254
 GameObject:
   m_ObjectHideFlags: 0
