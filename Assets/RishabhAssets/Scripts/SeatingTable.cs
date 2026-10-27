@@ -2,14 +2,16 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-// Seats and cup spots on a Sofa & Table. A cup on spot i is drunk by whoever sits in seat i.
-// The table can only be moved while nobody is seated and no cup is on it.
+// Seats, cup spots, and souffle spots on a Sofa & Table. A cup/souffle on spot i is consumed by whoever sits in seat i.
+// The table can only be moved while nobody is seated and no cup or souffle is on it.
 public class SeatingTable : MonoBehaviour
 {
     [Tooltip("A seated customer's feet go here, facing the anchor's forward.")]
     public Transform[] seats = new Transform[2];
     [Tooltip("Cup spot for the seat with the same index.")]
     public Transform[] cupAnchors = new Transform[2];
+    [Tooltip("Souffle spot for the seat with the same index.")]
+    public Transform[] souffleAnchors = new Transform[2];
     public float cupSnapRadius = 0.25f;
 
     public TMP_Text statsLabel;
@@ -21,6 +23,7 @@ public class SeatingTable : MonoBehaviour
     Customer[] reservedBy;
     bool[] isSeated;
     CoffeeCup[] cups;
+    StevenChocolateSouffle[] souffles;
     GridOccupant occupant;
 
     public bool IsPlaced => Occupant && occupant.isPlaced && occupant.grid;
@@ -34,6 +37,7 @@ public class SeatingTable : MonoBehaviour
         {
             foreach (var s in isSeated) if (s) return true;
             foreach (var c in cups) if (c) return true;
+            if (souffles != null) foreach (var sf in souffles) if (sf) return true;
             return false;
         }
     }
@@ -63,6 +67,7 @@ public class SeatingTable : MonoBehaviour
         reservedBy = new Customer[seats.Length];
         isSeated = new bool[seats.Length];
         cups = new CoffeeCup[cupAnchors.Length];
+        souffles = new StevenChocolateSouffle[souffleAnchors.Length];
         RefreshLabel();
     }
 
@@ -126,11 +131,48 @@ public class SeatingTable : MonoBehaviour
         RefreshLock();
     }
 
+    // Snaps the souffle to the nearest free spot in reach; false if none is close enough.
+    public bool TrySnapSouffle(StevenChocolateSouffle souffle)
+    {
+        if (!IsPlaced) return false;
+        int best = -1;
+        float bestDist = cupSnapRadius * cupSnapRadius;
+        for (int i = 0; i < souffleAnchors.Length; i++)
+        {
+            if (!souffleAnchors[i] || souffles[i]) continue;
+            float d = (souffleAnchors[i].position - souffle.transform.position).sqrMagnitude;
+            if (d <= bestDist) { bestDist = d; best = i; }
+        }
+        if (best < 0) return false;
+
+        souffles[best] = souffle;
+        souffle.AttachTo(this, best);
+        RefreshLock();
+        TryServe(best);
+        return true;
+    }
+
+    public void RemoveSouffle(StevenChocolateSouffle souffle)
+    {
+        for (int i = 0; i < souffles.Length; i++)
+            if (souffles[i] == souffle) souffles[i] = null;
+        RefreshLock();
+    }
+
     void TryServe(int index)
     {
-        if (index >= seats.Length || index >= cups.Length || !isSeated[index]) return;
-        var cup = cups[index];
-        if (cup && !cup.IsBeingDrunk) cup.BeginDrinking(reservedBy[index]);
+        if (index < 0 || index >= seats.Length || !isSeated[index]) return;
+        var customer = reservedBy[index];
+        if (index < cups.Length)
+        {
+            var cup = cups[index];
+            if (cup && !cup.IsBeingDrunk) cup.BeginDrinking(customer);
+        }
+        if (index < souffles.Length)
+        {
+            var souffle = souffles[index];
+            if (souffle && !souffle.IsBeingEaten) souffle.BeginEating(customer);
+        }
     }
 
     // Walkable cells directly beside the footprint (no corners).
@@ -175,6 +217,9 @@ public class SeatingTable : MonoBehaviour
         }
         Gizmos.color = new Color(0.6f, 0.35f, 0.1f);
         foreach (var a in cupAnchors)
+            if (a) Gizmos.DrawWireCube(a.position + Vector3.up * 0.05f, new Vector3(0.12f, 0.1f, 0.12f));
+        Gizmos.color = new Color(0.85f, 0.45f, 0.2f);
+        foreach (var a in souffleAnchors)
             if (a) Gizmos.DrawWireCube(a.position + Vector3.up * 0.05f, new Vector3(0.12f, 0.1f, 0.12f));
     }
 }
