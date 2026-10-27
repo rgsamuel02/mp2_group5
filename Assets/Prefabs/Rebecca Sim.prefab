@@ -367,6 +367,12 @@ MonoBehaviour:
   tMilestone: 30
   cMilestone: 60
   fMilestone: 5
+  tomatoesHarvested: 0
+  cornHarvested: 0
+  flowersHarvested: 5
+  tomatoAchievementUnlocked: 0
+  cornAchievementUnlocked: 0
+  flowerAchievementUnlocked: 0
 --- !u!1 &2189526492161600534
 GameObject:
   m_ObjectHideFlags: 0
@@ -490,9 +496,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Scr_Inventory
   water: 20
   fertilizer: 10
-  tomatoes: 300
-  corn: 15
-  flowers: 10
+  tomatoes: 0
+  corn: 0
+  flowers: 0
 --- !u!1 &2339482974775303067
 GameObject:
   m_ObjectHideFlags: 0
@@ -616,10 +622,10 @@ MonoBehaviour:
   tomatoesHarvested: 0
   coffeeBeansHarvested: 0
   flowersHarvested: 0
-  restaurantUnlocked: 1
-  cafeUnlocked: 1
-  orchestraUnlocked: 1
-  challengeCompleted: 1
+  restaurantUnlocked: 0
+  cafeUnlocked: 0
+  orchestraUnlocked: 0
+  challengeCompleted: 0
 --- !u!1 &2430216400348116166
 GameObject:
   m_ObjectHideFlags: 0

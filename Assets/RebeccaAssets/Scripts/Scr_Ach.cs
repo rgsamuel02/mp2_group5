@@ -1,3 +1,4 @@
+
 using System.Collections;
 using UnityEngine;
 using TMPro;
@@ -12,13 +13,13 @@ public class Scr_Ach : MonoBehaviour
     public int cMilestone = 60;
     public int fMilestone = 5;
 
-    private int tomatoesHarvested;
-    private int cornHarvested;
-    private int flowersHarvested;
+    [SerializeField] private int tomatoesHarvested;
+    [SerializeField] private int cornHarvested;
+    [SerializeField] private int flowersHarvested;
 
-    private bool tomatoAchievementUnlocked;
-    private bool cornAchievementUnlocked;
-    private bool flowerAchievementUnlocked;
+    [SerializeField] private bool tomatoAchievementUnlocked;
+    [SerializeField] private bool cornAchievementUnlocked;
+    [SerializeField] private bool flowerAchievementUnlocked;
 
     private Coroutine popupCoroutine;
 
@@ -26,6 +27,13 @@ public class Scr_Ach : MonoBehaviour
     {
         if (achievementPanel != null)
             achievementPanel.SetActive(false);
+
+        CheckAchievements();
+    }
+
+    private void Update()
+    {
+        CheckAchievements();
     }
 
     public void RegisterHarvest(GardenResource crop, int amount)
@@ -37,45 +45,56 @@ public class Scr_Ach : MonoBehaviour
         {
             case GardenResource.Tomatoes:
                 tomatoesHarvested += amount;
-
-                if (!tomatoAchievementUnlocked &&
-                    tomatoesHarvested >= tMilestone)
-                {
-                    tomatoAchievementUnlocked = true;
-                    ShowAchievement(
-                        "Tiptop Tomatoes!",
-                        "You've harvested 30 tomatoes! You can now sell them to the restaurant!"
-                    );
-                }
                 break;
 
             case GardenResource.Corn:
                 cornHarvested += amount;
-
-                if (!cornAchievementUnlocked &&
-                    cornHarvested >= cMilestone)
-                {
-                    cornAchievementUnlocked = true;
-                    ShowAchievement(
-                        "Coffee Champion!",
-                        "You've harvested 60 coffee cherries! You can now sell them to the cafe!"
-                    );
-                }
                 break;
 
             case GardenResource.Flowers:
                 flowersHarvested += amount;
-
-                if (!flowerAchievementUnlocked &&
-                    flowersHarvested >= fMilestone)
-                {
-                    flowerAchievementUnlocked = true;
-                    ShowAchievement(
-                        "Fantastic Flowers!",
-                        "You've harvested 5 flowers! You can now sell them to the orchestra!"
-                    );
-                }
                 break;
+
+            default:
+                return;
+        }
+
+        CheckAchievements();
+    }
+
+    private void CheckAchievements()
+    {
+        if (!tomatoAchievementUnlocked &&
+            tomatoesHarvested >= tMilestone)
+        {
+            tomatoAchievementUnlocked = true;
+
+            ShowAchievement(
+                "Tiptop Tomatoes!",
+                "You've harvested 30 tomatoes! You can now sell them to the restaurant!"
+            );
+        }
+
+        if (!cornAchievementUnlocked &&
+            cornHarvested >= cMilestone)
+        {
+            cornAchievementUnlocked = true;
+
+            ShowAchievement(
+                "Coffee Champion!",
+                "You've harvested 60 coffee cherries! You can now sell them to the cafe!"
+            );
+        }
+
+        if (!flowerAchievementUnlocked &&
+            flowersHarvested >= fMilestone)
+        {
+            flowerAchievementUnlocked = true;
+
+            ShowAchievement(
+                "Fantastic Flowers!",
+                "You've harvested 5 flowers! You can now sell them to the orchestra!"
+            );
         }
     }
 
@@ -110,5 +129,28 @@ public class Scr_Ach : MonoBehaviour
             achievementPanel.SetActive(false);
 
         popupCoroutine = null;
+    }
+
+    [ContextMenu("Reset Achievements For Demo")]
+    private void ResetAchievementsForDemo()
+    {
+        tomatoesHarvested = 0;
+        cornHarvested = 0;
+        flowersHarvested = 0;
+
+        tomatoAchievementUnlocked = false;
+        cornAchievementUnlocked = false;
+        flowerAchievementUnlocked = false;
+
+        if (popupCoroutine != null)
+        {
+            StopCoroutine(popupCoroutine);
+            popupCoroutine = null;
+        }
+
+        if (achievementPanel != null)
+            achievementPanel.SetActive(false);
+
+        Debug.Log("Achievement demo progress reset.");
     }
 }
