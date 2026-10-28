@@ -178,12 +178,27 @@ public class TeleportationManager : MonoBehaviour
 
     void UnloadGarden()
     {
-
+        Scr_Save.Instance.SaveGarden();
     }
 
-    void LoadGarden() {
+    void LoadGarden()
+    {
         CurrentScene = "Garden";
+
+        SceneManager.sceneLoaded += OnGardenLoaded;
         SceneManager.LoadScene("SampleScene");
+    }
+
+    void OnGardenLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name != "SampleScene")
+            return;
+
+        SceneManager.sceneLoaded -= OnGardenLoaded;
+
+        Scr_Save saveSystem = FindFirstObjectByType<Scr_Save>();
+
+        saveSystem.LoadGarden();
     }
 
     void UnloadKitchen()

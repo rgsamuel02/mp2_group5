@@ -49,4 +49,14 @@ public class Scr_GardenWallet : MonoBehaviour
             $"Total sales earnings: ${TotalEarnedFromSalesDollars:F2}."
         );
     }
+    public void RestoreWallet(int savedBalanceCents, int savedTotalEarnedFromSalesCents)
+    {
+        balanceCents = Mathf.Max(0, savedBalanceCents);
+        totalEarnedFromSalesCents = Mathf.Max(0, savedTotalEarnedFromSalesCents);
+
+        Debug.Log(
+            $"Garden wallet restored. Balance: ${BalanceDollars:F2}, " +
+            $"Total sales earnings: ${TotalEarnedFromSalesDollars:F2}"
+        );
+    }
 }

@@ -425,6 +425,7 @@ Transform:
   - {fileID: 8416967429315493052}
   - {fileID: 4683895304354918968}
   - {fileID: 4635245119579997102}
+  - {fileID: 1808416282592686334}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4627487598252313029
@@ -1639,6 +1640,58 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1 &4949437948303698325
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1808416282592686334}
+  - component: {fileID: 5959840318032405986}
+  m_Layer: 0
+  m_Name: Save Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1808416282592686334
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4949437948303698325}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 4.76873, y: 0.10039, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3257372912449851524}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5959840318032405986
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4949437948303698325}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b81befbb5bf893943ad851bfa6ca0890, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Scr_Save
+  inventory: {fileID: 5002940204166621444}
+  wallet: {fileID: 5731162015733547116}
+  economy: {fileID: 4087574172441949095}
+  achievements: {fileID: 2368119998129228717}
+  tomatoSeedlingPrefab: {fileID: 1555652619428584960, guid: b42aff538f11e904bb5b354db20e5618, type: 3}
+  cornSeedlingPrefab: {fileID: 6252522317207959490, guid: a17c17a395d3c7e4a88fc7ccc46ff862, type: 3}
+  flowerSeedlingPrefab: {fileID: 1555652619428584960, guid: 720021203d46b224dbafa3fa02376b60, type: 3}
+  plotPrefab: {fileID: 6954791427301772665, guid: 97dc686fb5847434287307cd3e3fe213, type: 3}
 --- !u!1 &5242649792195374639
 GameObject:
   m_ObjectHideFlags: 0

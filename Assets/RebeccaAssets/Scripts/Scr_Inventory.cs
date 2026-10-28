@@ -134,6 +134,31 @@ public class Scr_Inventory : MonoBehaviour
         return UseResource(GardenResource.Fertilizer, amount);
     }
 
+    public int[] SaveInventory()
+    {
+        return new int[]
+        {
+            water,
+            fertilizer,
+            tomatoes,
+            corn,
+            flowers
+        };
+    }
+
+    public void LoadInventory(int[] savedResources)
+    {
+        if (savedResources == null || savedResources.Length < 5)
+            return;
+
+        water = savedResources[0];
+        fertilizer = savedResources[1];
+        tomatoes = savedResources[2];
+        corn = savedResources[3];
+        flowers = savedResources[4];
+
+        ShowResources();
+    }
 
     private void ShowResources()
     {

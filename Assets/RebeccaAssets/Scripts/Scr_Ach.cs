@@ -153,4 +153,39 @@ public class Scr_Ach : MonoBehaviour
 
         Debug.Log("Achievement demo progress reset.");
     }
+
+    public GardenAchievementSaveData CaptureSaveData()
+    {
+        return new GardenAchievementSaveData
+        {
+            tomatoesHarvested = tomatoesHarvested,
+            cornHarvested = cornHarvested,
+            flowersHarvested = flowersHarvested,
+
+            tomatoAchievementUnlocked = tomatoAchievementUnlocked,
+            cornAchievementUnlocked = cornAchievementUnlocked,
+            flowerAchievementUnlocked = flowerAchievementUnlocked
+        };
+    }
+
+    public void RestoreSaveData(GardenAchievementSaveData data)
+    {
+        if (data == null)
+            return;
+
+        tomatoesHarvested = data.tomatoesHarvested;
+        cornHarvested = data.cornHarvested;
+        flowersHarvested = data.flowersHarvested;
+
+        tomatoAchievementUnlocked = data.tomatoAchievementUnlocked;
+        cornAchievementUnlocked = data.cornAchievementUnlocked;
+        flowerAchievementUnlocked = data.flowerAchievementUnlocked;
+
+        // Hide any old popup. CheckAchievements won't re-unlock
+        // achievements that are already marked as unlocked.
+        if (achievementPanel != null)
+            achievementPanel.SetActive(false);
+
+        Debug.Log("Garden achievements restored.");
+    }
 }

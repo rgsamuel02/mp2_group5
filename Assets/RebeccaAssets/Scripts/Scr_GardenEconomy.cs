@@ -150,7 +150,7 @@ public class Scr_GardenEconomy : MonoBehaviour
         // Charge the cafe for coffee beans.
         if (crop == GardenResource.Corn)
         {
-            float cafeCost = revenueCents / 100f;
+            int cafeCost = revenueCents / 100;
 
             if (!PlayerWallet.Instance.TrySpend(cafeCost))
             {
@@ -212,5 +212,34 @@ public class Scr_GardenEconomy : MonoBehaviour
                 );
             }
         }
+    }
+
+    public GardenEconomySaveData CaptureSaveData()
+    {
+        return new GardenEconomySaveData
+        {
+            tomatoesHarvested = tomatoesHarvested,
+            coffeeBeansHarvested = coffeeBeansHarvested,
+            flowersHarvested = flowersHarvested,
+
+            restaurantUnlocked = restaurantUnlocked,
+            cafeUnlocked = cafeUnlocked,
+            orchestraUnlocked = orchestraUnlocked,
+            challengeCompleted = challengeCompleted
+        };
+    }
+
+    public void RestoreSaveData(GardenEconomySaveData data)
+    {
+        tomatoesHarvested = data.tomatoesHarvested;
+        coffeeBeansHarvested = data.coffeeBeansHarvested;
+        flowersHarvested = data.flowersHarvested;
+
+        restaurantUnlocked = data.restaurantUnlocked;
+        cafeUnlocked = data.cafeUnlocked;
+        orchestraUnlocked = data.orchestraUnlocked;
+        challengeCompleted = data.challengeCompleted;
+
+        Debug.Log("Garden economy progress restored.");
     }
 }
