@@ -43,6 +43,10 @@ namespace Steven.MP2A
             public float sandboxGain = 1f;
             public string sandboxSuccess = "";
 
+            [Header("Menu")]
+            [Tooltip("Dishes diners start ordering once this goal clears (used with the Kitchen Simplifier's menu).")]
+            public List<ResourceId> addToMenu = new List<ResourceId>();
+
             [NonSerialized] public bool cleared;
             [NonSerialized] public bool sandboxDone;
             [NonSerialized] public float sandboxBaseline;
@@ -84,6 +88,47 @@ namespace Steven.MP2A
         void Reset() => LoadDefaults();
 
         /// <summary>Fills in the default goals and achievements (also used when the component is first added).</summary>
+        /// <summary>
+        /// MP2C learning curve: one new idea per goal, each building on the last
+        /// (cook -> chain two stations -> harvest + buy -> build -> automate -> teammate deliveries -> finale).
+        /// </summary>
+        public void LoadLearningCurveDefaults()
+        {
+            goals = new List<Goal>
+            {
+                new Goal { name = "First Service", goalText = "Serve 2 covers", resource = ResourceId.CoversServed, amount = 2,
+                    revealTitle = "UNLOCKED: THE FRY STATION",
+                    revealBody = "Some dishes take two stations. Cut potatoes on the cutting board, then fry them in the deep fryer - like a real prep line.",
+                    hasSandbox = true, sandboxPrompt = "Try it: cut potatoes on the cutting board.", sandboxResource = ResourceId.RawFries, sandboxGain = 1,
+                    sandboxSuccess = "Prepped! Now fry them.", addToMenu = new List<ResourceId> { ResourceId.Fries } },
+                new Goal { name = "Lunch Rush", goalText = "Serve 5 covers", resource = ResourceId.CoversServed, amount = 5,
+                    revealTitle = "UNLOCKED: STEAK & HERBS",
+                    revealBody = "The butcher now delivers beef, and the Grilled Steak ticket is on the grill. Steak needs fresh herbs: snip them from the herb planters with the kitchen shears.",
+                    hasSandbox = true, sandboxPrompt = "Try it: snip an herb plant with the shears.", sandboxResource = ResourceId.Herbs, sandboxGain = 1,
+                    sandboxSuccess = "Fresh herbs! Steak is ready to grill.", addToMenu = new List<ResourceId> { ResourceId.GrilledSteak } },
+                new Goal { name = "Expansion", goalText = "Bank 400 Gold", resource = ResourceId.Gold, amount = 400,
+                    revealTitle = "UNLOCKED: THE EQUIPMENT CATALOG",
+                    revealBody = "Shop the restaurant-supply catalog. Grab a miniature and release it on the floor to install it. Equipment needs its hookup first: a grill goes on a gas line." },
+                new Goal { name = "Dinner Service", goalText = "Serve 10 covers", resource = ResourceId.CoversServed, amount = 10,
+                    revealTitle = "UNLOCKED: THE BRIGADE",
+                    revealBody = "Hire line cooks at the Staff Board. Press CALL A COOK on a station: a cook walks over and keeps cooking that ticket for you.",
+                    hasSandbox = true, sandboxPrompt = "Try it: hire a cook at the Staff Board.", sandboxResource = ResourceId.LineCooks, sandboxGain = 1,
+                    sandboxSuccess = "Yes, Chef! Your brigade grew." },
+                new Goal { name = "Partner Deliveries", goalText = "Serve 14 covers", resource = ResourceId.CoversServed, amount = 14,
+                    revealTitle = "UNLOCKED: PARTNER DELIVERIES",
+                    revealBody = "Your other businesses now supply the kitchen: garden produce and orchestra coins go in the pantry chute, cafe coffee and roses go on a dining table." },
+                new Goal { name = "Grand Opening", goalText = "Serve 20 covers with Reputation 25+", resource = ResourceId.CoversServed, amount = 20,
+                    useSecondCondition = true, resource2 = ResourceId.Reputation, amount2 = 25,
+                    revealTitle = "THE KITCHEN IS A HIT", revealBody = "A full dining room and a strong reputation. The restaurant's part of the Grand Opening is complete!" },
+            };
+            achievements = new List<Achievement>
+            {
+                new Achievement { name = "First Service", description = "Served your first cover", resource = ResourceId.CoversServed, amount = 1 },
+                new Achievement { name = "Deep Pockets", description = "Hold 500 Gold", resource = ResourceId.Gold, amount = 500 },
+                new Achievement { name = "Regulars", description = "Reputation 20 or more", resource = ResourceId.Reputation, amount = 20 },
+            };
+        }
+
         public void LoadDefaults()
         {
             goals = new List<Goal>
@@ -182,6 +227,10 @@ namespace Steven.MP2A
         void Clear(Goal g)
         {
             g.cleared = true;
+            var db = KitchenGame.Db;
+            if (db != null && db.orderFilter != null)
+                foreach (var dish in g.addToMenu)
+                    db.orderFilter.Add(dish);
             m_Current++;
             var pos = CardPosition(0f);
             KitchenGame.Blast(pos, new Color(1f, 0.85f, 0.3f), 1.2f);
@@ -225,6 +274,13 @@ namespace Steven.MP2A
 
         void Earn(Achievement a)
         {
+            var spot = PlaceTrophy(a);
+            KitchenGame.Blast(spot + Vector3.up * 0.2f, new Color(1f, 0.8f, 0.2f), 0.7f);
+            KitchenGame.Float(spot + Vector3.up * 0.45f, "ACHIEVEMENT: " + a.name + "\n" + a.description, new Color(1f, 0.85f, 0.3f), 1.2f);
+        }
+
+        Vector3 PlaceTrophy(Achievement a)
+        {
             a.earned = true;
             Vector3 spot;
             if (a.trophy != null)
@@ -241,8 +297,46 @@ namespace Steven.MP2A
                 MakeTrophy(spot, a.name);
             }
             m_TrophyCount++;
-            KitchenGame.Blast(spot + Vector3.up * 0.2f, new Color(1f, 0.8f, 0.2f), 0.7f);
-            KitchenGame.Float(spot + Vector3.up * 0.45f, "ACHIEVEMENT: " + a.name + "\n" + a.description, new Color(1f, 0.85f, 0.3f), 1.2f);
+            return spot;
+        }
+
+        /// <summary>
+        /// Quietly fast-forwards to a saved point (KitchenSave, when the player comes back to the kitchen): cleared goals
+        /// show their unlocks and menu dishes, earned trophies are back on the shelf, and the next goal card is shown.
+        /// Call after the resources are restored.
+        /// </summary>
+        public void RestoreState(int goalsCleared, List<bool> sandboxDone, List<bool> earned)
+        {
+            if (m_Res == null)
+                m_Res = KitchenGame.Res;
+            CancelInvoke(nameof(ShowHorizon));
+            if (m_HorizonCard != null)
+                m_HorizonCard.Dismiss();
+            m_HorizonCard = null;
+
+            m_Current = Mathf.Clamp(goalsCleared, 0, goals.Count);
+            var db = KitchenGame.Db;
+            for (var i = 0; i < m_Current; i++)
+            {
+                var g = goals[i];
+                g.cleared = true;
+                g.sandboxDone = sandboxDone != null && i < sandboxDone.Count && sandboxDone[i];
+                if (g.hasSandbox && !g.sandboxDone && m_Res != null)
+                    g.sandboxBaseline = m_Res.Get(g.sandboxResource);
+                if (db != null && db.orderFilter != null)
+                    foreach (var dish in g.addToMenu)
+                        db.orderFilter.Add(dish);
+                foreach (var go in g.unlocks)
+                    if (go != null)
+                        go.SetActive(true);
+            }
+
+            if (earned != null)
+                for (var i = 0; i < achievements.Count && i < earned.Count; i++)
+                    if (earned[i] && !achievements[i].earned)
+                        PlaceTrophy(achievements[i]);
+
+            ShowHorizon();
         }
 
         static void MakeTrophy(Vector3 pos, string label)

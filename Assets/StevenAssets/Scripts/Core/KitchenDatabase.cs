@@ -237,21 +237,39 @@ namespace Steven.MP2A
         }
 
         /// <summary>Picks a dish weighted by <see cref="DishInfo.orderWeight"/>.</summary>
+        /// <summary>
+        /// Runtime-only menu: when set, diners only order these dishes (the menu grows as the player unlocks
+        /// stations). Not saved into the asset.
+        /// </summary>
+        [NonSerialized] public HashSet<ResourceId> orderFilter;
+
+        bool OnMenu(DishInfo d) => orderFilter == null || orderFilter.Count == 0 || orderFilter.Contains(d.dish);
+
         public DishInfo PickRandomDish()
         {
             float total = 0f;
-            foreach (var d in dishes)
-                total += Mathf.Max(0f, d.orderWeight);
-            if (total <= 0f)
-                return dishes.Count > 0 ? dishes[0] : null;
-            var roll = UnityEngine.Random.value * total;
+            DishInfo first = null;
             foreach (var d in dishes)
             {
+                if (!OnMenu(d))
+                    continue;
+                first ??= d;
+                total += Mathf.Max(0f, d.orderWeight);
+            }
+            if (total <= 0f)
+                return first ?? (dishes.Count > 0 ? dishes[0] : null);
+            var roll = UnityEngine.Random.value * total;
+            DishInfo last = first;
+            foreach (var d in dishes)
+            {
+                if (!OnMenu(d))
+                    continue;
+                last = d;
                 roll -= Mathf.Max(0f, d.orderWeight);
                 if (roll <= 0f)
                     return d;
             }
-            return dishes[dishes.Count - 1];
+            return last;
         }
 
         /// <summary>Returns the rule (and whether it is reversed) that applies between two building types, if any.</summary>
