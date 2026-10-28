@@ -16,6 +16,15 @@ public class Scr_GardenWallet : MonoBehaviour
 
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+        
         balanceCents = Mathf.Max(0, startingBalanceCents);
     }
 

@@ -209,6 +209,18 @@ public class GameState : MonoBehaviour
         return money;
     }
 
+    public bool TrySpendMoney(float amount)
+    {
+        if (amount <= 0 || money < amount)
+        {
+            Debug.Log("Orchestra does not have enough money.");
+            return false;
+        }
+
+        money -= amount;
+        return true;
+    }
+
     public float GetInstrumentCost(Instrument i)
     {
         if (i.type == Instrument.InstrumentType.VIOLIN && instruments.Count == 0) return 0;

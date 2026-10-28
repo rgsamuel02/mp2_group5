@@ -33,7 +33,7 @@ public class Scr_GardenEconomy : MonoBehaviour
     private void Awake()
     {
         if (wallet == null)
-            wallet = GetComponent<Scr_GardenWallet>();
+            wallet = GetComponent<Scr_GardenWallet.Instance>();
 
         if (inventory == null)
             inventory = FindFirstObjectByType<Scr_Inventory>();
@@ -142,10 +142,25 @@ public class Scr_GardenEconomy : MonoBehaviour
 
         int revenueCents = pricePerCrop * quantity;
 
-        // Deduct crops first. Only pay if deduction succeeds.
+        // Remove crops from the garden inventory.
         if (!inventory.UseResource(crop, quantity))
             return false;
 
+        // Charge the orchestra when selling flowers.
+        if (crop == GardenResource.Flowers)
+        {
+            if (GameState.Instance == null ||
+                !GameState.Instance.TrySpendMoney(revenueCents / 100f))
+            {
+                // Restore the flowers if the orchestra cannot pay.
+                inventory.AddResource(crop, quantity);
+
+                Debug.Log("The orchestra cannot afford this purchase.");
+                return false;
+            }
+        }
+
+        // Credit the garden wallet.
         wallet.AddSaleRevenue(revenueCents);
 
         Debug.Log(
