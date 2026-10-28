@@ -369,7 +369,7 @@ MonoBehaviour:
   fMilestone: 5
   tomatoesHarvested: 0
   cornHarvested: 0
-  flowersHarvested: 5
+  flowersHarvested: 0
   tomatoAchievementUnlocked: 0
   cornAchievementUnlocked: 0
   flowerAchievementUnlocked: 0
