@@ -146,6 +146,19 @@ public class Scr_GardenEconomy : MonoBehaviour
         if (!inventory.UseResource(crop, quantity))
             return false;
 
+        // Charge the cafe for coffee beans.
+        if (crop == GardenResource.Corn)
+        {
+            float cafeCost = revenueCents / 100f;
+
+            if (!PlayerWallet.Instance.TrySpend(cafeCost))
+            {
+                inventory.AddResource(crop, quantity);
+                Debug.Log("The cafe cannot afford this purchase.");
+                return false;
+            }
+        }
+
         // Charge the orchestra when selling flowers.
         if (crop == GardenResource.Flowers)
         {
