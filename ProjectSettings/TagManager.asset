@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 3
   tags:
   - Trash
+  - Vase
   layers:
   - Default
   - TransparentFX

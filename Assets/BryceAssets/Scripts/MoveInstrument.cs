@@ -8,7 +8,9 @@ public class MoveInstrument : MonoBehaviour
 {
     public InputActionReference confirm;
     public InputActionReference cancel;
+    public InputActionReference integrate;
     private Action<InputAction.CallbackContext> confirmHandler;
+    private Action<InputAction.CallbackContext> integrationHandler;
     private static bool firstSelect = true, firstPlace = true, secondPurchase = true, thirdPurchase = true;
     private GameObject selected = null;
 
@@ -25,25 +27,39 @@ public class MoveInstrument : MonoBehaviour
         bool affordable = GameState.Instance.GetMoney() >= cost;
         if (affordable)
         {
-            GameState.Instance.menu.LoadMenu($"The cost of buying this instrument is {cost}.\n\nPress A to purchase the instrument. Press B to cancel.");
+            GameState.Instance.menu.LoadMenu($"The cost of buying this instrument is {cost}.\n\nPress A to purchase the instrument. Press X to send it to another scene. Press B to cancel.");
             confirmHandler = (ctx) =>
             {
                 Debug.Log("Confirmed");
                 GameState.Instance.AddPay(-cost);
                 confirm.action.performed -= confirmHandler;
                 cancel.action.performed -= Cancel;
+                integrate.action.performed -= integrationHandler;
                 GameState.Instance.menu.CloseMenu();
                 Purchase(prefab);
+            };
+
+            integrationHandler = (ctx) =>
+            {
+                Integrate(prefab);
+                Cancel(ctx);
             };
             confirm.action.Enable();
             confirm.action.performed += confirmHandler;
             cancel.action.Enable();
             cancel.action.performed += Cancel;
+            integrate.action.Enable();
+            integrate.action.performed += integrationHandler;
         }
         else
         {
             GameState.Instance.menu.LoadMenu($"The cost of buying this instrument is {cost}.\n\nPress B to close this menu.");
         }
+    }
+
+    public void Integrate(GameObject prefab)
+    {
+        Integrator.SendInstrument(prefab);
     }
 
     public void Purchase(GameObject prefab)
@@ -129,5 +145,7 @@ public class MoveInstrument : MonoBehaviour
     {
         confirm.action.performed -= confirmHandler;
         cancel.action.performed -= Cancel;
+        integrate.action.performed -= integrationHandler;
+
     }
 }
