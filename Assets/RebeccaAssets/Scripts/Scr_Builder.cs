@@ -790,7 +790,7 @@ public class Scr_Builder : MonoBehaviour
     }
 
     
-    private void ShowResourcePopup(string message)
+    public void ShowResourcePopup(string message)
     {
         if (resourcePopupPanel == null || resourcePopupText == null)
         {

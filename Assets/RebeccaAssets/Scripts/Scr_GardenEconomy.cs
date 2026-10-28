@@ -6,6 +6,7 @@ public class Scr_GardenEconomy : MonoBehaviour
 {
     public Scr_GardenWallet wallet;
     public Scr_Inventory inventory;
+    public Scr_Builder builder;
 
     public int tomatoesToUnlockRestaurant = 30;
     public int coffeeBeansToUnlockCafe = 60;
@@ -100,7 +101,7 @@ public class Scr_GardenEconomy : MonoBehaviour
     {
         if (quantity <= 0)
         {
-            Debug.LogWarning("Sale quantity must be greater than zero.");
+            builder.ShowResourcePopup("Sale quantity must be greater than zero.");
             return false;
         }
 
@@ -131,13 +132,13 @@ public class Scr_GardenEconomy : MonoBehaviour
 
         if (!buyerUnlocked)
         {
-            Debug.Log("This buyer is still locked.");
+            builder.ShowResourcePopup("This buyer is still locked.");
             return false;
         }
 
         if (inventory.GetAmount(crop) < quantity)
         {
-            Debug.Log("Not enough " + crop + " to complete the sale.");
+            builder.ShowResourcePopup("Not enough crops to complete the sale.");
             return false;
         }
 
@@ -155,7 +156,7 @@ public class Scr_GardenEconomy : MonoBehaviour
             if (!PlayerWallet.Instance.TrySpend(cafeCost))
             {
                 inventory.AddResource(crop, quantity);
-                Debug.Log("The cafe cannot afford this purchase.");
+                builder.ShowResourcePopup("The cafe cannot afford this purchase.");
                 return false;
             }
         }
@@ -169,7 +170,7 @@ public class Scr_GardenEconomy : MonoBehaviour
                 // Restore the flowers if the orchestra cannot pay.
                 inventory.AddResource(crop, quantity);
 
-                Debug.Log("The orchestra cannot afford this purchase.");
+                builder.ShowResourcePopup("The orchestra cannot afford this purchase.");
                 return false;
             }
         }
