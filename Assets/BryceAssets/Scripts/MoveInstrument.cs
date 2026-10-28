@@ -19,21 +19,6 @@ public class MoveInstrument : MonoBehaviour
     private Vector3 offset;
 
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void OnEnable()
-    {
-        placeButton.action.started += Place;
-        placeButton.action.Disable();
-        cancel.action.performed += Cancel;
-        cancel.action.Enable();
-    }
-
-    void OnDisable()
-    {
-        placeButton.action.started -= Place;
-        cancel.action.performed -= Cancel;
-    }
-
     public void Select(GameObject prefab)
     {
         float cost = GameState.Instance.GetInstrumentCost(prefab.GetComponent<Instrument>());
@@ -43,14 +28,17 @@ public class MoveInstrument : MonoBehaviour
             GameState.Instance.menu.LoadMenu($"The cost of buying this instrument is {cost}.\n\nPress A to purchase the instrument. Press B to cancel.");
             confirmHandler = (ctx) =>
             {
+                Debug.Log("Confirmed");
                 GameState.Instance.AddPay(-cost);
                 confirm.action.performed -= confirmHandler;
-                confirm.action.Disable();
+                cancel.action.performed -= Cancel;
                 GameState.Instance.menu.CloseMenu();
                 Purchase(prefab);
             };
-            confirm.action.performed += confirmHandler;
             confirm.action.Enable();
+            confirm.action.performed += confirmHandler;
+            cancel.action.Enable();
+            cancel.action.performed += Cancel;
         }
         else
         {
@@ -79,6 +67,7 @@ public class MoveInstrument : MonoBehaviour
         selected = Instantiate(prefab);
         selectedMat = selected.GetComponent<MeshRenderer>().material;
         placeButton.action.Enable();
+        placeButton.action.started += Place;
         offset = prefab.GetComponent<Transform>().Find("offset").localPosition;
     }
 
@@ -88,6 +77,7 @@ public class MoveInstrument : MonoBehaviour
         selected = instrument;
         selectedMat = selected.GetComponent<MeshRenderer>().material;
         placeButton.action.Enable();
+        placeButton.action.started += Place;
         offset = instrument.GetComponent<Transform>().Find("offset").localPosition;
     }
 
@@ -99,11 +89,12 @@ public class MoveInstrument : MonoBehaviour
         if (GameState.Instance.Placeable(selected.GetComponent<Instrument>(), (int) target.x, (int) target.y))
         {
             placeButton.action.Enable();
+            placeButton.action.started += Place;
             selected.GetComponent<MeshRenderer>().material = selectedMat;
         }
         else
         {
-            placeButton.action.Disable();
+            placeButton.action.started -= Place;
             selected.GetComponent<MeshRenderer>().material = unplaceableMat;
         }
         selected.transform.SetLocalPositionAndRotation(new Vector3((target.x - 14) * GameState.GRID_SIZE - GameState.GRID_SIZE / 2, selected.GetComponent<Transform>().localPosition.y, (-target.y - 1) * GameState.GRID_SIZE + GameState.GRID_SIZE / 2) - offset, selected.GetComponent<Transform>().rotation * Quaternion.identity);
@@ -129,7 +120,7 @@ public class MoveInstrument : MonoBehaviour
         int y = (int) -Math.Round((pos.z - GameState.GRID_SIZE / 2) / GameState.GRID_SIZE + 1);
         if (GameState.Instance.Place(selected.GetComponent<Instrument>(), x, y)) {
             selected = null;
-            placeButton.action.Disable();
+            placeButton.action.started -= Place;
         }
         return;
     }
@@ -137,6 +128,6 @@ public class MoveInstrument : MonoBehaviour
     void Cancel(InputAction.CallbackContext ctx)
     {
         confirm.action.performed -= confirmHandler;
-        confirm.action.Disable();
+        cancel.action.performed -= Cancel;
     }
 }

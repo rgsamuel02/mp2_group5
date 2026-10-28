@@ -9,9 +9,9 @@ public class TrashSpawner : MonoBehaviour
     static bool firstSpawn = true;
 
 
-    public void Awake()
+    public void SpawnTrash(int n)
     {
-        for (int i = 0; i < 5 + 5 * timesInstantiated; i++) {
+        for (int i = 0; i < n; i++) {
             int location = Random.Range(0, 50);
             int x = location % 10;
             int y = location / 10;

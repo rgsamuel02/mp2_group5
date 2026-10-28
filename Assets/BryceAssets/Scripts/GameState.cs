@@ -46,6 +46,7 @@ public class GameState : MonoBehaviour
         }
 
         Instance = this;
+        trashSpawner.SpawnTrash(10);
         menu.LoadMenu("Welcome to your new job as an orchestra manager! You must hire instruments to improve the sound, but be careful; you don't want to have too much of one type of sound.\n\nYou can purchase instruments over at stage left. How about you start with a violin to be the concertmaster?\n\nPress B to close this menu.");
         DontDestroyOnLoad(gameObject); // Optional: Keeps it alive across scenes
         DontDestroyOnLoad(pianoTrophy); // Optional: Keeps it alive across scenes
@@ -75,7 +76,7 @@ public class GameState : MonoBehaviour
     float high = 0, mid = 0, low = 0, brass = 0, woodwind = 0, strings = 0;
     float pitchEnjoyment = 1, timbreEnjoyment = 1;
     int trash = 10;
-    float money = 0.0f;
+    float money = 100.0f;
     int material = 0;
     public InputActionReference nextLevel;
 
@@ -103,6 +104,11 @@ public class GameState : MonoBehaviour
     public float GetEnjoyment()
     {
         return pitchEnjoyment * timbreEnjoyment * (Math.Max(20f - trash, 10f) / 20);
+    }
+
+    public bool UnlockedGarden()
+    {
+        return unlockedGarden;
     }
 
     bool firstCustomer = true;
@@ -170,7 +176,12 @@ public class GameState : MonoBehaviour
     private void LoadNextLevel(InputAction.CallbackContext context)
     {
         level += 1;
-        SceneManager.LoadScene($"BryceSceneLvl{level}");
+        void OnLoaded(Scene scene, LoadSceneMode mode)
+        {
+            SceneManager.sceneLoaded -= OnLoaded;
+            trash = 5 + level * 5;
+            trashSpawner.SpawnTrash(5 + level * 5);
+        }
         List<Instrument> insts = new List<Instrument>(instruments);
         for (int j = 0; j < insts.Count; j++)
         {
@@ -178,6 +189,8 @@ public class GameState : MonoBehaviour
         }
         occupiedSeats = new Person[50];
         nextLevel.action.performed -= LoadNextLevel;
+        SceneManager.sceneLoaded += OnLoaded;
+        SceneManager.LoadScene($"BryceSceneLvl{level}");
     }
 
     string ComputeRank()
@@ -386,6 +399,27 @@ public class GameState : MonoBehaviour
                     }
                 }
             }
+        }
+    }
+
+    public void SaveAudience()
+    {
+        foreach (Person p in occupiedSeats)
+        {
+            if (p == null) continue;
+            p.transform.SetParent(null);
+            p.gameObject.SetActive(false);
+            DontDestroyOnLoad(p.gameObject);
+        }
+    }
+
+    public void LoadAudience()
+    {
+        foreach (Person p in occupiedSeats)
+        {
+            if (p == null) continue;
+            p.transform.SetParent(audience.transform);
+            p.gameObject.SetActive(true);
         }
     }
 }

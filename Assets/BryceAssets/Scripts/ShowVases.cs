@@ -5,14 +5,25 @@ public class ShowVases : MonoBehaviour
 {
     public List<GameObject> tempVases;
     public static List<GameObject> vases;
+    static bool vasesAlreadySpawned = false;
 
     void Start()
     {
-        vases = new(tempVases);
-        for (int i = 0; i < vases.Count; i++)
+        if (!vasesAlreadySpawned) {
+            vases = new(tempVases);
+            for (int i = 0; i < vases.Count; i++)
+            {
+                vases[i].transform.SetParent(null);
+                DontDestroyOnLoad(vases[i]);
+            }
+            vasesAlreadySpawned = true;
+        }
+        else
         {
-            vases[i].transform.SetParent(null);
-            DontDestroyOnLoad(vases[i]);
+            foreach (GameObject v in tempVases)
+            {
+                Destroy(v);
+            }
         }
     }
 

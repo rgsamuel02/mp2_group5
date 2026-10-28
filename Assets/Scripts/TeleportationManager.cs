@@ -17,6 +17,7 @@ public class TeleportationManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        gameObject.SetActive(false);
         StickPressed.action.performed += OpenMenu;
         StickPressed.action.Enable();
         StickPosition.action.Enable();
@@ -27,7 +28,9 @@ public class TeleportationManager : MonoBehaviour
     {
         StickPressed.action.performed -= OpenMenu;
         StickPosition.action.performed += StickMoved;
+        StickPosition.action.Enable();
         StickPressed.action.performed += CloseMenu;
+        StickPressed.action.Enable();
         gameObject.SetActive(true);
     }
 
@@ -73,6 +76,7 @@ public class TeleportationManager : MonoBehaviour
     private void LoadLevel(InputAction.CallbackContext context)
     {
         CloseMenu(context);
+        confirm.action.performed -= LoadLevel;
         if (SelectedScene.Equals(CurrentScene)) return;
         StickPressed.action.performed -= OpenMenu;
 
@@ -100,18 +104,81 @@ public class TeleportationManager : MonoBehaviour
 
     void UnloadOrchestra()
     {
+        // save instruments
         Debug.Log("Leaving Orchestra");
+        Instrument[] instruments = FindObjectsByType<Instrument>();
+        foreach (Instrument i in instruments) 
+        {
+            i.gameObject.SetActive(false);
+            DontDestroyOnLoad(i.gameObject);
+        }
+
+        // save trash
+        GameObject[] trash = GameObject.FindGameObjectsWithTag("Trash");
+        GameObject temp = new GameObject("OrchestraTrashHolder");
+        foreach (GameObject t in trash)
+        {
+            t.transform.SetParent(temp.transform);
+            t.SetActive(false);
+        }
+        DontDestroyOnLoad(temp);
+
+        // save vases
+        GameObject[] vases = GameObject.FindGameObjectsWithTag("Vase");
+        foreach (GameObject v in vases)
+        {
+            v.SetActive(false);
+        }
+
+        // save audience
+        GameState.Instance.SaveAudience();
+
+        GameState.Instance.gameObject.SetActive(false);
     }
 
     void LoadOrchestra() {
         int level = GameState.Instance == null ? 1 : GameState.Instance.level;
         CurrentScene = "Orchestra";
+
+        void OnLoaded(Scene scene, LoadSceneMode mode)
+        {
+            SceneManager.sceneLoaded -= OnLoaded;
+            SceneManager.SetActiveScene(scene);
+
+            GameState.Instance.gameObject.SetActive(true);
+            Instrument[] instruments = FindObjectsByType<Instrument>(FindObjectsInactive.Include);
+            SceneManager.SetActiveScene(scene);
+            foreach (Instrument i in instruments)
+            {
+                i.gameObject.SetActive(true);
+                SceneManager.MoveGameObjectToScene(i.gameObject, scene);
+            }
+
+            GameObject temp = GameObject.Find("OrchestraTrashHolder");
+            for (int i = temp.transform.childCount - 1; i >= 0; i--)
+            {
+                // Access the child GameObject
+                Transform trash = temp.transform.GetChild(i);
+                trash.SetParent(GameState.Instance.audience.transform);
+                trash.gameObject.SetActive(true);
+            }
+            Destroy(temp);
+
+            if (GameState.Instance.UnlockedGarden())
+            {
+                foreach (GameObject v in ShowVases.vases) v.SetActive(true);
+            }
+
+            GameState.Instance.LoadAudience();
+        }
+
+        SceneManager.sceneLoaded += OnLoaded;
         SceneManager.LoadScene($"BryceSceneLvl{level}");
     }
 
     void UnloadGarden()
     {
-        
+
     }
 
     void LoadGarden() {
