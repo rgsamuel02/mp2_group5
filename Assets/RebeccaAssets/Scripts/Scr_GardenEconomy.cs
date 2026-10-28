@@ -1,4 +1,3 @@
-
 using System;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -13,7 +12,7 @@ public class Scr_GardenEconomy : MonoBehaviour
     public int flowersToUnlockOrchestra = 5;
 
     public int tomatoPriceCents = 100;
-    public int coffeeBeanPriceCents = 50;
+    public int coffeeBeanPriceCents = 100;
     public int flowerPriceCents = 1000;
 
     public int moneyGoalCents = 30000;
@@ -153,7 +152,7 @@ public class Scr_GardenEconomy : MonoBehaviour
         {
             float cafeCost = revenueCents / 100f;
 
-            if (!PlayerWallet.Instance.TrySpend((int) Math.Round(cafeCost)))
+            if (!PlayerWallet.Instance.TrySpend(cafeCost))
             {
                 inventory.AddResource(crop, quantity);
                 Debug.Log("The cafe cannot afford this purchase.");

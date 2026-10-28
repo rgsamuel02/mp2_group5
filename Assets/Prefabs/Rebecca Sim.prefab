@@ -616,7 +616,7 @@ MonoBehaviour:
   coffeeBeansToUnlockCafe: 60
   flowersToUnlockOrchestra: 5
   tomatoPriceCents: 100
-  coffeeBeanPriceCents: 50
+  coffeeBeanPriceCents: 100
   flowerPriceCents: 1000
   moneyGoalCents: 30000
   tomatoesHarvested: 0
@@ -625,7 +625,7 @@ MonoBehaviour:
   restaurantUnlocked: 0
   cafeUnlocked: 0
   orchestraUnlocked: 0
-  challengeCompleted: 0
+  challengeCompleted: 1
 --- !u!1 &2769326042131226628
 GameObject:
   m_ObjectHideFlags: 0
