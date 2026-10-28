@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerWallet : MonoBehaviour
 {
+    public static PlayerWallet Instance {private set; get;}
     public int startingBalance = 500;
     public TMP_Text balanceText;
     public string balanceFormat = "Current Balance: {0}¥";

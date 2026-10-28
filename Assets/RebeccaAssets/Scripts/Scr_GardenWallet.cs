@@ -4,6 +4,8 @@ public class Scr_GardenWallet : MonoBehaviour
 {
     [SerializeField] private int startingBalanceCents = 0;
 
+    public static Scr_GardenWallet Instance {private set; get;}
+
     private int balanceCents;
     private int totalEarnedFromSalesCents;
 

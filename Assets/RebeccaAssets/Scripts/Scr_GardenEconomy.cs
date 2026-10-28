@@ -1,4 +1,6 @@
 
+using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Scr_GardenEconomy : MonoBehaviour
@@ -33,7 +35,7 @@ public class Scr_GardenEconomy : MonoBehaviour
     private void Awake()
     {
         if (wallet == null)
-            wallet = GetComponent<Scr_GardenWallet.Instance>();
+            wallet = Scr_GardenWallet.Instance;
 
         if (inventory == null)
             inventory = FindFirstObjectByType<Scr_Inventory>();
@@ -151,7 +153,7 @@ public class Scr_GardenEconomy : MonoBehaviour
         {
             float cafeCost = revenueCents / 100f;
 
-            if (!PlayerWallet.Instance.TrySpend(cafeCost))
+            if (!PlayerWallet.Instance.TrySpend((int) Math.Round(cafeCost)))
             {
                 inventory.AddResource(crop, quantity);
                 Debug.Log("The cafe cannot afford this purchase.");
