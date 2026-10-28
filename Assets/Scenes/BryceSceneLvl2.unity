@@ -536,6 +536,7 @@ MonoBehaviour:
   breakStates: []
   level: 1
   rowMultiplier: 0100000001000000010000000100000001000000
+  pianoTrophy: {fileID: 0}
   menu: {fileID: 1253668579}
   nextLevel: {fileID: 0}
   stats: {fileID: 2369330783140228254}
