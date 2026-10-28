@@ -184,25 +184,32 @@ public class Scr_Flower : MonoBehaviour
 
     public void Harvest()
     {
-        if (isDead || !IsMature)
+        if (isDead)
+        {
+            Debug.Log("This plant is dead and cannot be harvested.");
+            Destroy(gameObject);
+            return;
+        }
+
+        if (!IsMature)
         {
             Debug.Log("The flowers are not ready to harvest.");
             return;
         }
 
-        if (inventory == null)
-            inventory = FindFirstObjectByType<Scr_Inventory>();
-
-        if (inventory == null)
-        {
-            Debug.LogError("GardenInventory was not found.");
-            return;
-        }
 
         int amount = flowerCount;
         inventory.AddResource(GardenResource.Flowers, amount);
 
         Debug.Log("Harvested " + amount + " flowers.");
+
+        Scr_GardenEconomy economy =
+            FindFirstObjectByType<Scr_GardenEconomy>();
+
+        if (economy != null)
+        {
+            economy.RegisterHarvest(GardenResource.Flowers, 5);
+        }
 
         Scr_Ach achievements =
             FindFirstObjectByType<Scr_Ach>();

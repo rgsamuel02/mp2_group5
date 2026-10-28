@@ -17,6 +17,7 @@ public class Customer : MonoBehaviour
     public string patienceFormat = "Patience: {0}s";
 
     public float Patience { get; private set; }
+    public bool HasConsumedSouffle { get; private set; }
 
     public static event Action<Customer, CoffeeCup> AnyServed;
 
@@ -61,6 +62,8 @@ public class Customer : MonoBehaviour
         AnyServed?.Invoke(this, cup);
         Leave();
     }
+
+    public void ConsumeSouffle() => HasConsumedSouffle = true;
 
     [ContextMenu("Leave")]
     public void Leave()

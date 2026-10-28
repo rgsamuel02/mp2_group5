@@ -110,8 +110,8 @@ MonoBehaviour:
   growth: 0
   age: 0
   growthPerSecond: 1
-  moistureLossPerSecond: 1.5
-  healthLossWhenDry: 20
+  moistureLossPerSecond: 0.5
+  healthLossWhenDry: 1
   waterAddedPerAction: 30
   matureAt: 100
   tomatoYield: 15
