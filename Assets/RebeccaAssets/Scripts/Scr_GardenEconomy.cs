@@ -83,21 +83,15 @@ public class Scr_GardenEconomy : MonoBehaviour
     {
         if (!restaurantUnlocked &&
             tomatoesHarvested >= tomatoesToUnlockRestaurant)
-        {
             restaurantUnlocked = true;
-        }
 
         if (!cafeUnlocked &&
             coffeeBeansHarvested >= coffeeBeansToUnlockCafe)
-        {
             cafeUnlocked = true;
-        }
 
         if (!orchestraUnlocked &&
             flowersHarvested >= flowersToUnlockOrchestra && GameState.Instance != null && GameState.Instance.UnlockedGarden())
-        {
             orchestraUnlocked = true;
-        }
     }
 
     public bool SellCrop(GardenResource crop, int quantity)
@@ -135,7 +129,11 @@ public class Scr_GardenEconomy : MonoBehaviour
 
         if (!buyerUnlocked)
         {
-            builder.ShowResourcePopup("This buyer is still locked.");
+            if (crop == GardenResource.Flowers && (GameState.Instance == null || !GameState.Instance.UnlockedGarden()))
+                builder.ShowResourcePopup("Unlock the garden in the orchestra simulation.");
+            else
+                builder.ShowResourcePopup("This buyer is still locked.");
+
             return false;
         }
 
@@ -220,9 +218,7 @@ public class Scr_GardenEconomy : MonoBehaviour
                 FindFirstObjectByType<Scr_Victory>();
 
             if (victoryPopup != null)
-            {
                 victoryPopup.ShowVictoryPopup();
-            }
             else
             {
                 Debug.LogWarning(
