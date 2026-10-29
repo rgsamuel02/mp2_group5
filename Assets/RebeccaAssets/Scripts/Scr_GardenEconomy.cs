@@ -94,7 +94,7 @@ public class Scr_GardenEconomy : MonoBehaviour
         }
 
         if (!orchestraUnlocked &&
-            flowersHarvested >= flowersToUnlockOrchestra)
+            flowersHarvested >= flowersToUnlockOrchestra && GameState.Instance != null && GameState.Instance.UnlockedGarden())
         {
             orchestraUnlocked = true;
         }
