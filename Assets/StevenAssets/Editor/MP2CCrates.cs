@@ -12,6 +12,9 @@ namespace Steven.MP2A.EditorTools
     ///   one Sender crate in the open scene (StevenScene), set to deliver to Rishabh's cafe.
     /// Tools > Steven > Place Kitchen Receiver Crate
     ///   Puts a Receiver crate (id "Kitchen") next to it, so teammates can send things to the restaurant.
+    /// Tools > Steven > Place All Delivery Crates
+    ///   Rebuilds the prefabs (with a route sign) and lines up the Kitchen receiver plus four senders along the office's
+    ///   south wall: to Cafe, Garden, Orchestra, and a test sender to this kitchen's own receiver.
     /// Tools > Steven > Remove Hidden Kitchen Content
     ///   Deletes from StevenScene everything the MP2C Kitchen Simplifier was hiding.
     /// Safe to run again. Delete this script afterwards if you like; the crates are ordinary assets.
@@ -115,6 +118,61 @@ namespace Steven.MP2A.EditorTools
                 "It sends anything dropped into it to the Receiver with id 'Cafe' in 'Rishabh Scene'.", "OK");
         }
 
+        [MenuItem("Tools/Steven/Place All Delivery Crates")]
+        public static void PlaceAllCrates()
+        {
+            var scene = SceneManager.GetActiveScene();
+            EnsureFolder(PrefabFolder);
+            BuildPrefabs();
+            foreach (var root in scene.GetRootGameObjects())
+                if (root.name.StartsWith("Delivery Crate - "))
+                    Object.DestroyImmediate(root);
+
+            // Office, along the south wall (under the trophy shelf and office panel), fronts facing the room.
+            const float z = -2.95f;
+            PlaceReceiver(scene, "Delivery Crate - Kitchen Receiving", new Vector3(2.6f, 0f, z), "Kitchen", KitchenRed);
+            PlaceSender(scene, "Delivery Crate - to Cafe", new Vector3(3.4f, 0f, z), "Rishabh Scene", "Cafe", CafeOrange, "");
+            PlaceSender(scene, "Delivery Crate - TEST to Kitchen", new Vector3(1.8f, 0f, z), "StevenScene", "Kitchen", KitchenRed, "TEST: TO KITCHEN");
+            PlaceSender(scene, "Delivery Crate - to Garden", new Vector3(1.0f, 0f, z), "SampleScene", "Garden", GardenGreen, "");
+            var last = PlaceSender(scene, "Delivery Crate - to Orchestra", new Vector3(0.2f, 0f, z), "BryceSceneLvl", "Orchestra", OrchestraPurple, "");
+
+            Save(scene);
+            Selection.activeGameObject = last;
+            EditorUtility.DisplayDialog("Delivery Crates",
+                "Placed along the office's south wall (west to east): to Orchestra, to Garden, TEST to Kitchen, Kitchen Receiving, to Cafe.\n\n" +
+                "Drop something in TEST to Kitchen and it should appear in Kitchen Receiving right away. Scene saved.", "OK");
+        }
+
+        static GameObject PlaceSender(Scene scene, string name, Vector3 pos, string destination, string id, Color color, string labelText)
+        {
+            var go = (GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>(SenderPath));
+            go.name = name;
+            SceneManager.MoveGameObjectToScene(go, scene);
+            go.transform.SetPositionAndRotation(pos, Quaternion.identity);
+            var tunnel = go.GetComponentInChildren<TransportTunnel>();
+            tunnel.destinationScene = destination;
+            tunnel.receiverId = id;
+            tunnel.tunnelColor = color;
+            tunnel.labelText = labelText;
+            EditorUtility.SetDirty(tunnel);
+            PrefabUtility.RecordPrefabInstancePropertyModifications(tunnel);
+            return go;
+        }
+
+        static GameObject PlaceReceiver(Scene scene, string name, Vector3 pos, string id, Color color)
+        {
+            var go = (GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>(ReceiverPath));
+            go.name = name;
+            SceneManager.MoveGameObjectToScene(go, scene);
+            go.transform.SetPositionAndRotation(pos, Quaternion.identity);
+            var r = go.GetComponent<TransportReceiver>();
+            r.receiverId = id;
+            r.color = color;
+            EditorUtility.SetDirty(r);
+            PrefabUtility.RecordPrefabInstancePropertyModifications(r);
+            return go;
+        }
+
         [MenuItem("Tools/Steven/Place Kitchen Receiver Crate")]
         public static void PlaceKitchenReceiver()
         {
@@ -157,7 +215,7 @@ namespace Steven.MP2A.EditorTools
                 meshes[part] = SaveMesh(BuildMesh(part), ModelFolder + "/DeliveryCrate_" + part + ".asset");
 
             // Sender: anything dropped in the open top is delivered; the glow rings spiral inward.
-            var sender = BuildCrate("DeliveryCrate_Sender", meshes, wood, dark, metal, placard, paint, glowIn, disc, out var senderTint);
+            var sender = BuildCrate("DeliveryCrate_Sender", meshes, wood, dark, metal, placard, paint, glowIn, disc, out var senderTint, out var senderLabel);
             var intake = new GameObject("Intake");
             intake.transform.SetParent(sender.transform, false);
             intake.transform.localPosition = new Vector3(0f, 0.27f, 0f);
@@ -166,21 +224,25 @@ namespace Steven.MP2A.EditorTools
             trigger.size = new Vector3(W - 0.12f, 0.34f, D - 0.12f);
             var tunnel = intake.AddComponent<TransportTunnel>();
             tunnel.colorRenderers = senderTint;
+            tunnel.label = senderLabel;
             tunnel.tunnelColor = CafeOrange;
+            tunnel.destinationScene = "Rishabh Scene";
+            tunnel.receiverId = "Cafe";
             SavePrefab(sender, SenderPath);
 
             // Receiver: deliveries drop into the crate; the glow rings spread outward.
-            var receiver = BuildCrate("DeliveryCrate_Receiver", meshes, wood, dark, metal, placard, paint, glowOut, disc, out var receiverTint);
+            var receiver = BuildCrate("DeliveryCrate_Receiver", meshes, wood, dark, metal, placard, paint, glowOut, disc, out var receiverTint, out var receiverLabel);
             var rec = receiver.AddComponent<TransportReceiver>();
             rec.dropHeight = 0.32f;
             rec.colorRenderers = receiverTint;
+            rec.label = receiverLabel;
             rec.color = KitchenRed;
             SavePrefab(receiver, ReceiverPath);
             AssetDatabase.SaveAssets();
         }
 
         static GameObject BuildCrate(string name, Dictionary<string, Mesh> meshes, Material wood, Material dark, Material metal,
-            Material placard, Material paint, Material glow, Mesh disc, out Renderer[] tinted)
+            Material placard, Material paint, Material glow, Mesh disc, out Renderer[] tinted, out UnityEngine.UI.Text label)
         {
             var root = new GameObject(name);
             Part(root, "Wood", meshes["Wood"], wood);
@@ -210,7 +272,57 @@ namespace Steven.MP2A.EditorTools
             Wall(root, new Vector3(0f, H / 2f, -D / 2f + 0.015f), new Vector3(W, H, 0.03f));
             Wall(root, new Vector3(W / 2f - 0.015f, H / 2f, 0f), new Vector3(0.03f, H, D));
             Wall(root, new Vector3(-W / 2f + 0.015f, H / 2f, 0f), new Vector3(0.03f, H, D));
+
+            label = BuildSign(root, dark, placard);
             return root;
+        }
+
+        /// <summary>A small route sign on two posts at the back of the crate, readable from the front (+Z).</summary>
+        static UnityEngine.UI.Text BuildSign(GameObject root, Material post, Material board)
+        {
+            var z = -D / 2f + 0.03f;
+            var boardY = H + 0.13f;
+            Block(root, "Sign Post L", new Vector3(-0.22f, H + 0.05f, z), new Vector3(0.025f, 0.2f, 0.025f), post);
+            Block(root, "Sign Post R", new Vector3(0.22f, H + 0.05f, z), new Vector3(0.025f, 0.2f, 0.025f), post);
+            Block(root, "Sign Board", new Vector3(0f, boardY, z), new Vector3(0.52f, 0.13f, 0.02f), board);
+
+            var canvasGo = new GameObject("Sign Text", typeof(RectTransform), typeof(Canvas));
+            canvasGo.transform.SetParent(root.transform, false);
+            var rect = canvasGo.GetComponent<RectTransform>();
+            rect.localPosition = new Vector3(0f, boardY, z + 0.0115f);
+            rect.localRotation = Quaternion.Euler(0f, 180f, 0f);   // UI faces -Z; turn it to read from the front
+            rect.localScale = Vector3.one * 0.001f;
+            rect.sizeDelta = new Vector2(500f, 120f);
+            canvasGo.GetComponent<Canvas>().renderMode = RenderMode.WorldSpace;
+
+            var textGo = new GameObject("Label", typeof(RectTransform), typeof(UnityEngine.UI.Text));
+            textGo.transform.SetParent(canvasGo.transform, false);
+            var tr = textGo.GetComponent<RectTransform>();
+            tr.anchorMin = Vector2.zero;
+            tr.anchorMax = Vector2.one;
+            tr.offsetMin = new Vector2(10f, 6f);
+            tr.offsetMax = new Vector2(-10f, -6f);
+            var text = textGo.GetComponent<UnityEngine.UI.Text>();
+            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            text.fontStyle = FontStyle.Bold;
+            text.alignment = TextAnchor.MiddleCenter;
+            text.resizeTextForBestFit = true;
+            text.resizeTextMinSize = 18;
+            text.resizeTextMaxSize = 64;
+            text.text = "DELIVERY";
+            text.color = new Color(0.15f, 0.15f, 0.15f);
+            return text;
+        }
+
+        static void Block(GameObject root, string name, Vector3 center, Vector3 size, Material mat)
+        {
+            var go = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            go.name = name;
+            Object.DestroyImmediate(go.GetComponent<Collider>());
+            go.transform.SetParent(root.transform, false);
+            go.transform.localPosition = center;
+            go.transform.localScale = size;
+            go.GetComponent<MeshRenderer>().sharedMaterial = mat;
         }
 
         static Renderer Part(GameObject root, string name, Mesh mesh, Material mat)

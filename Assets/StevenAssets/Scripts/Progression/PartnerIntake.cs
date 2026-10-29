@@ -19,7 +19,7 @@ namespace Steven.MP2A
         [Serializable]
         public class Rule
         {
-            [Tooltip("Matches objects whose name contains this text (not case sensitive), e.g. \"Tomato\".")]
+            [Tooltip("Matches objects whose name contains this text (not case sensitive), e.g. \"Tomato\". Separate alternatives with |, e.g. \"violin|cello|flute\".")]
             public string nameContains = "Tomato";
             [Tooltip("Whose sim it comes from, shown in the feedback, e.g. \"Garden\".")]
             public string partner = "Garden";
@@ -109,7 +109,7 @@ namespace Steven.MP2A
                     break;
                 foreach (var r in rules)
                 {
-                    if (!string.IsNullOrEmpty(r.nameContains) && t.name.IndexOf(r.nameContains, StringComparison.OrdinalIgnoreCase) >= 0)
+                    if (NameMatches(t.name, r.nameContains))
                     {
                         matched = t;
                         return r;
@@ -118,6 +118,19 @@ namespace Steven.MP2A
             }
             matched = null;
             return null;
+        }
+
+        static bool NameMatches(string name, string pattern)
+        {
+            if (string.IsNullOrEmpty(pattern))
+                return false;
+            foreach (var part in pattern.Split('|'))
+            {
+                var p = part.Trim();
+                if (p.Length > 0 && name.IndexOf(p, StringComparison.OrdinalIgnoreCase) >= 0)
+                    return true;
+            }
+            return false;
         }
 
         void Apply(Rule r, Vector3 from)

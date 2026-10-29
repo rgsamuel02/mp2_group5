@@ -32,6 +32,10 @@ public class TransportTunnel : MonoBehaviour
     public Color tunnelColor = new Color(0.2f, 0.8f, 1f);
     [Tooltip("Renderers tinted with the tunnel color (color-code each route).")]
     public Renderer[] colorRenderers;
+    [Tooltip("Optional sign text, filled in from the route (e.g. \"TO CAFE\").")]
+    public UnityEngine.UI.Text label;
+    [Tooltip("Sign text; empty = \"TO \" + Receiver Id.")]
+    public string labelText = "";
     public ParticleSystem sendEffect;
     public AudioSource sendSound;
 
@@ -48,11 +52,26 @@ public class TransportTunnel : MonoBehaviour
     {
         foreach (var c in GetComponents<Collider>())
             c.isTrigger = true;
-        Tint(colorRenderers, tunnelColor);
+        Refresh();
     }
 
-    // Shows the route color in the Editor too.
-    void OnValidate() => Tint(colorRenderers, tunnelColor);
+    // Shows the route color and sign in the Editor too.
+    void OnValidate() => Refresh();
+
+    void Refresh()
+    {
+        Tint(colorRenderers, tunnelColor);
+        var id = !string.IsNullOrEmpty(receiverId) ? receiverId : destinationScene;
+        SetLabel(label, !string.IsNullOrEmpty(labelText) ? labelText : "TO " + (id ?? "").ToUpperInvariant(), tunnelColor);
+    }
+
+    public static void SetLabel(UnityEngine.UI.Text label, string text, Color color)
+    {
+        if (label == null)
+            return;
+        label.text = text;
+        label.color = Color.Lerp(color, Color.black, 0.25f);
+    }
 
     void OnTriggerEnter(Collider other) => Consider(other);
 

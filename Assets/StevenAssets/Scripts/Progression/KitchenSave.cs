@@ -38,6 +38,7 @@ namespace Steven.MP2A
 
         static Data s_Data;
         static KitchenSave s_Live;
+        static readonly List<string> s_Notices = new List<string>();
         readonly List<GridBuilding> m_SceneBuildings = new List<GridBuilding>();
         float m_Timer;
 
@@ -48,7 +49,27 @@ namespace Steven.MP2A
         {
             s_Data = null;
             s_Live = null;
+            s_Notices.Clear();
         }
+
+        // ---- used by KitchenLedger while the kitchen is not loaded
+
+        internal static bool TryGetSaved(ResourceId id, out float value)
+        {
+            value = 0f;
+            return s_Data != null && s_Data.resources != null && s_Data.resources.TryGetValue(id, out value);
+        }
+
+        internal static void AddSaved(ResourceId id, float delta)
+        {
+            if (s_Data == null || s_Data.resources == null)
+                return;
+            s_Data.resources.TryGetValue(id, out var v);
+            s_Data.resources[id] = Mathf.Max(0f, v + delta);
+        }
+
+        /// <summary>A message shown the next time the player enters the kitchen (e.g. a delivery that came in).</summary>
+        internal static void AddNotice(string text) => s_Notices.Add(text);
 
         /// <summary>Optional: save right now (it already saves every second). Does nothing if the kitchen isn't open.</summary>
         public static void SaveNow()
@@ -73,6 +94,8 @@ namespace Steven.MP2A
         {
             if (s_Data != null)
                 Restore(s_Data);
+            if (s_Notices.Count > 0)
+                Invoke(nameof(ShowNotices), 1.5f);
             // Scene-placed buildings (hidden ones too); one that becomes null later was demolished.
             foreach (var b in FindObjectsByType<GridBuilding>(FindObjectsInactive.Include))
                 if (b != null && b.placedInScene && b.gameObject.scene == gameObject.scene)
@@ -172,6 +195,18 @@ namespace Steven.MP2A
                 }
             }
             Debug.Log("[KitchenSave] Restored kitchen: " + d.goalsCleared + " goals, " + d.built.Count + " built pieces.");
+        }
+
+        void ShowNotices()
+        {
+            var game = KitchenGame.Instance;
+            var head = game != null ? game.PlayerHeadPosition : Vector3.up * 1.6f;
+            var forward = game != null && Camera.main != null ? Camera.main.transform.forward : Vector3.forward;
+            forward.y = 0f;
+            forward = forward.sqrMagnitude > 0.01f ? forward.normalized : Vector3.forward;
+            for (var i = 0; i < s_Notices.Count; i++)
+                KitchenGame.Float(head + forward * 0.9f + Vector3.up * (0.15f * i), s_Notices[i], new Color(0.6f, 1f, 0.6f), 1.1f);
+            s_Notices.Clear();
         }
 
         static float Crew(GridBuilding b)

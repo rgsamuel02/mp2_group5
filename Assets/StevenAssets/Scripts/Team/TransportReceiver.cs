@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 /// <summary>
 /// Arrival point for TransportTunnel deliveries. Put it in the destination scene (e.g. on a crate or a spot on a
@@ -12,15 +13,27 @@ public class TransportReceiver : MonoBehaviour
     public Color color = new Color(0.2f, 0.8f, 1f);
     [Tooltip("Optional renderers tinted with the receiver's color (matches the sending tunnel).")]
     public Renderer[] colorRenderers;
+    [Tooltip("Give arriving objects a Rigidbody, collider and grab component if they have none, so the player can pick them up.")]
+    public bool ensureGrabbable = true;
+    [Tooltip("Optional sign text, filled in from the id (e.g. \"KITCHEN\nRECEIVING\").")]
+    public UnityEngine.UI.Text label;
     public ParticleSystem arriveEffect;
     public AudioSource arriveSound;
+    [Tooltip("Runs for every object that arrives here (check its name to decide what to do with it).")]
+    public UnityEvent<GameObject> onArrived = new UnityEvent<GameObject>();
 
     public Vector3 ArrivalPoint => transform.position + Vector3.up * dropHeight;
 
-    void Awake() => TransportTunnel.Tint(colorRenderers, color);
+    void Awake() => Refresh();
 
-    // Shows the route color in the Editor too.
-    void OnValidate() => TransportTunnel.Tint(colorRenderers, color);
+    // Shows the route color and sign in the Editor too.
+    void OnValidate() => Refresh();
+
+    void Refresh()
+    {
+        TransportTunnel.Tint(colorRenderers, color);
+        TransportTunnel.SetLabel(label, (receiverId ?? "").ToUpperInvariant() + " RECEIVING", color);
+    }
 
     public void Arrived(GameObject item)
     {
@@ -28,6 +41,7 @@ public class TransportReceiver : MonoBehaviour
             arriveEffect.Play();
         if (arriveSound != null)
             arriveSound.Play();
+        onArrived?.Invoke(item);
     }
 
     void OnDrawGizmos()
