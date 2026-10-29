@@ -53,5 +53,6 @@ public class PlantToBeanPack : MonoBehaviour
         currentPack = GrabbableItem.Create(beanPackItem, beanPackAnchor.position, grid, inventory, previewMaterial);
         currentPack.transform.SetPositionAndRotation(beanPackAnchor.position, beanPackAnchor.rotation);
         moveLock.SetLocked(true);
+        TutorialPopup.NotifyUsed(this);
     }
 }

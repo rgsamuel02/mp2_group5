@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1105240422069043072}
+  - component: {fileID: 8397392266737316251}
   m_Layer: 0
   m_Name: TableReciever
   m_TagString: Untagged
@@ -36,6 +37,34 @@ Transform:
   - {fileID: 8158898114773015545}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8397392266737316251
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1730235827111676225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db0207aec1eb7724eb1e8d2ea85b0554, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TableReciever
+  grid: {fileID: 0}
+  previewMaterial: {fileID: 2100000, guid: f43fa7a88c77e834ebee61ef99c47fe6, type: 2}
+  soufflePrefab: {fileID: 5337075453817051902, guid: b9643ac659762e140b5246f5dadb9fc7, type: 3}
+  coffeePlantPrefab: {fileID: 3557087594452794047, guid: 6d699c1f82dc7f1448f64561ea679088, type: 3}
+  violaPrefab: {fileID: 4481084544993054997, guid: 2464dd7e7ec23614584b825ab42bc0f3, type: 3}
+  replenishInterval: 10
+  slots:
+  - {x: 0, y: 5}
+  - {x: 0, y: 6}
+  - {x: 0, y: 7}
+  - {x: 1, y: 5}
+  - {x: 1, y: 6}
+  - {x: 1, y: 7}
+  - {x: 2, y: 5}
+  - {x: 2, y: 6}
+  - {x: 2, y: 7}
 --- !u!1 &3734406115427969111
 GameObject:
   m_ObjectHideFlags: 0

@@ -13,6 +13,18 @@ PrefabInstance:
       value: RebeccaCoffeePlant
       objectReference: {fileID: 0}
     - target: {fileID: 6447311495197667818, guid: 9b401281f0bded843b38bdf5578055c5, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6447311495197667818, guid: 9b401281f0bded843b38bdf5578055c5, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6447311495197667818, guid: 9b401281f0bded843b38bdf5578055c5, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6447311495197667818, guid: 9b401281f0bded843b38bdf5578055c5, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -34,11 +46,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6447311495197667818, guid: 9b401281f0bded843b38bdf5578055c5, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6447311495197667818, guid: 9b401281f0bded843b38bdf5578055c5, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6447311495197667818, guid: 9b401281f0bded843b38bdf5578055c5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
