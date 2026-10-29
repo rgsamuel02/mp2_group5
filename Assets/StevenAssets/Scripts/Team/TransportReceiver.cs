@@ -29,7 +29,7 @@ public class TransportReceiver : MonoBehaviour
     // Shows the route color and sign in the Editor too.
     void OnValidate() => Refresh();
 
-    void Refresh()
+    public void Refresh()
     {
         TransportTunnel.Tint(colorRenderers, color);
         TransportTunnel.SetLabel(label, (receiverId ?? "").ToUpperInvariant() + " RECEIVING", color);

@@ -13,6 +13,15 @@ using UnityEngine.XR.Interaction.Toolkit.Interactables;
 /// It disappears and waits (see DeliveryCarrier) until the player next enters the destination scene, then drops in at
 /// the receiver. Destination Scene may be the start of a name ("BryceSceneLvl" matches every Orchestra level).
 /// </summary>
+/// <summary>
+/// Optional: put a component with this interface next to a TransportTunnel to swap or reject an item before it is
+/// sent (return the object to send, or null to keep it here).
+/// </summary>
+public interface ITransportPrepare
+{
+    GameObject Prepare(GameObject item);
+}
+
 [RequireComponent(typeof(Collider))]
 public class TransportTunnel : MonoBehaviour
 {
@@ -58,7 +67,7 @@ public class TransportTunnel : MonoBehaviour
     // Shows the route color and sign in the Editor too.
     void OnValidate() => Refresh();
 
-    void Refresh()
+    public void Refresh()
     {
         Tint(colorRenderers, tunnelColor);
         var id = !string.IsNullOrEmpty(receiverId) ? receiverId : destinationScene;
@@ -114,6 +123,13 @@ public class TransportTunnel : MonoBehaviour
 
     void Send(GameObject go, Rigidbody rb)
     {
+        foreach (var prep in GetComponents<ITransportPrepare>())
+        {
+            go = prep.Prepare(go);
+            if (go == null)
+                return;
+            rb = go.GetComponent<Rigidbody>();
+        }
         m_InFlight.Add(go);
         if (sendEffect != null)
             sendEffect.Play();

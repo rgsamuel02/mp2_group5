@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Steven.MP2A
 {
     /// <summary>
-    /// Shatter Affordance: hitting a supply crate with the cleaver replaces it with loose, harvestable ingredient
+    /// Shatter Affordance: prying a supply crate with the crowbar replaces it with loose, harvestable ingredient
     /// Instances (one per remaining Stock).
     /// </summary>
     public class Shatterable : MonoBehaviour
@@ -50,7 +50,7 @@ namespace Steven.MP2A
                 if (rb != null && !rb.isKinematic)
                     rb.AddForce((offset.normalized + Vector3.up) * scatterImpulse, ForceMode.VelocityChange);
             }
-            KitchenGame.Float(origin + Vector3.up * 0.3f, $"Crate smashed! {count} items", new Color(1f, 0.85f, 0.45f));
+            KitchenGame.Float(origin + Vector3.up * 0.3f, $"Crate pried open! {count} items", new Color(1f, 0.85f, 0.45f));
             KitchenGame.Blast(origin, new Color(0.8f, 0.55f, 0.3f), 0.8f);
             KitchenGame.Tutorial("ingredients", origin + Vector3.up * 0.4f);
             return true;

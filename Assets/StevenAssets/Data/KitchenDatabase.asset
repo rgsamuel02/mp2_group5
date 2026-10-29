@@ -1497,11 +1497,11 @@ MonoBehaviour:
       the trap's ticket to re-bait it with Cheese.
   - id: crate
     title: SUPPLY CRATE
-    body: Deliveries pile up at the back door and lose Freshness over time. Swing
-      the cleaver into one to smash it into loose ingredients.
+    body: Deliveries pile up at the back door and lose Freshness over time. Pry one
+      open with the crowbar to get loose ingredients.
   - id: cleaver
-    title: CLEAVER
-    body: Swing it into a supply crate to smash it open.
+    title: CROWBAR
+    body: Jam the flat end into a supply crate to pry it open.
   - id: ingredients
     title: LOOSE INGREDIENTS
     body: Touch them with the harvest basket or drop them in the pantry chute to

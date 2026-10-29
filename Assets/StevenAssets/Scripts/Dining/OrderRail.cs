@@ -11,14 +11,31 @@ namespace Steven.MP2A
     {
         public List<PressableCard> slots = new List<PressableCard>();
 
+        [Tooltip("Paper tickets (restyled): dark ink text and a status stamp instead of colored cards.")]
+        public bool paperTickets;
+        [Tooltip("Kitchen clock shown on tickets starts at this hour.")]
+        public int serviceStartHour = 17;
+
         readonly List<DiningTable> m_Tickets = new List<DiningTable>();
+        readonly Dictionary<DiningTable, int> m_OrderNumber = new Dictionary<DiningTable, int>();
+        readonly Dictionary<DiningTable, float> m_OrderTime = new Dictionary<DiningTable, float>();
+        int m_NextOrder = 41;
         readonly List<DiningTable> m_Queue = new List<DiningTable>();
         float m_Timer;
+
+        /// <summary>The ticket clip currently holding this table's order (null if none or still queued).</summary>
+        public PressableCard SlotFor(DiningTable table)
+        {
+            var i = table != null ? m_Tickets.IndexOf(table) : -1;
+            return i >= 0 && i < slots.Count ? slots[i] : null;
+        }
 
         public void Post(DiningTable table)
         {
             if (table == null || m_Tickets.Contains(table) || m_Queue.Contains(table))
                 return;
+            m_OrderNumber[table] = ++m_NextOrder;
+            m_OrderTime[table] = Time.time;
             var free = FreeSlot();
             if (free >= 0)
                 Assign(free, table);
@@ -30,6 +47,8 @@ namespace Steven.MP2A
         public void Remove(DiningTable table)
         {
             m_Queue.Remove(table);
+            m_OrderNumber.Remove(table);
+            m_OrderTime.Remove(table);
             var i = m_Tickets.IndexOf(table);
             if (i >= 0)
             {
@@ -119,27 +138,72 @@ namespace Steven.MP2A
                 var t = m_Tickets[i];
                 if (t == null)
                 {
-                    card.SetState("-", "(empty clip)", new Color(0.15f, 0.15f, 0.15f, 0.9f));
+                    if (paperTickets)
+                    {
+                        card.SetState("", "\n\n(empty clip)", new Color(0.75f, 0.75f, 0.72f));
+                        card.SetMeter(-1f, Color.clear);
+                    }
+                    else
+                    {
+                        card.SetState("-", "(empty clip)", new Color(0.15f, 0.15f, 0.15f, 0.9f));
+                    }
                     continue;
                 }
                 var have = res != null ? res.GetInt(t.Order) : 0;
                 var patience = t.stats != null ? t.stats.Get(StatId.Patience) : 0f;
-                string title = $"TABLE {t.tableNumber}";
-                string body = $"{KitchenGame.ResourceName(t.Order)}\nPatience {patience:0}\nIn pantry: {have}";
+                var patienceMax = t.stats != null ? Mathf.Max(1f, t.stats.GetMax(StatId.Patience)) : 100f;
+                string title;
+                string body;
                 Color bg;
-                if (t.PlateOut)
+                if (paperTickets)
                 {
-                    body += "\n(plated)";
-                    bg = new Color(0.2f, 0.25f, 0.45f, 0.95f);
-                }
-                else if (have > 0)
-                {
-                    body += "\nPOKE TO PLATE";
-                    bg = new Color(0.12f, 0.4f, 0.15f, 0.95f);
+                    title = $"TABLE {t.tableNumber}";
+                    m_OrderNumber.TryGetValue(t, out var no);
+                    m_OrderTime.TryGetValue(t, out var at);
+                    var minutes = Mathf.FloorToInt(at / 60f * 4f);   // kitchen clock runs 4x
+                    var clock = $"{serviceStartHour + minutes / 60:00}:{minutes % 60:00}";
+                    string stamp;
+                    if (t.PlateOut)
+                    {
+                        stamp = "<color=#2a4fa0>ON THE PASS</color>";
+                        bg = new Color(0.16f, 0.31f, 0.63f);
+                    }
+                    else if (have > 0)
+                    {
+                        stamp = "<color=#1f7a2e>READY - POKE TO PLATE</color>";
+                        bg = new Color(0.12f, 0.48f, 0.18f);
+                    }
+                    else if (patience < 30f)
+                    {
+                        stamp = "<color=#b3261e>HURRY!</color>";
+                        bg = new Color(0.7f, 0.1f, 0.08f);
+                    }
+                    else
+                    {
+                        stamp = "<color=#7a4a10>COOK IT</color>";
+                        bg = new Color(0.62f, 0.38f, 0.08f);
+                    }
+                    body = $"#{no:0000}      {clock}\n- - - - - - - - - -\n<size=30><b>1 x {KitchenGame.ResourceName(t.Order).ToUpperInvariant()}</b></size>\n- - - - - - - - - -\nIN PANTRY: {have}\n<b>{stamp}</b>";
+                    card.SetMeter(patience / patienceMax, Color.Lerp(new Color(0.75f, 0.12f, 0.1f), new Color(0.2f, 0.55f, 0.25f), patience / patienceMax));
                 }
                 else
                 {
-                    bg = patience < 30f ? new Color(0.5f, 0.05f, 0.05f, 0.95f) : new Color(0.35f, 0.18f, 0.05f, 0.95f);
+                    title = $"TABLE {t.tableNumber}";
+                    body = $"{KitchenGame.ResourceName(t.Order)}\nPatience {patience:0}\nIn pantry: {have}";
+                    if (t.PlateOut)
+                    {
+                        body += "\n(plated)";
+                        bg = new Color(0.2f, 0.25f, 0.45f, 0.95f);
+                    }
+                    else if (have > 0)
+                    {
+                        body += "\nPOKE TO PLATE";
+                        bg = new Color(0.12f, 0.4f, 0.15f, 0.95f);
+                    }
+                    else
+                    {
+                        bg = patience < 30f ? new Color(0.5f, 0.05f, 0.05f, 0.95f) : new Color(0.35f, 0.18f, 0.05f, 0.95f);
+                    }
                 }
                 card.SetState(title, body, bg);
             }

@@ -15,6 +15,10 @@ namespace Steven.MP2A
         public Text title;
         public Text body;
         public Image background;
+        [Tooltip("Paper-style tickets: the state color goes on this stripe/stamp and the paper stays paper colored.")]
+        public Image accent;
+        [Tooltip("Optional bar (anchored left) whose width shows a 0..1 value, e.g. a guest's patience.")]
+        public RectTransform meter;
         [Tooltip("Moved back slightly when pressed (button feel).")]
         public Transform visual;
         public float pressDepth = 0.008f;
@@ -71,8 +75,37 @@ namespace Steven.MP2A
                 title.text = titleText;
             if (body != null && body.text != bodyText)
                 body.text = bodyText;
-            if (background != null && background.color != backgroundColor)
+            if (accent != null)
+            {
+                var c = backgroundColor;
+                c.a = 1f;
+                if (accent.color != c)
+                    accent.color = c;
+            }
+            else if (background != null && background.color != backgroundColor)
+            {
                 background.color = backgroundColor;
+            }
+        }
+
+        /// <summary>Sets the meter's fill (0..1) and color; hides it below 0.</summary>
+        public void SetMeter(float value, Color color)
+        {
+            if (meter == null)
+                return;
+            var show = value >= 0f;
+            // The bar's track (and its label) hides with it.
+            var holder = meter.parent != null && meter.parent.name.StartsWith("Patience") ? meter.parent.gameObject : meter.gameObject;
+            if (holder.activeSelf != show)
+                holder.SetActive(show);
+            if (!meter.gameObject.activeSelf)
+                meter.gameObject.SetActive(true);
+            if (!show)
+                return;
+            meter.anchorMax = new Vector2(Mathf.Clamp01(value), meter.anchorMax.y);
+            var img = meter.GetComponent<Image>();
+            if (img != null)
+                img.color = color;
         }
 
         void Update()

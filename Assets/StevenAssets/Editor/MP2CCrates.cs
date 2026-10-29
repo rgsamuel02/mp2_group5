@@ -154,7 +154,13 @@ namespace Steven.MP2A.EditorTools
             tunnel.receiverId = id;
             tunnel.tunnelColor = color;
             tunnel.labelText = labelText;
+            tunnel.Refresh();   // sign and color (OnValidate doesn't run for values set from code)
             EditorUtility.SetDirty(tunnel);
+            if (tunnel.label != null)
+            {
+                EditorUtility.SetDirty(tunnel.label);
+                PrefabUtility.RecordPrefabInstancePropertyModifications(tunnel.label);
+            }
             PrefabUtility.RecordPrefabInstancePropertyModifications(tunnel);
             return go;
         }
@@ -168,7 +174,13 @@ namespace Steven.MP2A.EditorTools
             var r = go.GetComponent<TransportReceiver>();
             r.receiverId = id;
             r.color = color;
+            r.Refresh();
             EditorUtility.SetDirty(r);
+            if (r.label != null)
+            {
+                EditorUtility.SetDirty(r.label);
+                PrefabUtility.RecordPrefabInstancePropertyModifications(r.label);
+            }
             PrefabUtility.RecordPrefabInstancePropertyModifications(r);
             return go;
         }
@@ -505,7 +517,7 @@ namespace Steven.MP2A.EditorTools
             }
 
             // Tools.
-            foreach (var toolName in new[] { "WateringCan", "RollingPin", "Wrench", "DemolitionMallet", "SanitizerSpray", "FireExtinguisher", "KitchenShears", "Cleaver", "HarvestBasket" })
+            foreach (var toolName in new[] { "WateringCan", "RollingPin", "Wrench", "DemolitionMallet", "SanitizerSpray", "FireExtinguisher", "KitchenShears", "Cleaver", "Crowbar", "HarvestBasket" })
             {
                 if (simplifier.tools.Contains(toolName))
                     continue;

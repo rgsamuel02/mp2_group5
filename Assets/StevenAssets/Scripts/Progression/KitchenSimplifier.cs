@@ -41,7 +41,7 @@ namespace Steven.MP2A
         };
 
         [Header("Tools that can ever appear (by name on the tool table)")]
-        public List<string> tools = new List<string> { "KitchenShears", "Cleaver", "HarvestBasket" };
+        public List<string> tools = new List<string> { "KitchenShears", "Crowbar", "HarvestBasket" };
         static readonly string[] s_AllTools =
         {
             "WateringCan", "KitchenShears", "HarvestBasket", "Cleaver", "RollingPin", "Wrench",

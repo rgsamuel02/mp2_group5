@@ -85,6 +85,20 @@ namespace Steven.MP2A
 
         public int GoalsCleared => m_Current;
 
+        /// <summary>While true (e.g. during the First Shift tutorial) goals are not checked and no goal card is shown.</summary>
+        [NonSerialized] public bool paused;
+
+        /// <summary>Ends a pause: shows the goal card and resumes checking (a goal already met clears right away).</summary>
+        public void Resume()
+        {
+            if (!paused)
+                return;
+            paused = false;
+            m_Timer = 0f;
+            if (m_HorizonCard == null)
+                ShowHorizon();
+        }
+
         void Reset() => LoadDefaults();
 
         /// <summary>Fills in the default goals and achievements (also used when the component is first added).</summary>
@@ -173,7 +187,8 @@ namespace Steven.MP2A
                 if (a.trophy != null)
                     a.trophy.SetActive(false);
 
-            ShowHorizon();
+            if (!paused)
+                ShowHorizon();
         }
 
         void Update()
@@ -193,7 +208,7 @@ namespace Steven.MP2A
             m_Timer = checkInterval;
             if (m_Res == null)
                 m_Res = KitchenGame.Res;
-            if (m_Res == null)
+            if (m_Res == null || paused)
                 return;
 
             if (m_Current < goals.Count && Met(goals[m_Current]))
