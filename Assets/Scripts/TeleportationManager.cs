@@ -13,7 +13,7 @@ public class TeleportationManager : MonoBehaviour
     public TextMeshProUGUI north, east, south, west;
     public InputActionReference confirm;
     string SelectedScene = "";
-    static string CurrentScene = "Orchestra";
+    static string CurrentScene = "Cafe";
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -38,6 +38,7 @@ public class TeleportationManager : MonoBehaviour
     {
         StickPosition.action.performed -= StickMoved;
         StickPressed.action.performed -= CloseMenu;
+        confirm.action.performed -= LoadLevel;
         StickPressed.action.performed += OpenMenu;
         gameObject.SetActive(false);
     }
@@ -76,7 +77,6 @@ public class TeleportationManager : MonoBehaviour
     private void LoadLevel(InputAction.CallbackContext context)
     {
         CloseMenu(context);
-        confirm.action.performed -= LoadLevel;
         if (SelectedScene.Equals(CurrentScene)) return;
         StickPressed.action.performed -= OpenMenu;
 
@@ -133,6 +133,11 @@ public class TeleportationManager : MonoBehaviour
         // save audience
         GameState.Instance.SaveAudience();
 
+        foreach (GameObject m in MealManager.meals) {
+            if (m != null) 
+                m.SetActive(false);
+        }
+
         GameState.Instance.gameObject.SetActive(false);
     }
 
@@ -155,14 +160,16 @@ public class TeleportationManager : MonoBehaviour
             }
 
             GameObject temp = GameObject.Find("OrchestraTrashHolder");
-            for (int i = temp.transform.childCount - 1; i >= 0; i--)
-            {
-                // Access the child GameObject
-                Transform trash = temp.transform.GetChild(i);
-                trash.SetParent(GameState.Instance.audience.transform);
-                trash.gameObject.SetActive(true);
+            if (temp != null) {
+                for (int i = temp.transform.childCount - 1; i >= 0; i--)
+                {
+                    // Access the child GameObject
+                    Transform trash = temp.transform.GetChild(i);
+                    trash.SetParent(GameState.Instance.audience.transform);
+                    trash.gameObject.SetActive(true);
+                }
+                Destroy(temp);
             }
-            Destroy(temp);
 
             if (GameState.Instance.UnlockedGarden())
             {
@@ -173,6 +180,11 @@ public class TeleportationManager : MonoBehaviour
             }
 
             GameState.Instance.LoadAudience();
+
+            foreach (GameObject m in MealManager.meals) {
+                if (m != null) 
+                    m.SetActive(true);
+            }
         }
 
         SceneManager.sceneLoaded += OnLoaded;

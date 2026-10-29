@@ -13,8 +13,7 @@ public class BuyFlower : MonoBehaviour
 
     void SpawnFlower()
     {
-        if (GameState.Instance.GetMoney() < 2) return;
-        GameState.Instance.AddPay(-2);
-        Instantiate(flowerPrefab, new Vector3(0, 1, 0), Quaternion.identity);
+        if (GameState.Instance.WithdrawFlower())
+            Instantiate(flowerPrefab, new Vector3(0, 1, 0), Quaternion.identity);
     }
 }

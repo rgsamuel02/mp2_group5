@@ -7,8 +7,7 @@ public class CoffeeSpawner : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if ((other.gameObject.name == "Left Controller" || other.gameObject.name == "Right Controller") && GameState.Instance.GetMoney() > 2) {
-            GameState.Instance.AddPay(-2);
+        if ((other.gameObject.name == "Left Controller" || other.gameObject.name == "Right Controller") && (!CoffeeTutorial.isCompleted || GameState.Instance.WithdrawCoffee())) {
             Instantiate(spawnPrefab, position, Quaternion.identity);
         }
     }

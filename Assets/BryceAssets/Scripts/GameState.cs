@@ -10,7 +10,7 @@ using UnityEngine.SceneManagement;
 
 public class GameState : MonoBehaviour
 {
-    static string template = "Money: {0:F2}\nMaterial: {1}\n\nHigh: {2:F2}\nMedium: {3:F2}\nLow: {4:F2}\n\nBrass: {5}\nWoodwind: {6}\nStrings: {7}";
+    static string template = "Money: {0:F2}\nMaterial: {1}\n\nHigh: {2:F2}\nMedium: {3:F2}\nLow: {4:F2}\n\nBrass: {5}\nWoodwind: {6}\nStrings: {7}\n\n{8}\n{9}\n{10}";
     public const int GRID_WIDTH = 30;
     public const int GRID_HEIGHT = 20;
     public const float GRID_SIZE = 0.5f;
@@ -24,6 +24,7 @@ public class GameState : MonoBehaviour
     bool unlockedGarden = false;
     int numCustomers = 0;
     public int level = 1;
+    int flowers = 100, coffee = 100, meals = 100;
     public int[] rowMultiplier = {1, 1, 1, 1, 1};
     bool boughtPiano = false;
     public GameObject pianoTrophy;
@@ -359,9 +360,43 @@ public class GameState : MonoBehaviour
         return awake;
     }
 
+    public void AddFlower()
+    {
+        flowers += 1;
+    }
+
+    public void AddCoffee()
+    {
+        coffee += 1;
+    }
+
+    public void AddMeal()
+    {
+        meals += 1;
+    }
+
+    public bool WithdrawFlower() {
+        if (flowers < 1) return false;
+        flowers-= 1;
+        return true;
+    }
+    public bool WithdrawCoffee() {
+        if (coffee < 1) return false;
+        coffee-= 1;
+        return true;
+    }
+    public bool WithdrawMeal() {
+        if (meals < 1) return false;
+        meals-= 1;
+        return true;
+    }
+
     void Update()
     {
-        stats.SetText(string.Format(template, money, material, high, mid, low, brass, woodwind, strings));
+        string gardenIntegration = unlockedGarden ? $"Flowers: {flowers}" : "";
+        string coffeeIntegration = level >= 2 ? $"Coffee: {coffee}" : "";
+        string mealIntegration = level >= 3 ? $"Meals: {meals}" : "";
+        stats.SetText(string.Format(template, money, material, high, mid, low, brass, woodwind, strings, gardenIntegration, coffeeIntegration, mealIntegration));
         if (!unlockedGarden)
         {
             threshold.SetText($"Customers: {numCustomers}/30");
