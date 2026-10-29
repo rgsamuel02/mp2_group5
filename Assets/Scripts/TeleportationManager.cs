@@ -127,7 +127,7 @@ public class TeleportationManager : MonoBehaviour
         GameObject[] vases = GameObject.FindGameObjectsWithTag("Vase");
         foreach (GameObject v in vases)
         {
-            v.SetActive(false);
+            v.GetComponent<Vase>().CleanUp();
         }
 
         // save audience
@@ -166,7 +166,10 @@ public class TeleportationManager : MonoBehaviour
 
             if (GameState.Instance.UnlockedGarden())
             {
-                foreach (GameObject v in ShowVases.vases) v.SetActive(true);
+                foreach (GameObject v in ShowVases.vases) 
+                {
+                    v.GetComponent<Vase>().StartUp();
+                }
             }
 
             GameState.Instance.LoadAudience();

@@ -20,7 +20,9 @@ public class MealTutorial : MonoBehaviour
     {
         if (tutorialCleared)
         {
+            xro.transform.position = new(0, 0, 0);
             Destroy(gameObject);
+            return;
         }
         plus.onClick.AddListener(() => {
             mealsPerMinute++;
