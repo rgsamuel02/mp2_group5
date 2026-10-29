@@ -21,9 +21,9 @@ public class Scr_GardenEconomy : MonoBehaviour
 
     public int moneyGoalCents = 30000;
 
-    [SerializeField] private int tomatoesHarvested;
-    [SerializeField] private int coffeeBeansHarvested;
-    [SerializeField] private int flowersHarvested;
+    [SerializeField] private int tomatoesHarvested = 15;
+    [SerializeField] private int coffeeBeansHarvested = 60;
+    [SerializeField] private int flowersHarvested = 5;
 
     [SerializeField] private bool restaurantUnlocked;
     [SerializeField] private bool cafeUnlocked;

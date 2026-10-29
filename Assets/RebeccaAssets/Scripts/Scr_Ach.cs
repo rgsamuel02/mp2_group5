@@ -13,9 +13,9 @@ public class Scr_Ach : MonoBehaviour
     public int cMilestone = 60;
     public int fMilestone = 5;
 
-    [SerializeField] private int tomatoesHarvested;
-    [SerializeField] private int cornHarvested;
-    [SerializeField] private int flowersHarvested;
+    [SerializeField] private int tomatoesHarvested = 15;
+    [SerializeField] private int cornHarvested = 60;
+    [SerializeField] private int flowersHarvested = 5;
 
     [SerializeField] private bool tomatoAchievementUnlocked;
     [SerializeField] private bool cornAchievementUnlocked;

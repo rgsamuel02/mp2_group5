@@ -15,9 +15,9 @@ public class Scr_Inventory : MonoBehaviour
     public int water = 20;
     public int fertilizer = 10;
 
-    public int tomatoes = 0;
-    public int corn = 0;
-    public int flowers = 0;
+    public int tomatoes = 15;
+    public int corn = 60;
+    public int flowers = 5;
 
     public int GetAmount(GardenResource resource)
     {

@@ -367,9 +367,9 @@ MonoBehaviour:
   tMilestone: 30
   cMilestone: 60
   fMilestone: 5
-  tomatoesHarvested: 0
-  cornHarvested: 0
-  flowersHarvested: 0
+  tomatoesHarvested: 15
+  cornHarvested: 60
+  flowersHarvested: 5
   tomatoAchievementUnlocked: 0
   cornAchievementUnlocked: 0
   flowerAchievementUnlocked: 0
@@ -498,9 +498,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Scr_Inventory
   water: 20
   fertilizer: 10
-  tomatoes: 0
-  corn: 0
-  flowers: 0
+  tomatoes: 15
+  corn: 60
+  flowers: 5
 --- !u!1 &2339482974775303067
 GameObject:
   m_ObjectHideFlags: 0
@@ -2823,8 +2823,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "GARDEN INVENTORY\r\n\rWater: 20\r\nFertilizer: 10\r\n\rTomatoes: 0\r\nCoffee
-    Cherries: 0\r\nFlowers: 0"
+  m_text: "GARDEN INVENTORY\r\n\rWater: 20\r\nFertilizer: 10\r\n\rTomatoes: 15\r\nCoffee
+    Cherries: 60\r\nFlowers: 5"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4164,7 +4164,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1928218660218436516, guid: 0d154dc8a950ab34bbb72c0fd8c6c5be, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.2
+      value: -0.3
       objectReference: {fileID: 0}
     - target: {fileID: 1928218660218436516, guid: 0d154dc8a950ab34bbb72c0fd8c6c5be, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
