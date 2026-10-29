@@ -210,6 +210,23 @@ namespace Steven.MP2A
             return value;
         }
 
+        /// <summary>Copy of every amount (used by KitchenSave when the player leaves the kitchen).</summary>
+        public Dictionary<ResourceId, float> Snapshot()
+        {
+            EnsureInitialised();
+            return new Dictionary<ResourceId, float>(m_Amounts);
+        }
+
+        /// <summary>Puts saved amounts back without triggering meltdowns, inspections or tutorials.</summary>
+        public void Restore(Dictionary<ResourceId, float> amounts)
+        {
+            if (amounts == null)
+                return;
+            EnsureInitialised();
+            foreach (var kv in amounts)
+                SetInternal(kv.Key, kv.Value, false);
+        }
+
         /// <summary>Debug / video helper: reset every resource to its start amount.</summary>
         public void ResetToStart()
         {

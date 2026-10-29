@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerWallet : MonoBehaviour
 {
+    public static PlayerWallet Instance {private set; get;}
     public int startingBalance = 500;
     public TMP_Text balanceText;
     public string balanceFormat = "Current Balance: {0}¥";
@@ -16,6 +17,22 @@ public class PlayerWallet : MonoBehaviour
 
     void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            // Transfer the cafe's UI reference to the persistent wallet.
+            if (balanceText != null)
+            {
+                Instance.balanceText = balanceText;
+                Instance.RefreshLabel();
+            }
+
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+        
         balance = startingBalance;
         RefreshLabel();
     }

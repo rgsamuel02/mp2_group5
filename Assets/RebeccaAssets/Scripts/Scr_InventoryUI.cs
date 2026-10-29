@@ -48,9 +48,8 @@ public class Scr_InventoryUI : MonoBehaviour
             "GARDEN INVENTORY\n" +
             "Water: " + inventory.water + "\n" +
             "Fertilizer: " + inventory.fertilizer + "\n" +
-            "Seeds: " + inventory.seeds + "\n" +
             "Tomatoes: " + inventory.tomatoes + "\n" +
-            "Corn: " + inventory.corn + "\n" +
+            "Coffee Cherries: " + inventory.corn + "\n" +
             "Flowers: " + inventory.flowers;
 
         // Only update the text when its contents actually change.

@@ -4,7 +4,6 @@ public enum GardenResource
 {
     Water,
     Fertilizer,
-    Seeds,
     Tomatoes,
     Corn,
     Flowers
@@ -15,7 +14,6 @@ public class Scr_Inventory : MonoBehaviour
     [Header("Player Resources")]
     public int water = 20;
     public int fertilizer = 10;
-    public int seeds = 10;
 
     public int tomatoes = 0;
     public int corn = 0;
@@ -30,9 +28,6 @@ public class Scr_Inventory : MonoBehaviour
 
             case GardenResource.Fertilizer:
                 return fertilizer;
-
-            case GardenResource.Seeds:
-                return seeds;
 
             case GardenResource.Tomatoes:
                 return tomatoes;
@@ -83,10 +78,6 @@ public class Scr_Inventory : MonoBehaviour
                 fertilizer += amount;
                 break;
 
-            case GardenResource.Seeds:
-                seeds += amount;
-                break;
-
             case GardenResource.Tomatoes:
                 tomatoes += amount;
                 break;
@@ -108,11 +99,6 @@ public class Scr_Inventory : MonoBehaviour
     public bool UseWater(int amount)
     {
         return UseResource(GardenResource.Water, amount);
-    }
-
-    public bool UseSeeds(int amount)
-    {
-        return UseResource(GardenResource.Seeds, amount);
     }
 
     public void AddTomatoes(int amount)
@@ -148,13 +134,37 @@ public class Scr_Inventory : MonoBehaviour
         return UseResource(GardenResource.Fertilizer, amount);
     }
 
+    public int[] SaveInventory()
+    {
+        return new int[]
+        {
+            water,
+            fertilizer,
+            tomatoes,
+            corn,
+            flowers
+        };
+    }
+
+    public void LoadInventory(int[] savedResources)
+    {
+        if (savedResources == null || savedResources.Length < 5)
+            return;
+
+        water = savedResources[0];
+        fertilizer = savedResources[1];
+        tomatoes = savedResources[2];
+        corn = savedResources[3];
+        flowers = savedResources[4];
+
+        ShowResources();
+    }
 
     private void ShowResources()
     {
         Debug.Log(
             "Inventory | Water: " + water +
             " | Fertilizer: " + fertilizer +
-            " | Seeds: " + seeds +
             " | Tomatoes: " + tomatoes +
             " | Corn: " + corn +
             " | Flowers: " + flowers

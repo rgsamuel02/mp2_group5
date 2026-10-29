@@ -184,25 +184,32 @@ public class Scr_Flower : MonoBehaviour
 
     public void Harvest()
     {
-        if (isDead || !IsMature)
+        if (isDead)
+        {
+            Debug.Log("This plant is dead and cannot be harvested.");
+            Destroy(gameObject);
+            return;
+        }
+
+        if (!IsMature)
         {
             Debug.Log("The flowers are not ready to harvest.");
             return;
         }
 
-        if (inventory == null)
-            inventory = FindFirstObjectByType<Scr_Inventory>();
-
-        if (inventory == null)
-        {
-            Debug.LogError("GardenInventory was not found.");
-            return;
-        }
 
         int amount = flowerCount;
         inventory.AddResource(GardenResource.Flowers, amount);
 
         Debug.Log("Harvested " + amount + " flowers.");
+
+        Scr_GardenEconomy economy =
+            FindFirstObjectByType<Scr_GardenEconomy>();
+
+        if (economy != null)
+        {
+            economy.RegisterHarvest(GardenResource.Flowers, 5);
+        }
 
         Scr_Ach achievements =
             FindFirstObjectByType<Scr_Ach>();
@@ -244,4 +251,51 @@ public class Scr_Flower : MonoBehaviour
             plantRenderer.SetPropertyBlock(block);
         }
     }
+
+    
+    public void RestorePlant(
+        float savedHealth,
+        float savedMoisture,
+        float savedGrowth,
+        float savedAge,
+        float savedBloom,
+        int savedFlowerCount,
+        bool savedIsDead)
+    {
+        health = savedHealth;
+        moisture = savedMoisture;
+        growth = savedGrowth;
+        age = savedAge;
+        bloom = savedBloom;
+        flowerCount = savedFlowerCount;
+        isDead = savedIsDead;
+
+        UpdateVisualStage();
+
+        if (isDead)
+        {
+            if (matureVisualInstance != null)
+                matureVisualInstance.SetActive(false);
+
+            if (seedlingVisual != null)
+                seedlingVisual.SetActive(true);
+
+            foreach (Renderer plantRenderer in
+                    GetComponentsInChildren<Renderer>())
+            {
+                if (plantRenderer == null)
+                    continue;
+
+                MaterialPropertyBlock block = new MaterialPropertyBlock();
+                plantRenderer.GetPropertyBlock(block);
+
+                Color deadColor = new Color(0.35f, 0.2f, 0.1f);
+                block.SetColor("_BaseColor", deadColor);
+                block.SetColor("_Color", deadColor);
+
+                plantRenderer.SetPropertyBlock(block);
+            }
+        }
+    }
+
 }

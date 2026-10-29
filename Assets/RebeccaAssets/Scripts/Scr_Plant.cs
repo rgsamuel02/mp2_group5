@@ -216,6 +216,7 @@ public class Scr_Plant : MonoBehaviour
         if (isDead)
         {
             Debug.Log("This plant is dead and cannot be harvested.");
+            Destroy(gameObject);
             return;
         }
 
@@ -225,13 +226,15 @@ public class Scr_Plant : MonoBehaviour
             return;
         }
 
-        if (inventory == null)
-        {
-            Debug.LogError("GardenInventory was not found.");
-            return;
-        }
-
         inventory.AddTomatoes(tomatoYield);
+        
+        Scr_GardenEconomy economy =
+            FindFirstObjectByType<Scr_GardenEconomy>();
+
+        if (economy != null)
+        {
+            economy.RegisterHarvest(GardenResource.Tomatoes, 15);
+        }
 
         Scr_Ach achievements =
             FindFirstObjectByType<Scr_Ach>();
@@ -266,6 +269,41 @@ public class Scr_Plant : MonoBehaviour
             block.SetColor("_Color", deadColor);
 
             plantRenderer.SetPropertyBlock(block);
+        }
+    }
+
+    public void RestorePlant(
+        float savedHealth,
+        float savedMoisture,
+        float savedGrowth,
+        float savedAge,
+        bool savedIsDead)
+    {
+        health = savedHealth;
+        moisture = savedMoisture;
+        growth = savedGrowth;
+        age = savedAge;
+        isDead = savedIsDead;
+
+        UpdateGrowthStage();
+
+        if (isDead)
+        {
+            foreach (Renderer plantRenderer in
+                    GetComponentsInChildren<Renderer>())
+            {
+                if (plantRenderer == null)
+                    continue;
+
+                MaterialPropertyBlock block = new MaterialPropertyBlock();
+                plantRenderer.GetPropertyBlock(block);
+
+                Color deadColor = new Color(0.35f, 0.2f, 0.1f);
+                block.SetColor("_BaseColor", deadColor);
+                block.SetColor("_Color", deadColor);
+
+                plantRenderer.SetPropertyBlock(block);
+            }
         }
     }
 }

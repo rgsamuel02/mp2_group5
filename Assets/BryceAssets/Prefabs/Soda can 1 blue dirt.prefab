@@ -56,6 +56,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Soda can 1 blue dirt
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c5970e57284ae464795241394794c14f, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c5970e57284ae464795241394794c14f, type: 3}
+      propertyPath: m_TagString
+      value: Trash
+      objectReference: {fileID: 0}
     - target: {fileID: 3790146118957581895, guid: c5970e57284ae464795241394794c14f, type: 3}
       propertyPath: m_ScaleInLightmap
       value: 0.125

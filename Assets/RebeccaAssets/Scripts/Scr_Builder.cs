@@ -7,7 +7,6 @@ using TMPro;
 public class Scr_Builder : MonoBehaviour
 {
     public XRRayInteractor rayInteractor;
-    public InputActionReference placeAction;
     public InputActionReference selectPlotAction;
     public InputActionReference selectSeedlingAction;
     public InputActionReference selectCornAction;
@@ -15,6 +14,7 @@ public class Scr_Builder : MonoBehaviour
     public InputActionReference waterAction;
     public InputActionReference fertilizerAction;
     public InputActionReference harvestAction;
+    public InputActionReference sellAction;
 
     public GameObject gardenPlotPrefab;
     public GameObject seedlingPrefab;
@@ -28,8 +28,7 @@ public class Scr_Builder : MonoBehaviour
     public LayerMask groundLayer;
 
     public float interactionRadius = 1.5f;
-
-    [Min(1)] public int seedsPerPlant = 1;
+    
     [Min(1)] public int waterPerAction = 1;
     [Min(1)] public int fertilizerPerAction = 1;
 
@@ -50,8 +49,13 @@ public class Scr_Builder : MonoBehaviour
         {
             Debug.LogError("Scr_Builder could not find Scr_Inventory.");
         }
-        
-        Enable(placeAction, OnPlace);
+
+        if (resourcePopupPanel != null)
+        {
+            resourcePopupPanel.SetActive(false);
+        }
+
+
         Enable(selectPlotAction, OnSelectPlot);
         Enable(selectSeedlingAction, OnSelectSeedling);
         Enable(selectCornAction, OnSelectCorn);
@@ -59,6 +63,7 @@ public class Scr_Builder : MonoBehaviour
         Enable(waterAction, OnWater);
         Enable(fertilizerAction, OnFertilize);
         Enable(harvestAction, OnHarvest);
+        Enable(sellAction, OnSell);
     }
 
 
@@ -72,12 +77,6 @@ public class Scr_Builder : MonoBehaviour
 
 
     // VR input callbacks
-
-    private void OnPlace(InputAction.CallbackContext context)
-    {
-        TryPlaceObject();
-    }
-
     private void OnSelectPlot(InputAction.CallbackContext context)
     {
         SelectPrefab(gardenPlotPrefab, "Garden plot");
@@ -115,6 +114,29 @@ public class Scr_Builder : MonoBehaviour
     private void OnHarvest(InputAction.CallbackContext context)
     {
         TryHarvestPlant();
+    }
+    private void OnSell(UnityEngine.InputSystem.InputAction.CallbackContext context)
+    {
+        Debug.Log("Sell button pressed.");
+
+        if (!TryGetHit(out RaycastHit hit))
+        {
+            Debug.Log("Sell: Ray is not hitting anything.");
+            return;
+        }
+
+        Debug.Log("Sell ray hit: " + hit.collider.name);
+
+        Scr_GardenSellingStation station =
+            hit.collider.GetComponentInParent<Scr_GardenSellingStation>();
+
+        if (station == null)
+        {
+            Debug.Log("Sell: The hit object is not a selling station.");
+            return;
+        }
+
+        station.SellOneBatch();
     }
 
     private void SelectPrefab(GameObject prefab, string label)
@@ -231,9 +253,6 @@ public class Scr_Builder : MonoBehaviour
             Debug.LogError("Scr_Inventory is missing.");
             return;
         }
-
-        if (!inventory.UseSeeds(seedsPerPlant))
-            return;
 
         Vector3 plantPosition = cellCenter;
         plantPosition.y = seedlingHeight;
@@ -507,9 +526,6 @@ public class Scr_Builder : MonoBehaviour
             return;
         }
 
-        if (!inventory.UseSeeds(seedsPerPlant))
-            return;
-
         Vector3 plantPosition = cellCenter;
         plantPosition.y = seedlingHeight;
 
@@ -773,16 +789,32 @@ public class Scr_Builder : MonoBehaviour
         plant.Harvest();
     }
 
-    private void ShowResourcePopup(string message)
+    
+    public void ShowResourcePopup(string message)
     {
+        if (resourcePopupPanel == null || resourcePopupText == null)
+        {
+            Debug.LogError(
+                "Resource popup is missing! Assign Resource Popup Panel " +
+                "and Resource Popup Text in the Scr_Builder Inspector."
+            );
+            return;
+        }
+
         if (popupCoroutine != null)
+        {
             StopCoroutine(popupCoroutine);
+            popupCoroutine = null;
+        }
 
         resourcePopupText.text = message;
         resourcePopupPanel.SetActive(true);
 
+        Debug.Log("Showing resource popup: " + message);
+
         popupCoroutine = StartCoroutine(HideResourcePopupAfterDelay());
     }
+
 
     private System.Collections.IEnumerator HideResourcePopupAfterDelay()
     {

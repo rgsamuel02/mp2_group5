@@ -57,12 +57,21 @@ namespace Steven.MP2A
 
         public bool HasShown(string id) => m_Shown.Contains(id);
 
+        readonly HashSet<string> m_Suppressed = new HashSet<string>();
+
+        /// <summary>This tip never pops up, even after a reset (for mechanics left for the player to discover).</summary>
+        public void Suppress(string id)
+        {
+            if (!string.IsNullOrEmpty(id))
+                m_Suppressed.Add(id);
+        }
+
         public void Notify(string id, Vector3 position) => Notify(id, position, noticeRadius);
 
         /// <summary>Shows the tip for <paramref name="id"/> next to <paramref name="position"/> the first time it happens within <paramref name="radius"/> of the player.</summary>
         public void Notify(string id, Vector3 position, float radius)
         {
-            if (!tutorialsEnabled || string.IsNullOrEmpty(id) || m_Shown.Contains(id) || popupPrefab == null)
+            if (!tutorialsEnabled || string.IsNullOrEmpty(id) || m_Shown.Contains(id) || m_Suppressed.Contains(id) || popupPrefab == null)
                 return;
             if (id != welcomeId && Time.timeSinceLevelLoad < startupQuietSeconds)
                 return;

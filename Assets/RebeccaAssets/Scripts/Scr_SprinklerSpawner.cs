@@ -5,28 +5,37 @@ public class Scr_SprinklerSpawner : MonoBehaviour
     [Header("Sprinkler Prefab")]
     public GameObject sprinklerPrefab;
 
-    [Header("Grid Settings")]
-    public Scr_GridVis grid;
+    [Header("Garden Grid")]
+    public Scr_Builder builder;
 
     [Header("Spawn Height")]
     public float spawnY = 0.1f;
 
-    void Start()
+    private void Start()
     {
-        if (grid == null)
-            grid = FindFirstObjectByType<Scr_GridVis>();
+        // Find the builder automatically if one was not assigned.
+        if (builder == null)
+        {
+            builder = FindFirstObjectByType<Scr_Builder>();
+        }
 
-        // Choose a random INTERIOR grid corner.
-        // Exclude index 0 and gridSize to avoid the edges.
-        int xIndex = Random.Range(1, grid.gridSize);
-        int zIndex = Random.Range(1, grid.gridSize);
+        if (builder.gridSize < 2 || builder.cellSize <= 0f)
+        {
+            Debug.LogError(
+                "SprinklerSpawner: Invalid builder grid settings."
+            );
+            return;
+        }
 
-        Vector3 spawnPosition = grid.transform.TransformPoint(
-            new Vector3(
-                xIndex * grid.cellSize,
-                spawnY,
-                zIndex * grid.cellSize
-            )
+        // Choose an interior grid corner, excluding the outer edges.
+        int xIndex = Random.Range(1, builder.gridSize);
+        int zIndex = Random.Range(1, builder.gridSize);
+
+        // Match Scr_Builder's world-coordinate grid system.
+        Vector3 spawnPosition = new Vector3(
+            xIndex * builder.cellSize,
+            spawnY,
+            zIndex * builder.cellSize
         );
 
         // Spawn exactly one sprinkler.
@@ -37,7 +46,8 @@ public class Scr_SprinklerSpawner : MonoBehaviour
         );
 
         Debug.Log(
-            $"Sprinkler spawned at interior grid corner: {spawnPosition}"
+            $"Sprinkler spawned at grid corner ({xIndex}, {zIndex}), " +
+            $"world position {spawnPosition}"
         );
     }
 }
