@@ -1164,8 +1164,9 @@ MonoBehaviour:
   spout: {fileID: 2516475095710989055}
   cupRadius: 0.2
   maxDropHeight: 0.63
-  extraPressers: []
   touchMargin: 2.5
+  tutorialCanvas: {fileID: 3383384909076342467}
+  tutorialText: {fileID: 974483374394543098}
 --- !u!114 &2251625746579272846
 MonoBehaviour:
   m_ObjectHideFlags: 0

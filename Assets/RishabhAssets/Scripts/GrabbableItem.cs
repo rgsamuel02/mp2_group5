@@ -27,6 +27,9 @@ public class GrabbableItem : MonoBehaviour
     Vector2Int previousAnchor;
     int previousTurns;
 
+    bool IsGridPlaceable => !item || item.gridPlaceable;
+    Vector2Int Footprint => item ? item.footprint : (occupant ? occupant.footprint : Vector2Int.one);
+
     public static GrabbableItem Create(ShopItem item, Vector3 position, CafeGrid grid, PlayerInventory inventory, Material previewMaterial)
     {
         var go = Instantiate(item.prefab, position, item.prefab.transform.rotation, grid ? grid.transform : null);
@@ -73,6 +76,7 @@ public class GrabbableItem : MonoBehaviour
         occupant = GetComponent<GridOccupant>();
         body = GetComponent<Rigidbody>();
         Grab = GetComponent<XRGrabInteractable>();
+        if (!grid) grid = FindFirstObjectByType<CafeGrid>();
         Grab.selectEntered.AddListener(OnGrabbed);
         Grab.selectExited.AddListener(OnReleased);
     }
@@ -100,7 +104,7 @@ public class GrabbableItem : MonoBehaviour
 
     void Update()
     {
-        if (!Grab.isSelected || !item.gridPlaceable || !grid)
+        if (!Grab.isSelected || !IsGridPlaceable || !grid)
         {
             hasTarget = false;
             SetPreviewVisible(false);
@@ -110,7 +114,7 @@ public class GrabbableItem : MonoBehaviour
         // Held yaw snaps to the nearest quarter turn.
         var relative = transform.rotation * Quaternion.Inverse(occupant.BaseRotation);
         targetTurns = ((Mathf.RoundToInt(relative.eulerAngles.y / 90f) % 4) + 4) % 4;
-        var size = CafeGrid.RotatedSize(item.footprint, targetTurns);
+        var size = CafeGrid.RotatedSize(Footprint, targetTurns);
 
         var center = occupant.TryGetBounds(out var b) ? b.center : transform.position;
         targetValid = grid.TrySnap(center, size, out targetAnchor, out var snapped);
@@ -134,7 +138,7 @@ public class GrabbableItem : MonoBehaviour
     {
         SetPreviewVisible(false);
 
-        if (!item.gridPlaceable)
+        if (!IsGridPlaceable)
         {
             body.isKinematic = false;
             body.useGravity = true;
@@ -145,11 +149,16 @@ public class GrabbableItem : MonoBehaviour
             grid.AlignToFootprint(occupant);
         else if (wasPlaced && grid.Occupy(occupant, previousAnchor, previousTurns))
             grid.AlignToFootprint(occupant);
-        else
+        else if (inventory && item)
         {
             // Never placed and dropped somewhere invalid: back into the wall.
-            if (inventory) inventory.Add(item);
+            inventory.Add(item);
             Destroy(gameObject);
+        }
+        else
+        {
+            body.isKinematic = false;
+            body.useGravity = true;
         }
     }
 

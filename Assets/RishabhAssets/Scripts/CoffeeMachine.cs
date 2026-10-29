@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -6,6 +7,8 @@ using UnityEngine;
 // Can't be moved while brewing or holding a cup.
 public class CoffeeMachine : MonoBehaviour
 {
+    public static event Action<CoffeeCup> AnyBrewed;
+
     public Transform[] cupAnchors = new Transform[0];
     public CoffeeCup cupPrefab;
     [Min(0.01f)] public float brewSeconds = 5f;
@@ -82,6 +85,7 @@ public class CoffeeMachine : MonoBehaviour
                     s.cup = Instantiate(cupPrefab, anchor.position, anchor.rotation, transform.parent);
                     s.brewing = false;
                     s.progress = 0f;
+                    AnyBrewed?.Invoke(s.cup);
                 }
             }
 
