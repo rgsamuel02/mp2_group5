@@ -1,9 +1,12 @@
 using System;
 using Unity.VisualScripting;
 using UnityEngine;
+using Steven.MP2A;
 
 public class Scr_GardenEconomy : MonoBehaviour
 {
+    public PlayerResources restaurantResources;
+
     public Scr_GardenWallet wallet;
     public Scr_Inventory inventory;
     public Scr_Builder builder;
@@ -164,13 +167,27 @@ public class Scr_GardenEconomy : MonoBehaviour
         // Charge the orchestra when selling flowers.
         if (crop == GardenResource.Flowers)
         {
-            if (GameState.Instance == null ||
-                !GameState.Instance.TrySpendMoney(revenueCents / 100f))
+            if (GameState.Instance == null || !GameState.Instance.TrySpendMoney(revenueCents / 100f))
             {
                 // Restore the flowers if the orchestra cannot pay.
                 inventory.AddResource(crop, quantity);
 
                 builder.ShowResourcePopup("The orchestra cannot afford this purchase.");
+                return false;
+            }
+        }
+
+        // Charge the restaurant when selling tomatoes.
+        if (crop == GardenResource.Tomatoes)
+        {
+            float restaurantCost = revenueCents / 100f;
+
+            if (!restaurantResources.TrySpend(ResourceId.Gold, restaurantCost))
+            {
+                // Refund the tomatoes if the restaurant cannot afford them.
+                inventory.AddResource(crop, quantity);
+
+                builder.ShowResourcePopup("The restaurant cannot afford this purchase.");
                 return false;
             }
         }
