@@ -12,6 +12,8 @@ public class PlayerWallet : MonoBehaviour
 
     int balance;
 
+    public int Balance => balance;
+
     void Awake()
     {
         balance = startingBalance;

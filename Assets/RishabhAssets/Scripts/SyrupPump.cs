@@ -1,4 +1,6 @@
+using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
@@ -19,12 +21,22 @@ public class SyrupPump : Consumable
     [Tooltip("Sideways slack (local units) around the head that still counts as touching it.")]
     public float touchMargin = 0.4f;
 
+    [Header("Tutorial Feedback")]
+    public GameObject tutorialCanvas;
+    public TMP_Text tutorialText;
+
+    const string NoCupMessage = "No Cup Detected! Place a brewed coffee cup under the spout before pressing the pump.";
+    const string AlreadyFlavoredMessage = "Already Flavored! A flavored latte only takes one pump of syrup.";
+
     readonly List<Transform> pressers = new List<Transform>();
     readonly HashSet<Transform> contacts = new HashSet<Transform>();
     float topOffset;
     Vector2 headMinXZ, headMaxXZ;
     bool armed = true;
     float findTimer;
+    bool hasPumpedOnce;
+    bool appendedNoCup;
+    Coroutine hideTutorialRoutine;
 
     float HeadY => pumpHead.localPosition.y;
 
@@ -32,6 +44,13 @@ public class SyrupPump : Consumable
     {
         base.Awake();
         if (!pumpHead) pumpHead = transform.Find("Cylinder");
+        if (!tutorialCanvas)
+        {
+            var tc = transform.Find("TutorialCanvas");
+            if (tc) tutorialCanvas = tc.gameObject;
+        }
+        if (!tutorialText && tutorialCanvas)
+            tutorialText = tutorialCanvas.GetComponentInChildren<TMP_Text>(true);
 
         // Measure the head at rest in bottle-local space.
         SetHeadY(restY);
@@ -91,20 +110,56 @@ public class SyrupPump : Consumable
 
     void Pump()
     {
-        var cup = FindCupUnderSpout();
-        if (!cup) return;
-        cup.SetFlavored();
-        Consume();
+        bool firstPress = !hasPumpedOnce;
+        hasPumpedOnce = true;
+
+        var unflavoredCup = FindCupUnderSpout(false);
+        if (unflavoredCup)
+        {
+            if (hideTutorialRoutine != null)
+            {
+                StopCoroutine(hideTutorialRoutine);
+                hideTutorialRoutine = null;
+            }
+            unflavoredCup.SetFlavored();
+            Consume();
+            return;
+        }
+
+        var anyCup = FindCupUnderSpout(true);
+        if (anyCup && anyCup.IsFlavored)
+        {
+            if (tutorialText) tutorialText.text = AlreadyFlavoredMessage;
+            if (tutorialCanvas) tutorialCanvas.SetActive(true);
+            if (hideTutorialRoutine != null) StopCoroutine(hideTutorialRoutine);
+            hideTutorialRoutine = StartCoroutine(HideTutorialAfter(3f));
+            return;
+        }
+
+        if (firstPress && !appendedNoCup)
+        {
+            appendedNoCup = true;
+            if (tutorialCanvas) tutorialCanvas.SetActive(true);
+            if (tutorialText && !tutorialText.text.Contains(NoCupMessage))
+                tutorialText.text += "\n\n" + NoCupMessage;
+        }
     }
 
-    CoffeeCup FindCupUnderSpout()
+    IEnumerator HideTutorialAfter(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        if (tutorialCanvas) tutorialCanvas.SetActive(false);
+        hideTutorialRoutine = null;
+    }
+
+    CoffeeCup FindCupUnderSpout(bool allowFlavored)
     {
         var s = spout ? spout.position : pumpHead.position;
         CoffeeCup best = null;
         float bestDist = cupRadius * cupRadius;
         foreach (var cup in CoffeeCup.All)
         {
-            if (cup.IsFlavored || !cup.TryGetBounds(out var b)) continue;
+            if ((!allowFlavored && cup.IsFlavored) || !cup.TryGetBounds(out var b)) continue;
             if (b.max.y > s.y + 0.02f || b.max.y < s.y - maxDropHeight) continue;
             float d = new Vector2(b.center.x - s.x, b.center.z - s.z).sqrMagnitude;
             if (d <= bestDist) { bestDist = d; best = cup; }
