@@ -4,7 +4,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 // Spawns chocolate souffles, coffee plants, and violas in the 9 grid slots on the receiver table as ranks unlock them.
-// Replenishes empty slots every 20 seconds, except violas which do not replenish once taken off.
+// Replenishes empty slots every 10 seconds, except violas which do not replenish once taken off.
 public class TableReciever : MonoBehaviour
 {
     public CafeGrid grid;
@@ -12,7 +12,7 @@ public class TableReciever : MonoBehaviour
     public GameObject soufflePrefab;
     public GameObject coffeePlantPrefab;
     public GameObject violaPrefab;
-    [Min(0.1f)] public float replenishInterval = 20f;
+    [Min(0.1f)] public float replenishInterval = 10f;
 
     public List<Vector2Int> slots = new List<Vector2Int>
     {
@@ -79,7 +79,9 @@ public class TableReciever : MonoBehaviour
         if (soufflesUnlocked) return;
         soufflesUnlocked = true;
         timer = replenishInterval;
-        ReplenishSlots();
+
+        // Fill only a random subset of slots initially so some randomly-selected slots remain empty.
+        ReplenishSlots(Random.Range(4, 7));
     }
 
     public void UnlockCoffeePlants()
@@ -89,11 +91,10 @@ public class TableReciever : MonoBehaviour
         if (coffeePlantsUnlocked) return;
         coffeePlantsUnlocked = true;
 
-        // Fill any currently empty slots first.
-        ReplenishSlots();
+        // Fill a couple of empty slots if available.
+        ReplenishSlots(Random.Range(2, 4));
 
-        // If no coffee plants are on the table yet (e.g., all 9 slots still held untouched souffles),
-        // replace a few random untouched slots with coffee plants so they appear immediately.
+        // Ensure at least a couple of coffee plants are present on the table immediately.
         if (!coffeePlantPrefab) return;
         bool anyPlant = false;
         var replaceable = new List<SlotState>();
@@ -106,7 +107,7 @@ public class TableReciever : MonoBehaviour
 
         if (!anyPlant && replaceable.Count > 0)
         {
-            int count = Mathf.Clamp(replaceable.Count / 2, 1, replaceable.Count);
+            int count = Mathf.Clamp(replaceable.Count / 2, 1, 3);
             for (int i = 0; i < count; i++)
             {
                 int idx = Random.Range(i, replaceable.Count);
@@ -162,7 +163,7 @@ public class TableReciever : MonoBehaviour
     {
         if (!grid || !soufflesUnlocked) return;
 
-        // Check if any item was moved or destroyed off its slot.
+        // Check if any item was grabbed, moved, or destroyed off its slot.
         float maxDist = grid.cellSize * 0.45f;
         foreach (var s in slotStates)
         {
@@ -178,10 +179,11 @@ public class TableReciever : MonoBehaviour
         if (timer > 0f) return;
         timer = replenishInterval;
 
-        ReplenishSlots();
+        // Replenish a random subset of empty slots each interval so slots fill organically.
+        ReplenishSlots(Random.Range(2, 5));
     }
 
-    void ReplenishSlots()
+    void ReplenishSlots(int maxToSpawn)
     {
         if (violaUnlocked && !hasSpawnedViola)
             TrySpawnViola();
@@ -191,13 +193,26 @@ public class TableReciever : MonoBehaviour
         if (coffeePlantsUnlocked && coffeePlantPrefab) replenishPool.Add(coffeePlantPrefab);
         if (replenishPool.Count == 0) return;
 
+        var candidates = new List<SlotState>();
         foreach (var s in slotStates)
         {
             if (s.item != null || !s.canReplenish) continue;
             if (grid && grid.IsOccupied(s.cell)) continue;
+            candidates.Add(s);
+        }
 
+        // Shuffle candidate empty slots and spawn up to maxToSpawn.
+        for (int i = candidates.Count - 1; i > 0; i--)
+        {
+            int j = Random.Range(0, i + 1);
+            (candidates[i], candidates[j]) = (candidates[j], candidates[i]);
+        }
+
+        int count = Mathf.Min(maxToSpawn, candidates.Count);
+        for (int i = 0; i < count; i++)
+        {
             var prefab = replenishPool[Random.Range(0, replenishPool.Count)];
-            SpawnInSlot(s, prefab);
+            SpawnInSlot(candidates[i], prefab);
         }
     }
 
@@ -207,13 +222,25 @@ public class TableReciever : MonoBehaviour
         Unsubscribe(s);
 
         var parent = transform.parent ? transform.parent : transform;
-        var go = Instantiate(prefab, Vector3.zero, prefab.transform.rotation, parent);
-
         var target = grid.CellToWorld(s.cell);
+
+        // Instantiate directly at target (NOT Vector3.zero) so Rigidbodies with interpolation
+        // never initialize their physics pose at the world origin (0,0,0) in the center of the room.
+        var go = Instantiate(prefab, target, prefab.transform.rotation, parent);
+
+        Vector3 finalPos = target;
         if (RendererBounds.TryGet(go, out var b))
-            go.transform.position = new Vector3(target.x - b.center.x, target.y - b.min.y, target.z - b.center.z);
-        else
-            go.transform.position = target;
+            finalPos = new Vector3(target.x + (target.x - b.center.x), target.y + (target.y - b.min.y), target.z + (target.z - b.center.z));
+
+        go.transform.position = finalPos;
+
+        if (go.TryGetComponent<Rigidbody>(out var rb))
+        {
+            rb.interpolation = RigidbodyInterpolation.None;
+            rb.position = finalPos;
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+        }
 
         if (go.TryGetComponent<GrabbableItem>(out var grabbable))
         {

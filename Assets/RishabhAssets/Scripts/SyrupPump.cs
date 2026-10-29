@@ -34,8 +34,8 @@ public class SyrupPump : Consumable
     Vector2 headMinXZ, headMaxXZ;
     bool armed = true;
     float findTimer;
-    bool hasPumpedOnce;
-    bool appendedNoCup;
+    bool hasFlavoredAnyCup;
+    string initialTutorialText = "";
     Coroutine hideTutorialRoutine;
 
     float HeadY => pumpHead.localPosition.y;
@@ -51,6 +51,8 @@ public class SyrupPump : Consumable
         }
         if (!tutorialText && tutorialCanvas)
             tutorialText = tutorialCanvas.GetComponentInChildren<TMP_Text>(true);
+        if (tutorialText)
+            initialTutorialText = tutorialText.text;
 
         // Measure the head at rest in bottle-local space.
         SetHeadY(restY);
@@ -110,12 +112,10 @@ public class SyrupPump : Consumable
 
     void Pump()
     {
-        bool firstPress = !hasPumpedOnce;
-        hasPumpedOnce = true;
-
         var unflavoredCup = FindCupUnderSpout(false);
         if (unflavoredCup)
         {
+            hasFlavoredAnyCup = true;
             if (hideTutorialRoutine != null)
             {
                 StopCoroutine(hideTutorialRoutine);
@@ -136,12 +136,28 @@ public class SyrupPump : Consumable
             return;
         }
 
-        if (firstPress && !appendedNoCup)
+        // No cup detected under the spout: always show the warning.
+        if (tutorialCanvas) tutorialCanvas.SetActive(true);
+        if (!hasFlavoredAnyCup)
         {
-            appendedNoCup = true;
-            if (tutorialCanvas) tutorialCanvas.SetActive(true);
-            if (tutorialText && !tutorialText.text.Contains(NoCupMessage))
-                tutorialText.text += "\n\n" + NoCupMessage;
+            if (hideTutorialRoutine != null)
+            {
+                StopCoroutine(hideTutorialRoutine);
+                hideTutorialRoutine = null;
+            }
+            if (tutorialText)
+            {
+                if (string.IsNullOrEmpty(initialTutorialText))
+                    tutorialText.text = NoCupMessage;
+                else if (!tutorialText.text.Contains(NoCupMessage))
+                    tutorialText.text = initialTutorialText + "\n\n" + NoCupMessage;
+            }
+        }
+        else
+        {
+            if (tutorialText) tutorialText.text = NoCupMessage;
+            if (hideTutorialRoutine != null) StopCoroutine(hideTutorialRoutine);
+            hideTutorialRoutine = StartCoroutine(HideTutorialAfter(3f));
         }
     }
 
