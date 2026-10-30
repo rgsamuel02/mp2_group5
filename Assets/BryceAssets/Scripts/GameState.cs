@@ -124,7 +124,7 @@ public class GameState : MonoBehaviour
 
         if (numCustomers >= 30 && !unlockedGarden)
         {
-            menu.LoadMenu("Great work! You have had 30 customers visit your ensemble, but the place looks pretty drab. I bet you can put up some flowers to bring in a little more money from anyone who sits in the row with flowers.\n\nFor your next unlock, try to fill the hall and plant five flowers. Each flower costs must be delivered from the garden and costs $10. Good luck!\n\nPress B to close this menu.");
+            menu.LoadMenu("Great work! You have had 30 customers visit your ensemble, but the place looks pretty drab. I bet you can put up some flowers to bring in a little more money.\n\nFor your next unlock, try to fill the hall and plant five flowers. Each flower must be delivered from the garden and costs $10. You can visit other scenes by pressing in on the right control stick then using the right joystick and trigger to select a destination. Good luck!\n\nPress B to close this menu.");
             ShowVases.MakeVasesActive();
             unlockedGarden = true;
         }

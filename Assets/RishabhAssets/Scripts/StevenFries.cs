@@ -77,7 +77,7 @@ public class StevenFries : MonoBehaviour
 
         if (!IsUnlocked)
         {
-            if (grab) grab.enabled = false;
+            if (grab) grab.enabled = true;
             if (body)
             {
                 // Allow vertical settling into the delivery crate, but prevent being pushed or knocked around.

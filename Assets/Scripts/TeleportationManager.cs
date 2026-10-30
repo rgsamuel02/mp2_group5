@@ -13,7 +13,7 @@ public class TeleportationManager : MonoBehaviour
     public TextMeshProUGUI north, east, south, west;
     public InputActionReference confirm;
     string SelectedScene = "";
-    static string CurrentScene = "Cafe";
+    static string CurrentScene = "Orchestra";
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
