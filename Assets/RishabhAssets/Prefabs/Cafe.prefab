@@ -6038,7 +6038,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CafeFriesReceiver
   grid: {fileID: 1257563777687548369}
   receiver: {fileID: 9100000000000000005}
-  friesPrefab: {fileID: 3716826636107448181, guid: b9643ac659762e140b5246f5dadb9fc7, type: 3}
+  friesPrefab: {fileID: 5337075453817051902, guid: b9643ac659762e140b5246f5dadb9fc7, type: 3}
   blockedCells:
   - {x: 0, y: 3}
   - {x: 1, y: 3}

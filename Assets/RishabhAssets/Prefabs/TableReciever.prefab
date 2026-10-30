@@ -51,7 +51,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TableReciever
   grid: {fileID: 0}
   previewMaterial: {fileID: 2100000, guid: f43fa7a88c77e834ebee61ef99c47fe6, type: 2}
-  friesPrefab: {fileID: 3716826636107448181, guid: b9643ac659762e140b5246f5dadb9fc7, type: 3}
+  friesPrefab: {fileID: 5337075453817051902, guid: b9643ac659762e140b5246f5dadb9fc7, type: 3}
   coffeePlantPrefab: {fileID: 3557087594452794047, guid: 6d699c1f82dc7f1448f64561ea679088, type: 3}
   violaPrefab: {fileID: 4481084544993054997, guid: 2464dd7e7ec23614584b825ab42bc0f3, type: 3}
   replenishInterval: 10
