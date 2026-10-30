@@ -3,8 +3,9 @@ using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
-// Spawns chocolate souffles, coffee plants, and violas in the 9 grid slots on the receiver table as ranks unlock them.
-// Replenishes empty slots every 10 seconds, except violas which do not replenish once taken off.
+// Receives Coffee Plants from Rebecca's Garden and Violas from Bryce's Orchestra
+// in the 9 grid slots on the receiver table. Active from startup; items on the table
+// cannot be picked up or moved until their corresponding Cafe Goal is unlocked.
 public class TableReciever : MonoBehaviour
 {
     public CafeGrid grid;
@@ -27,29 +28,57 @@ public class TableReciever : MonoBehaviour
         public GameObject item;
         public XRGrabInteractable grab;
         public UnityEngine.Events.UnityAction<SelectEnterEventArgs> grabListener;
-        public bool isViola;
-        public bool canReplenish = true;
     }
 
+    static int s_PendingCoffeePlants;
+    static int s_PendingViolas;
+    static TableReciever s_Instance;
+
     readonly List<SlotState> slotStates = new List<SlotState>();
-    float timer;
     bool initialized;
     bool soufflesUnlocked;
     bool coffeePlantsUnlocked;
     bool violaUnlocked;
-    bool hasSpawnedViola;
+
+    public static void EnqueueCoffeePlants(int count = 1)
+    {
+        if (count <= 0) return;
+        s_PendingCoffeePlants += count;
+        if (s_Instance != null && s_Instance.isActiveAndEnabled)
+            s_Instance.ProcessPendingDeliveries();
+    }
+
+    public static void EnqueueViola(int count = 1)
+    {
+        if (count <= 0) return;
+        s_PendingViolas += count;
+        if (s_Instance != null && s_Instance.isActiveAndEnabled)
+            s_Instance.ProcessPendingDeliveries();
+    }
 
     void Awake()
     {
         EnsureInitialized();
     }
 
+    void OnEnable()
+    {
+        EnsureInitialized();
+        ProcessPendingDeliveries();
+    }
+
     void EnsureInitialized()
     {
         if (initialized) return;
         initialized = true;
+        if (s_Instance == null) s_Instance = this;
+
         if (!grid) grid = FindFirstObjectByType<CafeGrid>();
-        timer = replenishInterval;
+        if (grid) grid.BlockCells(slots);
+
+        // Allow Bryce's Orchestra to send Violas to the Cafe from the start
+        // (picking up/placing the Viola in the Cafe is gated by Goal 3).
+        Integrator.UnlockCafe();
 
         slotStates.Clear();
         for (int i = 0; i < slots.Count; i++)
@@ -58,110 +87,42 @@ public class TableReciever : MonoBehaviour
 
     void OnDestroy()
     {
+        if (s_Instance == this) s_Instance = null;
         foreach (var s in slotStates)
             Unsubscribe(s);
-        ClearSpawnedItems();
-    }
-
-    void ClearSpawnedItems()
-    {
-        foreach (var s in slotStates)
-        {
-            if (s.item) Destroy(s.item);
-            s.item = null;
-        }
     }
 
     public void UnlockSouffles()
     {
         EnsureInitialized();
-        gameObject.SetActive(true);
-        if (soufflesUnlocked) return;
         soufflesUnlocked = true;
-        timer = replenishInterval;
-
-        // Fill only a random subset of slots initially so some randomly-selected slots remain empty.
-        ReplenishSlots(Random.Range(4, 7));
+        gameObject.SetActive(true);
+        StevenChocolateSouffle.SetUnlocked(true);
+        ProcessPendingDeliveries();
     }
 
     public void UnlockCoffeePlants()
     {
         EnsureInitialized();
-        gameObject.SetActive(true);
-        if (coffeePlantsUnlocked) return;
         coffeePlantsUnlocked = true;
-
-        // Fill a couple of empty slots if available.
-        ReplenishSlots(Random.Range(2, 4));
-
-        // Ensure at least a couple of coffee plants are present on the table immediately.
-        if (!coffeePlantPrefab) return;
-        bool anyPlant = false;
-        var replaceable = new List<SlotState>();
-        foreach (var s in slotStates)
-        {
-            if (!s.item) continue;
-            if (s.item.GetComponent<RebeccaCoffeePlant>()) anyPlant = true;
-            else if (!s.isViola) replaceable.Add(s);
-        }
-
-        if (!anyPlant && replaceable.Count > 0)
-        {
-            int count = Mathf.Clamp(replaceable.Count / 2, 1, 3);
-            for (int i = 0; i < count; i++)
-            {
-                int idx = Random.Range(i, replaceable.Count);
-                (replaceable[i], replaceable[idx]) = (replaceable[idx], replaceable[i]);
-                Destroy(replaceable[i].item);
-                replaceable[i].item = null;
-                SpawnInSlot(replaceable[i], coffeePlantPrefab);
-            }
-        }
+        gameObject.SetActive(true);
+        RebeccaCoffeePlant.SetUnlocked(true);
+        ProcessPendingDeliveries();
     }
 
     public void UnlockViola()
     {
         EnsureInitialized();
-        gameObject.SetActive(true);
-        if (violaUnlocked) return;
         violaUnlocked = true;
-        TrySpawnViola();
-    }
-
-    void TrySpawnViola()
-    {
-        if (hasSpawnedViola || !violaPrefab) return;
-
-        var freeSlots = new List<SlotState>();
-        var replaceableSlots = new List<SlotState>();
-        foreach (var s in slotStates)
-        {
-            if (grid && grid.IsOccupied(s.cell)) continue;
-            if (s.item == null && s.canReplenish)
-                freeSlots.Add(s);
-            else if (s.item != null && !s.isViola)
-                replaceableSlots.Add(s);
-        }
-
-        if (freeSlots.Count > 0)
-        {
-            var chosen = freeSlots[Random.Range(0, freeSlots.Count)];
-            SpawnInSlot(chosen, violaPrefab);
-            hasSpawnedViola = true;
-        }
-        else if (replaceableSlots.Count > 0)
-        {
-            var chosen = replaceableSlots[Random.Range(0, replaceableSlots.Count)];
-            Destroy(chosen.item);
-            chosen.item = null;
-            SpawnInSlot(chosen, violaPrefab);
-            hasSpawnedViola = true;
-        }
+        gameObject.SetActive(true);
+        Integrator.UnlockCafe();
+        BryceViola.SetUnlocked(true);
+        ProcessPendingDeliveries();
     }
 
     void Update()
     {
-        if (!grid || !soufflesUnlocked) return;
+        if (!grid) return;
 
         // Check if any item was grabbed, moved, or destroyed off its slot.
         float maxDist = grid.cellSize * 0.45f;
@@ -175,44 +136,49 @@ public class TableReciever : MonoBehaviour
                 MarkTakenOff(s);
         }
 
-        timer -= Time.deltaTime;
-        if (timer > 0f) return;
-        timer = replenishInterval;
-
-        // Replenish a random subset of empty slots each interval so slots fill organically.
-        ReplenishSlots(Random.Range(2, 5));
+        if (s_PendingViolas > 0 || s_PendingCoffeePlants > 0)
+            ProcessPendingDeliveries();
     }
 
-    void ReplenishSlots(int maxToSpawn)
+    public void ProcessPendingDeliveries()
     {
-        if (violaUnlocked && !hasSpawnedViola)
-            TrySpawnViola();
+        EnsureInitialized();
+        if (s_PendingViolas <= 0 && s_PendingCoffeePlants <= 0) return;
 
-        var replenishPool = new List<GameObject>();
-        if (soufflesUnlocked && soufflePrefab) replenishPool.Add(soufflePrefab);
-        if (coffeePlantsUnlocked && coffeePlantPrefab) replenishPool.Add(coffeePlantPrefab);
-        if (replenishPool.Count == 0) return;
+        if (!gameObject.activeSelf)
+            gameObject.SetActive(true);
 
-        var candidates = new List<SlotState>();
+        if (!grid) grid = FindFirstObjectByType<CafeGrid>();
+        if (!grid) return;
+
+        var freeSlots = new List<SlotState>();
         foreach (var s in slotStates)
         {
-            if (s.item != null || !s.canReplenish) continue;
-            if (grid && grid.IsOccupied(s.cell)) continue;
-            candidates.Add(s);
+            if (s.item == null)
+                freeSlots.Add(s);
         }
 
-        // Shuffle candidate empty slots and spawn up to maxToSpawn.
-        for (int i = candidates.Count - 1; i > 0; i--)
+        if (freeSlots.Count == 0) return;
+
+        // Shuffle free slots so deliveries appear cleanly across the table surface.
+        for (int i = freeSlots.Count - 1; i > 0; i--)
         {
             int j = Random.Range(0, i + 1);
-            (candidates[i], candidates[j]) = (candidates[j], candidates[i]);
+            (freeSlots[i], freeSlots[j]) = (freeSlots[j], freeSlots[i]);
         }
 
-        int count = Mathf.Min(maxToSpawn, candidates.Count);
-        for (int i = 0; i < count; i++)
+        int slotIdx = 0;
+
+        while (s_PendingViolas > 0 && slotIdx < freeSlots.Count && violaPrefab != null)
         {
-            var prefab = replenishPool[Random.Range(0, replenishPool.Count)];
-            SpawnInSlot(candidates[i], prefab);
+            SpawnInSlot(freeSlots[slotIdx++], violaPrefab);
+            s_PendingViolas--;
+        }
+
+        while (s_PendingCoffeePlants > 0 && slotIdx < freeSlots.Count && coffeePlantPrefab != null)
+        {
+            SpawnInSlot(freeSlots[slotIdx++], coffeePlantPrefab);
+            s_PendingCoffeePlants--;
         }
     }
 
@@ -249,8 +215,15 @@ public class TableReciever : MonoBehaviour
                 grabbable.previewMaterial = previewMaterial;
         }
 
+        // Re-apply lock state after positioning so locked items stay kinematic and ungrabbable on their table slot.
+        if (go.TryGetComponent<RebeccaCoffeePlant>(out var plant))
+            plant.ApplyLockState();
+        if (go.TryGetComponent<BryceViola>(out var viola))
+            viola.ApplyLockState();
+        if (go.TryGetComponent<StevenChocolateSouffle>(out var souffle))
+            souffle.ApplyLockState();
+
         s.item = go;
-        s.isViola = (prefab == violaPrefab) || go.GetComponent<BryceViola>() != null;
         s.grab = go.GetComponent<XRGrabInteractable>();
         if (s.grab)
         {
@@ -263,8 +236,6 @@ public class TableReciever : MonoBehaviour
     {
         Unsubscribe(s);
         s.item = null;
-        if (s.isViola)
-            s.canReplenish = false;
     }
 
     void Unsubscribe(SlotState s)

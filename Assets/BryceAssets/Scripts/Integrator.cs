@@ -25,15 +25,15 @@ public class Integrator : MonoBehaviour
         if (cEnabled || gEnabled || rEnabled) {
             GameState.Instance.menu.LoadMenu($"{cThing}{gThing}{rThing}Press B to cancel");
             ToSend = prefab;
-            cafe.action.performed += SendToCafe;
-            rest.action.performed += SendToRestaurant;
-            gard.action.performed += SendToGarden;
+            if (cafe != null && cafe.action != null) { cafe.action.performed += SendToCafe; cafe.action.Enable(); }
+            if (rest != null && rest.action != null) { rest.action.performed += SendToRestaurant; rest.action.Enable(); }
+            if (gard != null && gard.action != null) { gard.action.performed += SendToGarden; gard.action.Enable(); }
         }
         else
         {
             GameState.Instance.menu.LoadMenu($"No Integrations Unlocked.\n\nPress B to cancel");
         }
-        cancel.action.performed += Cancel;
+        if (cancel != null && cancel.action != null) { cancel.action.performed += Cancel; cancel.action.Enable(); }
     }
 
     private static void Cancel(InputAction.CallbackContext context)
@@ -84,8 +84,8 @@ public class Integrator : MonoBehaviour
         GameObject newInst = Instantiate(ToSend);
         Destroy(newInst.GetComponent<Instrument>());
         
-        // TODO whatever you want your system to do.
-        throw new NotImplementedException();
+        TableReciever.EnqueueViola(1);
+        Destroy(newInst);
     }
 
     public static void UnlockGarden()

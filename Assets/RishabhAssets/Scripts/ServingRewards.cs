@@ -20,6 +20,7 @@ public class ServingRewards : MonoBehaviour
     public string rankFormat = "Current Rank: {0}";
     public TMP_Text goalText;
     public TableReciever tableReciever;
+    public CafeSouffleReceiver souffleReceiver;
     public GameObject unlockPopup;
     public TMP_Text unlockPopupText;
     public float unlockPopupDuration = 2.5f;
@@ -73,6 +74,17 @@ public class ServingRewards : MonoBehaviour
 
     void Awake()
     {
+        if (CafePersistence.Instance != null && !transform.IsChildOf(CafePersistence.Instance.transform))
+            return;
+
+        if (stage == 0)
+        {
+            StevenChocolateSouffle.SetUnlocked(false);
+            RebeccaCoffeePlant.SetUnlocked(false);
+            BryceViola.SetUnlocked(false);
+        }
+
+        if (souffleReceiver) souffleReceiver.Initialize();
         if (unlockPopup) unlockPopup.SetActive(false);
         if (achTexts != null)
         {
@@ -83,8 +95,11 @@ public class ServingRewards : MonoBehaviour
 
     void Start()
     {
-        if (tableReciever && stage == 0)
-            tableReciever.gameObject.SetActive(false);
+        // Both the table and delivery crate are active from startup; goals gate picking up the items.
+        if (tableReciever)
+            tableReciever.gameObject.SetActive(true);
+        if (souffleReceiver)
+            souffleReceiver.gameObject.SetActive(true);
         if (unlockPopup)
             unlockPopup.SetActive(false);
         EvaluateProgression();
@@ -113,6 +128,15 @@ public class ServingRewards : MonoBehaviour
         Splat.AnySwept -= OnSwept;
         CoffeeMachine.AnyBrewed -= OnCupBrewed;
         if (wallet) wallet.BalanceChanged -= OnBalanceChanged;
+
+        if (unlockRoutine != null)
+        {
+            StopCoroutine(unlockRoutine);
+            unlockRoutine = null;
+        }
+        if (unlockPopup) unlockPopup.SetActive(false);
+        while (unlockQueue.Count > 0)
+            ApplyStage(unlockQueue.Dequeue());
     }
 
     void OnServed(Customer customer, CoffeeCup cup)
@@ -183,7 +207,7 @@ public class ServingRewards : MonoBehaviour
     {
         queuedStage = nextStage;
         unlockQueue.Enqueue(nextStage);
-        if (unlockRoutine == null)
+        if (unlockRoutine == null && isActiveAndEnabled)
             unlockRoutine = StartCoroutine(ProcessUnlocks());
     }
 
@@ -212,9 +236,19 @@ public class ServingRewards : MonoBehaviour
     void ApplyStage(int nextStage)
     {
         stage = nextStage;
-        if (stage == 1 && tableReciever) tableReciever.UnlockSouffles();
-        else if (stage == 2 && tableReciever) tableReciever.UnlockCoffeePlants();
-        else if (stage == 3 && tableReciever) tableReciever.UnlockViola();
+        if (stage == 1)
+        {
+            if (souffleReceiver) souffleReceiver.Unlock();
+            if (tableReciever) tableReciever.UnlockSouffles();
+        }
+        else if (stage == 2 && tableReciever)
+        {
+            tableReciever.UnlockCoffeePlants();
+        }
+        else if (stage == 3 && tableReciever)
+        {
+            tableReciever.UnlockViola();
+        }
         RefreshLabels();
     }
 

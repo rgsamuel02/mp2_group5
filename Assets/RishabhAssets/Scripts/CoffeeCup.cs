@@ -30,16 +30,25 @@ public class CoffeeCup : MonoBehaviour
         grab.selectExited.AddListener(OnReleased);
     }
 
-    void OnEnable() => all.Add(this);
+    void OnEnable()
+    {
+        all.Add(this);
+        if (IsFlavored) ApplyFlavoredVisual();
+    }
 
     void OnDisable()
     {
         all.Remove(this);
-        if (table) table.RemoveCup(this);
+        if (IsBeingDrunk && table)
+        {
+            table.RemoveCup(this);
+            table = null;
+        }
     }
 
     void OnDestroy()
     {
+        if (table) table.RemoveCup(this);
         if (!grab) return;
         grab.selectEntered.RemoveListener(OnGrabbed);
         grab.selectExited.RemoveListener(OnReleased);
@@ -118,7 +127,11 @@ public class CoffeeCup : MonoBehaviour
     {
         if (IsFlavored) return;
         IsFlavored = true;
+        ApplyFlavoredVisual();
+    }
 
+    void ApplyFlavoredVisual()
+    {
         var block = new MaterialPropertyBlock();
         foreach (var r in GetComponentsInChildren<Renderer>())
         {

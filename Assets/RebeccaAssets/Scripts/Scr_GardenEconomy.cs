@@ -46,6 +46,7 @@ public class Scr_GardenEconomy : MonoBehaviour
 
     private void Start()
     {
+        CheckUnlocks();
         CheckWinCondition();
     }
 
@@ -102,6 +103,8 @@ public class Scr_GardenEconomy : MonoBehaviour
             return false;
         }
 
+        CheckUnlocks();
+
         int pricePerCrop;
         bool buyerUnlocked;
 
@@ -154,12 +157,14 @@ public class Scr_GardenEconomy : MonoBehaviour
         {
             int cafeCost = revenueCents / 100;
 
-            if (!PlayerWallet.Instance.TrySpend(cafeCost))
+            if (PlayerWallet.Instance == null || !PlayerWallet.Instance.TrySpend(cafeCost))
             {
                 inventory.AddResource(crop, quantity);
                 builder.ShowResourcePopup("The cafe cannot afford this purchase.");
                 return false;
             }
+
+            TableReciever.EnqueueCoffeePlants(quantity);
         }
 
         // Charge the orchestra when selling flowers.

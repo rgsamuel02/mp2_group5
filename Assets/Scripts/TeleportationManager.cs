@@ -17,6 +17,7 @@ public class TeleportationManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        if (StickPressed == null || StickPosition == null || confirm == null) return;
         gameObject.SetActive(false);
         StickPressed.action.performed += OpenMenu;
         StickPressed.action.Enable();
@@ -93,7 +94,7 @@ public class TeleportationManager : MonoBehaviour
 
     void UnloadCafe()
     {
-        
+        CafePersistence.UnloadCurrentCafe();
     }
 
     void LoadCafe() {

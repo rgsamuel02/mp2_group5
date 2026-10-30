@@ -6,6 +6,7 @@ using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 // A chocolate souffle from the restaurant. Released near a table's souffle spot it snaps there
 // and is eaten by that seat's customer; released anywhere else it falls.
+// Cannot be picked up or moved until Goal 1 (Serve two customers) is unlocked.
 public class StevenChocolateSouffle : MonoBehaviour
 {
     [Min(0.01f)] public float eatSeconds = 0.75f;
@@ -13,34 +14,82 @@ public class StevenChocolateSouffle : MonoBehaviour
     static readonly List<StevenChocolateSouffle> all = new List<StevenChocolateSouffle>();
     public static IReadOnlyList<StevenChocolateSouffle> All => all;
 
+    public static bool IsUnlocked { get; private set; }
+
     public bool IsBeingEaten { get; private set; }
     public bool IsHeld => grab && grab.isSelected;
 
     XRGrabInteractable grab;
+    Rigidbody body;
     SeatingTable table;
     int anchorIndex = -1;
 
-    void Awake()
+    public static void SetUnlocked(bool unlocked)
     {
-        grab = GetComponent<XRGrabInteractable>();
-        if (!grab) return;
-        grab.selectEntered.AddListener(OnGrabbed);
-        grab.selectExited.AddListener(OnReleased);
+        IsUnlocked = unlocked;
+        foreach (var s in Object.FindObjectsByType<StevenChocolateSouffle>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+        {
+            if (s) s.ApplyLockState();
+        }
     }
 
-    void OnEnable() => all.Add(this);
+    void Awake()
+    {
+        body = GetComponent<Rigidbody>();
+        grab = GetComponent<XRGrabInteractable>();
+        if (grab)
+        {
+            grab.selectEntered.AddListener(OnGrabbed);
+            grab.selectExited.AddListener(OnReleased);
+        }
+        ApplyLockState();
+    }
+
+    void OnEnable()
+    {
+        all.Add(this);
+        ApplyLockState();
+    }
 
     void OnDisable()
     {
         all.Remove(this);
-        if (table) table.RemoveSouffle(this);
+        if (IsBeingEaten && table)
+        {
+            table.RemoveSouffle(this);
+            table = null;
+        }
     }
 
     void OnDestroy()
     {
+        if (table) table.RemoveSouffle(this);
         if (!grab) return;
         grab.selectEntered.RemoveListener(OnGrabbed);
         grab.selectExited.RemoveListener(OnReleased);
+    }
+
+    public void ApplyLockState()
+    {
+        if (!body) body = GetComponent<Rigidbody>();
+        if (!grab) grab = GetComponent<XRGrabInteractable>();
+        if (IsBeingEaten) return;
+
+        if (!IsUnlocked)
+        {
+            if (grab) grab.enabled = false;
+            if (body)
+            {
+                // Allow vertical settling into the delivery crate, but prevent being pushed or knocked around.
+                body.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
+            }
+        }
+        else
+        {
+            if (grab) grab.enabled = true;
+            if (body)
+                body.constraints = RigidbodyConstraints.None;
+        }
     }
 
     void OnGrabbed(SelectEnterEventArgs args)
@@ -60,7 +109,7 @@ public class StevenChocolateSouffle : MonoBehaviour
 
     void SetDocked(bool docked)
     {
-        if (!TryGetComponent<Rigidbody>(out var body)) return;
+        if (!body && !TryGetComponent(out body)) return;
         body.isKinematic = docked;
         body.useGravity = !docked;
     }

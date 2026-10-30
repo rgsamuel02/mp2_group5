@@ -18,6 +18,8 @@ public class CafeGrid : MonoBehaviour
     [Min(1)] public int rows = 22;
 
     public List<Vector2Int> raisedCells = new List<Vector2Int>();
+    [Tooltip("Cells permanently blocked by non-grid fixtures (e.g. TableReciever, DeliveryCrate_Receiver, CoffeeBucket).")]
+    public List<Vector2Int> blockedCells = new List<Vector2Int>();
 
     [Header("Gizmos")]
     public bool alwaysShowGrid = true;
@@ -57,9 +59,19 @@ public class CafeGrid : MonoBehaviour
         ? Mathf.Max(1, Mathf.FloorToInt((max.y - min.y - originOffset.y) / cellSize)) : rows;
 
     public bool InBounds(Vector2Int cell) => cell.x >= 0 && cell.y >= 0 && cell.x < Columns && cell.y < Rows;
-    public bool IsOccupied(Vector2Int cell) => occupied.ContainsKey(cell);
+    public bool IsOccupied(Vector2Int cell) => occupied.ContainsKey(cell) || blockedCells.Contains(cell);
     public bool IsRaised(Vector2Int cell) => raisedCells.Contains(cell);
     public float CellFloorY(Vector2Int cell) => IsRaised(cell) ? raisedFloorY : FloorY;
+
+    public void BlockCells(IEnumerable<Vector2Int> cells)
+    {
+        if (cells == null) return;
+        foreach (var c in cells)
+        {
+            if (!blockedCells.Contains(c))
+                blockedCells.Add(c);
+        }
+    }
 
     public static Vector2Int RotatedSize(Vector2Int size, int quarterTurns) =>
         (quarterTurns & 1) == 0 ? size : new Vector2Int(size.y, size.x);
@@ -75,7 +87,7 @@ public class CafeGrid : MonoBehaviour
     public bool CanPlace(Vector2Int anchor, Vector2Int size, GridOccupant ignore = null)
     {
         foreach (var c in FootprintCells(anchor, size))
-            if (!InBounds(c) || (occupied.TryGetValue(c, out var o) && o != ignore)) return false;
+            if (!InBounds(c) || blockedCells.Contains(c) || (occupied.TryGetValue(c, out var o) && o != ignore)) return false;
         return true;
     }
 
@@ -195,6 +207,7 @@ public class CafeGrid : MonoBehaviour
         foreach (var c in raisedCells) DrawCell(c, raisedFloorY);
         Gizmos.color = occupiedColor;
         foreach (var c in occupied.Keys) DrawCell(c, CellFloorY(c));
+        foreach (var c in blockedCells) DrawCell(c, CellFloorY(c));
 
         if (TryGetCornerArea(out var min, out var max, out var floorY))
         {
