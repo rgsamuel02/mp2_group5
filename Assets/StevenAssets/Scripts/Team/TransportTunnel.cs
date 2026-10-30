@@ -93,7 +93,8 @@ public class TransportTunnel : MonoBehaviour
         if (rb == null)
             return;
         var go = rb.gameObject;
-        if (m_InFlight.Contains(go) || !Accepts(go) || IsHeld(go))
+        // An object with several colliders reports once per collider; only the first one counts.
+        if (!go.activeInHierarchy || m_InFlight.Contains(go) || !Accepts(go) || IsHeld(go))
             return;
         Send(go, rb);
     }
@@ -123,14 +124,19 @@ public class TransportTunnel : MonoBehaviour
 
     void Send(GameObject go, Rigidbody rb)
     {
+        m_InFlight.RemoveWhere(o => o == null);
+        var original = go;
+        m_InFlight.Add(original);   // stays marked for a moment, even if it is swapped below
         foreach (var prep in GetComponents<ITransportPrepare>())
         {
             go = prep.Prepare(go);
             if (go == null)
+            {
+                StartCoroutine(Unmark(original));
                 return;
+            }
             rb = go.GetComponent<Rigidbody>();
         }
-        m_InFlight.Add(go);
         if (sendEffect != null)
             sendEffect.Play();
         if (sendSound != null)
@@ -141,7 +147,13 @@ public class TransportTunnel : MonoBehaviour
             rb.angularVelocity = Vector3.zero;
         }
         DeliveryCarrier.Send(go, destinationScene, receiverId, destinationPosition, spread);
-        m_InFlight.Remove(go);
+        StartCoroutine(Unmark(original));
+    }
+
+    System.Collections.IEnumerator Unmark(GameObject original)
+    {
+        yield return new WaitForSeconds(0.5f);
+        m_InFlight.Remove(original);   // it can be sent again later (e.g. it came back)
     }
 
     public static void Tint(Renderer[] renderers, Color color)

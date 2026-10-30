@@ -13,6 +13,8 @@ namespace Steven.MP2A
         [Tooltip("Designer-defined path, sampled from a waypoint spline (world space).")]
         public List<Vector3> pathPoints = new List<Vector3>();
         public Plate platePrefab;
+        [Tooltip("Dish_ prefabs: plates show the matching dish's food model (the same model the other sims receive).")]
+        public List<GameObject> dishModels = new List<GameObject>();
         public float speed = 0.3f;
         public float spacing = 0.3f;
         public float surfaceOffset = 0.03f;
@@ -64,6 +66,17 @@ namespace Steven.MP2A
                 }
             }
             return pathPoints[pathPoints.Count - 1];
+        }
+
+        public GameObject DishModel(ResourceId dish)
+        {
+            foreach (var m in dishModels)
+            {
+                var item = m != null ? m.GetComponent<DishItem>() : null;
+                if (item != null && item.dish == dish)
+                    return m;
+            }
+            return null;
         }
 
         public Plate SpawnPlate(ResourceId dish, DiningTable table)

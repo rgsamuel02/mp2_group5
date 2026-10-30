@@ -46,6 +46,7 @@ namespace Steven.MP2A
                 res.Add(ResourceId.Gold, goldPerMeal);
             KitchenGame.Float(transform.position + Vector3.up * 0.6f,
                 $"To go: {KitchenGame.ResourceName(plate.dish)} for the {partner}  +{goldPerMeal:0} Gold", new Color(0.7f, 0.6f, 1f));
+            plate.gameObject.SetActive(false);   // stop its other colliders from reporting in this same physics step
             Destroy(plate.gameObject);
             return meal;
         }

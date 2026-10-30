@@ -42,6 +42,7 @@ namespace Steven.MP2A
                 block.SetColor(s_BaseColor, info.color);
                 foodRenderer.SetPropertyBlock(block);
             }
+            UseDishModel(conveyor != null ? conveyor.DishModel(dishId) : null);
             if (label != null)
                 label.text = (forTable != null ? "T" + forTable.tableNumber + "\n" : "") + KitchenGame.ResourceName(dishId);
             if (body != null)
@@ -49,6 +50,26 @@ namespace Steven.MP2A
                 body.isKinematic = true;
                 body.useGravity = false;
             }
+        }
+
+        /// <summary>Swaps the plain food blob for the dish's own food model (from its Dish_ prefab).</summary>
+        void UseDishModel(GameObject dishPrefab)
+        {
+            var food = dishPrefab != null ? dishPrefab.transform.Find("Food") : null;
+            if (food == null || foodRenderer == null)
+                return;
+            var parent = foodRenderer.transform.parent;
+            var copy = Instantiate(food.gameObject, parent);
+            copy.name = "Food (" + dishPrefab.name + ")";
+            copy.transform.localPosition = food.localPosition + Vector3.up * 0.004f;
+            copy.transform.localRotation = food.localRotation;
+            copy.transform.localScale = food.localScale;
+            foreach (var c in copy.GetComponentsInChildren<Collider>())
+                Destroy(c);
+            foodRenderer.enabled = false;
+            var garnish = parent.Find("Garnish");
+            if (garnish != null)
+                garnish.gameObject.SetActive(false);
         }
 
         /// <summary>Persistent listener target: XRGrabInteractable.selectEntered.</summary>

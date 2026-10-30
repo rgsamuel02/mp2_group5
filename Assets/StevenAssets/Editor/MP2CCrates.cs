@@ -245,12 +245,54 @@ namespace Steven.MP2A.EditorTools
             // Receiver: deliveries drop into the crate; the glow rings spread outward.
             var receiver = BuildCrate("DeliveryCrate_Receiver", meshes, wood, dark, metal, placard, paint, glowOut, disc, out var receiverTint, out var receiverLabel);
             var rec = receiver.AddComponent<TransportReceiver>();
-            rec.dropHeight = 0.32f;
+            AddStraw(receiver);
+            rec.dropHeight = 0.55f;
             rec.colorRenderers = receiverTint;
             rec.label = receiverLabel;
             rec.color = KitchenRed;
             SavePrefab(receiver, ReceiverPath);
             AssetDatabase.SaveAssets();
+        }
+
+        [MenuItem("Tools/Steven/Add Packing Straw To Receiver Crates")]
+        public static void AddStrawToReceiverPrefab()
+        {
+            var root = PrefabUtility.LoadPrefabContents(ReceiverPath);
+            AddStraw(root);
+            var rec = root.GetComponent<TransportReceiver>();
+            if (rec != null)
+                rec.dropHeight = 0.55f;
+            PrefabUtility.SaveAsPrefabAsset(root, ReceiverPath);
+            PrefabUtility.UnloadPrefabContents(root);
+            AssetDatabase.SaveAssets();
+            EditorUtility.DisplayDialog("Receiver Crates", "Receiver crates now have packing straw near the top, so small items land within easy reach. Every receiver crate in every scene uses the updated prefab.", "OK");
+        }
+
+        /// <summary>A layer of packing straw near the rim: deliveries rest on it instead of the deep crate floor.</summary>
+        static void AddStraw(GameObject crate)
+        {
+            var old = crate.transform.Find("Packing Straw");
+            if (old != null)
+                Object.DestroyImmediate(old.gameObject);
+            var straw = CopyMat("White", "DeliveryCrate_Straw", new Color(0.86f, 0.73f, 0.4f));
+            var bed = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            bed.name = "Packing Straw";
+            bed.transform.SetParent(crate.transform, false);
+            bed.transform.localPosition = new Vector3(0f, 0.31f, 0f);
+            bed.transform.localScale = new Vector3(W - 0.07f, 0.06f, D - 0.07f);
+            bed.GetComponent<MeshRenderer>().sharedMaterial = straw;   // keeps its box collider: items rest on it
+            var rng = new System.Random(7);
+            for (var i = 0; i < 9; i++)
+            {
+                var tuft = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                tuft.name = "Tuft";
+                Object.DestroyImmediate(tuft.GetComponent<Collider>());
+                tuft.transform.SetParent(bed.transform, false);
+                tuft.transform.localPosition = new Vector3((float)rng.NextDouble() - 0.5f, 0.5f, (float)rng.NextDouble() - 0.5f) * 0.9f;
+                tuft.transform.localRotation = Quaternion.Euler((float)rng.NextDouble() * 40f - 20f, (float)rng.NextDouble() * 180f, (float)rng.NextDouble() * 40f - 20f);
+                tuft.transform.localScale = new Vector3(0.16f, 0.5f, 0.04f);
+                tuft.GetComponent<MeshRenderer>().sharedMaterial = straw;
+            }
         }
 
         static GameObject BuildCrate(string name, Dictionary<string, Mesh> meshes, Material wood, Material dark, Material metal,

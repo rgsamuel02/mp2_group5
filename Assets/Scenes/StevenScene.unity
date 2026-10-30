@@ -6107,6 +6107,22 @@ MonoBehaviour:
   - {x: 4.4427495, y: 0.9799999, z: 6.0678067}
   - {x: 4.45, y: 0.98, z: 6.1}
   platePrefab: {fileID: 3776255792234713415, guid: 1f04c3552f3f70c4b826eee31d5a6416, type: 3}
+  dishModels:
+  - {fileID: 6677567953831377156, guid: ae12fa178954db74080dc6c7c56d7e82, type: 3}
+  - {fileID: 9032174168231528860, guid: ac9c149b8663fa44aa705dff40c5e34a, type: 3}
+  - {fileID: 3744382986951915101, guid: 4708fde7b5fba8349afe1967d5f3b479, type: 3}
+  - {fileID: 5267349381408261814, guid: f214c2e43be0f11478fb63a61b82aaa6, type: 3}
+  - {fileID: 2825111469532029416, guid: bea167e748523044fa0004e7fc24e28d, type: 3}
+  - {fileID: 5364758608486912982, guid: e1dbef57c60338544b8e17020c0641bf, type: 3}
+  - {fileID: 1921204046423026887, guid: 0f3dea2aaf810f147909e0004e8a5b42, type: 3}
+  - {fileID: 8863210214564898920, guid: cea2402a264833f49aa4553588cfc545, type: 3}
+  - {fileID: 4589181976957957388, guid: 59dec1c21bf97944e8dd0b5b3ca7a08f, type: 3}
+  - {fileID: 9188030025815099631, guid: 947a0a3714dfc1346bff8d4738a1e09f, type: 3}
+  - {fileID: 3500194743996065633, guid: b0a8819de1e3a154dbe3cff928b71581, type: 3}
+  - {fileID: 2557738839201577463, guid: e60f7e3109d83a740becb5490edecf87, type: 3}
+  - {fileID: 9142683170826462109, guid: 06984a5f12dfc694e8725826c23b9646, type: 3}
+  - {fileID: 1703314226372290197, guid: da56f7121312b92449a099dbaab8dfb3, type: 3}
+  - {fileID: 6803298354855860435, guid: 1557e2a1f8e2b3a40b7fba83c6e1f15a, type: 3}
   speed: 0.3
   spacing: 0.3
   surfaceOffset: 0.03

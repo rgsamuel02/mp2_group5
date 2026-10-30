@@ -182,7 +182,17 @@ public static class DeliveryCarrier
     /// <summary>Grabbable objects must use the current scene's interaction manager, or they can't be picked up.</summary>
     static void Rebind(GameObject go, Scene scene)
     {
+        // Use the manager the player's hands are registered with, so the item can always be grabbed.
         XRInteractionManager manager = null;
+        foreach (var hand in Object.FindObjectsByType<UnityEngine.XR.Interaction.Toolkit.Interactors.XRBaseInteractor>(FindObjectsInactive.Exclude))
+        {
+            if (hand != null && hand.isActiveAndEnabled && hand.interactionManager != null)
+            {
+                manager = hand.interactionManager;
+                break;
+            }
+        }
+        if (manager == null)
         foreach (var root in scene.GetRootGameObjects())
         {
             manager = root.GetComponentInChildren<XRInteractionManager>();

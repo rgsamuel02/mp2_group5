@@ -35,6 +35,7 @@ namespace Steven.MP2A.EditorTools
             Crowbar(scene);
             AddCoach(scene);
             WireToGo(scene);
+            WireDishModels(scene);
             Finish(scene, "MP2C Polish");
         }
 
@@ -77,6 +78,29 @@ namespace Steven.MP2A.EditorTools
             }
             EditorUtility.SetDirty(toGo);
             Log("Meal crate: plates dropped in the TO ORCHESTRA crate are sent as Dish_ meals (" + toGo.dishPrefabs.Count + " dish prefabs), +" + toGo.goldPerMeal + " Gold each.");
+        }
+
+        [MenuItem("Tools/Steven/Polish/Use Dish Models On Plates")]
+        public static void UseDishModels() { s_Log.Clear(); var s = SceneManager.GetActiveScene(); WireDishModels(s); Finish(s, "Dish Models"); }
+
+        /// <summary>Plates on the pass show the same food models as the Dish_ prefabs the other sims receive.</summary>
+        static void WireDishModels(Scene scene)
+        {
+            var conveyor = FindFirst<PassConveyor>(scene);
+            if (conveyor == null)
+            {
+                Log("Dish models: no pass conveyor found.");
+                return;
+            }
+            conveyor.dishModels.Clear();
+            foreach (var guid in AssetDatabase.FindAssets("t:Prefab Dish_", new[] { "Assets/StevenAssets/Prefabs/Dishes" }))
+            {
+                var go = AssetDatabase.LoadAssetAtPath<GameObject>(AssetDatabase.GUIDToAssetPath(guid));
+                if (go != null && go.GetComponent<DishItem>() != null)
+                    conveyor.dishModels.Add(go);
+            }
+            EditorUtility.SetDirty(conveyor);
+            Log("Dish models: plates now show the " + conveyor.dishModels.Count + " Dish_ food models.");
         }
 
         static void Finish(Scene scene, string title)
