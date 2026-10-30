@@ -35,7 +35,7 @@ public class KitchenMealSale : MonoBehaviour
     /// <summary>Meals the kitchen has ready right now.</summary>
     public int MealsReady => KitchenLedger.MealsReady;
 
-    public void Buy()
+    public bool Buy()
     {
         if (KitchenLedger.TrySellMeals(count, goldEach, partner))
         {
@@ -45,6 +45,7 @@ public class KitchenMealSale : MonoBehaviour
                     GameState.Instance.AddMeal();
                 onBought?.Invoke();
             }
+            return true;
         }
         else
         {
@@ -53,5 +54,6 @@ public class KitchenMealSale : MonoBehaviour
                 GameState.Instance.menu.LoadMenu(why + "\n\nPress B to close this menu.");
             onFailed?.Invoke(why);
         }
+        return false;
     }
 }

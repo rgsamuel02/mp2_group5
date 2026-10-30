@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Steven.MP2A;
 using TMPro;
 using Unity.VisualScripting;
 using Unity.XR.CoreUtils;
@@ -395,7 +396,7 @@ public class GameState : MonoBehaviour
     {
         string gardenIntegration = unlockedGarden ? $"Flowers: {flowers}" : "";
         string coffeeIntegration = level >= 2 ? $"Coffee: {coffee}" : "";
-        string mealIntegration = level >= 3 ? $"Meals: {meals}" : "";
+        string mealIntegration = level >= 3 ? $"Meals: {KitchenLedger.MealsReady}" : "";
         stats.SetText(string.Format(template, money, material, high, mid, low, brass, woodwind, strings, gardenIntegration, coffeeIntegration, mealIntegration));
         if (!unlockedGarden)
         {

@@ -367,6 +367,7 @@ GameObject:
   m_Component:
   - component: {fileID: 169173362}
   - component: {fileID: 169173363}
+  - component: {fileID: 169173364}
   m_Layer: 0
   m_Name: Restaurant
   m_TagString: Untagged
@@ -413,6 +414,30 @@ MonoBehaviour:
   minus: {fileID: 1323143480}
   mealPrefab: {fileID: 4089569529450064266, guid: e9a016c4441684744b42b158cf890d43, type: 3}
   mealTextbox: {fileID: 702374883}
+  kms: {fileID: 169173364}
+--- !u!114 &169173364
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 169173361}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61500b5b064bcb549afb8f8fcbf294a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KitchenMealSale
+  count: 1
+  goldEach: 10
+  partner: Orchestra
+  addOrchestraMeal: 0
+  showFailureInOrchestraMenu: 0
+  onBought:
+    m_PersistentCalls:
+      m_Calls: []
+  onFailed:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &195761101
 GameObject:
   m_ObjectHideFlags: 0

@@ -11,6 +11,7 @@ public class MealManager : MonoBehaviour
     public Button plus, minus;
     public GameObject mealPrefab;
     public TextMeshProUGUI mealTextbox;
+    public KitchenMealSale kms;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -54,8 +55,9 @@ public class MealManager : MonoBehaviour
 
     private void SpawnMeal()
     {
-        if (!GameState.Instance.WithdrawMeal()) return;
-        for (int i = 0; i < 8; i++)
+        if (!kms.Buy()) return;
+        GameState.Instance.AddPay(-2);
+        for (int i = 0; i < meals.Length; i++)
         {
             if (meals[i] == null)
             {
