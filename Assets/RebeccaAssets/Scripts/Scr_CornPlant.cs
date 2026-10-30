@@ -142,23 +142,41 @@ public class Scr_CornPlant : MonoBehaviour
         }
 
         showingMatureVisual = shouldBeMature;
-        seedlingVisual.SetActive(!shouldBeMature);
+        if (seedlingVisual == gameObject)
+        {
+            Renderer rootRenderer = GetComponent<Renderer>();
+            if (rootRenderer != null)
+                rootRenderer.enabled = !shouldBeMature;
+        }
+        else
+        {
+            seedlingVisual.SetActive(!shouldBeMature);
+        }
 
         if (shouldBeMature)
         {
-            matureVisualInstance = Instantiate(
-                matureHerbPrefab,
-                seedlingVisual.transform.parent
-            );
+            if (seedlingVisual == gameObject)
+            {
+                matureVisualInstance = Instantiate(matureHerbPrefab, transform, false);
+                matureVisualInstance.transform.localPosition = Vector3.zero;
+                matureVisualInstance.transform.localRotation = Quaternion.identity;
+            }
+            else
+            {
+                matureVisualInstance = Instantiate(
+                    matureHerbPrefab,
+                    seedlingVisual.transform.parent
+                );
 
-            matureVisualInstance.transform.localPosition =
-                seedlingVisual.transform.localPosition;
+                matureVisualInstance.transform.localPosition =
+                    seedlingVisual.transform.localPosition;
 
-            matureVisualInstance.transform.localRotation =
-                seedlingVisual.transform.localRotation;
+                matureVisualInstance.transform.localRotation =
+                    seedlingVisual.transform.localRotation;
 
-            matureVisualInstance.transform.localScale =
-                seedlingVisual.transform.localScale;
+                matureVisualInstance.transform.localScale =
+                    seedlingVisual.transform.localScale;
+            }
         }
         else if (matureVisualInstance != null)
         {
@@ -223,8 +241,16 @@ public class Scr_CornPlant : MonoBehaviour
         if (matureVisualInstance != null)
             matureVisualInstance.SetActive(false);
 
-        if (seedlingVisual != null)
+        if (seedlingVisual == gameObject)
+        {
+            Renderer rootRenderer = GetComponent<Renderer>();
+            if (rootRenderer != null)
+                rootRenderer.enabled = true;
+        }
+        else if (seedlingVisual != null)
+        {
             seedlingVisual.SetActive(true);
+        }
 
         Renderer[] renderers = GetComponentsInChildren<Renderer>();
 
@@ -262,8 +288,16 @@ public class Scr_CornPlant : MonoBehaviour
             if (matureVisualInstance != null)
                 matureVisualInstance.SetActive(false);
 
-            if (seedlingVisual != null)
+            if (seedlingVisual == gameObject)
+            {
+                Renderer rootRenderer = GetComponent<Renderer>();
+                if (rootRenderer != null)
+                    rootRenderer.enabled = true;
+            }
+            else if (seedlingVisual != null)
+            {
                 seedlingVisual.SetActive(true);
+            }
 
             foreach (Renderer plantRenderer in
                     GetComponentsInChildren<Renderer>())
