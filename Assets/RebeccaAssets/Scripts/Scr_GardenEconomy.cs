@@ -178,6 +178,7 @@ public class Scr_GardenEconomy : MonoBehaviour
                 builder.ShowResourcePopup("The orchestra cannot afford this purchase.");
                 return false;
             }
+            for (int i = 0; i < quantity; i++) GameState.Instance.AddFlower();  // add quantity flowers
         }
 
         // Charge the restaurant when selling tomatoes.

@@ -59,9 +59,11 @@ public class CafeCoffeeBucket : MonoBehaviour
 
     static void DeliverCoffeeToOrchestra()
     {
-        if (GameState.Instance != null)
-            GameState.Instance.AddCoffee();
+        if (GameState.Instance == null || !GameState.Instance.TrySpendMoney(2))
+        {
+            //TODO pop up (Orchestra doesn't have money currently)
+        }
         else
-            s_PendingOrchestraCoffee++;
+            GameState.Instance.AddCoffee();
     }
 }

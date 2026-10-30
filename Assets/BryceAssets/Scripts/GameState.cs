@@ -124,7 +124,7 @@ public class GameState : MonoBehaviour
 
         if (numCustomers >= 30 && !unlockedGarden)
         {
-            menu.LoadMenu("Great work! You have had 30 customers visit your ensemble, but the place looks pretty drab. I bet you can put up some flowers to bring in a little more money from anyone who sits in the row with flowers.\n\nFor your next unlock, try to fill the hall and plant five flowers. Each flower costs $2. Good luck!\n\nPress B to close this menu.");
+            menu.LoadMenu("Great work! You have had 30 customers visit your ensemble, but the place looks pretty drab. I bet you can put up some flowers to bring in a little more money from anyone who sits in the row with flowers.\n\nFor your next unlock, try to fill the hall and plant five flowers. Each flower costs must be delivered from the garden and costs $10. Good luck!\n\nPress B to close this menu.");
             ShowVases.MakeVasesActive();
             unlockedGarden = true;
         }
@@ -394,6 +394,7 @@ public class GameState : MonoBehaviour
 
     void Update()
     {
+        money = Math.Max(money, 0); // never go into negative funds
         string gardenIntegration = unlockedGarden ? $"Flowers: {flowers}" : "";
         string coffeeIntegration = level >= 2 ? $"Coffee: {coffee}" : "";
         string mealIntegration = level >= 3 ? $"Meals: {KitchenLedger.MealsReady}" : "";

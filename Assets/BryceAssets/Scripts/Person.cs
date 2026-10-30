@@ -109,7 +109,7 @@ public class Person : MonoBehaviour
     {
         if (CoffeeTutorial.Instance != null)
         {
-            GameState.Instance.menu.LoadMenu("Good job! Now try it in the real hall. Customers may fall asleep during their stay, and you must give them coffee before they leave if they do. Coffee will cost 2 dollars though, so don't overspend on it!\n\nPress B to exit menu.");
+            GameState.Instance.menu.LoadMenu("Good job! Now try it in the real hall. Customers may fall asleep during their stay, and you must give them coffee before they leave if they do. Coffee will cost 2 dollars and you must have it ready from the cafe, so be careful!\n\nPress B to exit menu.");
             Destroy(arg0.interactableObject.transform.gameObject);
             CoffeeTutorial.Complete();
             return;
@@ -122,7 +122,7 @@ public class Person : MonoBehaviour
         }
         else
         {
-            GameState.Instance.menu.LoadMenu("People who are awake don't need coffee! You should save your money.\n\nPress B to exit menu.");
+            GameState.Instance.menu.LoadMenu("People who are awake don't need coffee! You should save your resources.\n\nPress B to exit menu.");
             arg0.interactableObject.transform.position -= new Vector3(0, 0.1f, 0);
             held.interactionManager.SelectExit(held, arg0.interactableObject);
         }
