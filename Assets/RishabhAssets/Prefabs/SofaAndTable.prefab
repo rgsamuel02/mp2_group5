@@ -60,7 +60,7 @@ MonoBehaviour:
   cupAnchors:
   - {fileID: 7597424338804820377}
   - {fileID: 3802890168492102133}
-  souffleAnchors:
+  friesAnchors:
   - {fileID: 5545586591830796765}
   - {fileID: 2611473685958608409}
   cupSnapRadius: 0.5
@@ -190,7 +190,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5545586591830796765}
   m_Layer: 0
-  m_Name: SouffleAnchor0
+  m_Name: FriesAnchor0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -752,7 +752,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2611473685958608409}
   m_Layer: 0
-  m_Name: SouffleAnchor1
+  m_Name: FriesAnchor1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -4,15 +4,15 @@ using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
-// A chocolate souffle from the restaurant. Released near a table's souffle spot it snaps there
+// Fries from the restaurant. Released near a table's fries spot it snaps there
 // and is eaten by that seat's customer; released anywhere else it falls.
 // Cannot be picked up or moved until Goal 1 (Serve two customers) is unlocked.
-public class StevenChocolateSouffle : MonoBehaviour
+public class StevenFries : MonoBehaviour
 {
     [Min(0.01f)] public float eatSeconds = 0.75f;
 
-    static readonly List<StevenChocolateSouffle> all = new List<StevenChocolateSouffle>();
-    public static IReadOnlyList<StevenChocolateSouffle> All => all;
+    static readonly List<StevenFries> all = new List<StevenFries>();
+    public static IReadOnlyList<StevenFries> All => all;
 
     public static bool IsUnlocked { get; private set; }
 
@@ -27,7 +27,7 @@ public class StevenChocolateSouffle : MonoBehaviour
     public static void SetUnlocked(bool unlocked)
     {
         IsUnlocked = unlocked;
-        foreach (var s in Object.FindObjectsByType<StevenChocolateSouffle>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+        foreach (var s in Object.FindObjectsByType<StevenFries>(FindObjectsInactive.Include, FindObjectsSortMode.None))
         {
             if (s) s.ApplyLockState();
         }
@@ -56,14 +56,14 @@ public class StevenChocolateSouffle : MonoBehaviour
         all.Remove(this);
         if (IsBeingEaten && table)
         {
-            table.RemoveSouffle(this);
+            table.RemoveFries(this);
             table = null;
         }
     }
 
     void OnDestroy()
     {
-        if (table) table.RemoveSouffle(this);
+        if (table) table.RemoveFries(this);
         if (!grab) return;
         grab.selectEntered.RemoveListener(OnGrabbed);
         grab.selectExited.RemoveListener(OnReleased);
@@ -94,7 +94,7 @@ public class StevenChocolateSouffle : MonoBehaviour
 
     void OnGrabbed(SelectEnterEventArgs args)
     {
-        if (table) table.RemoveSouffle(this);
+        if (table) table.RemoveFries(this);
         table = null;
         anchorIndex = -1;
         SetDocked(true);
@@ -103,7 +103,7 @@ public class StevenChocolateSouffle : MonoBehaviour
     void OnReleased(SelectExitEventArgs args)
     {
         foreach (var t in SeatingTable.All)
-            if (t.TrySnapSouffle(this)) return;
+            if (t.TrySnapFries(this)) return;
         SetDocked(false);
     }
 
@@ -116,11 +116,11 @@ public class StevenChocolateSouffle : MonoBehaviour
 
     void LateUpdate()
     {
-        // Ride along if the table is moved while the souffle waits on it, and stay kinematic.
+        // Ride along if the table is moved while the fries wait on it, and stay kinematic.
         if (table && !IsBeingEaten && !IsHeld)
         {
             SetDocked(true);
-            var a = table.souffleAnchors[anchorIndex];
+            var a = table.friesAnchors[anchorIndex];
             transform.SetPositionAndRotation(a.position, a.rotation);
         }
     }
@@ -130,7 +130,7 @@ public class StevenChocolateSouffle : MonoBehaviour
         this.table = table;
         anchorIndex = index;
         SetDocked(true);
-        var a = table.souffleAnchors[index];
+        var a = table.friesAnchors[index];
         transform.SetPositionAndRotation(a.position, a.rotation);
     }
 
@@ -142,7 +142,7 @@ public class StevenChocolateSouffle : MonoBehaviour
     IEnumerator Eat(Customer customer)
     {
         IsBeingEaten = true;
-        if (customer) customer.ConsumeSouffle();
+        if (customer) customer.ConsumeFries();
         if (grab) grab.enabled = false;
         SetDocked(true);
 
@@ -157,7 +157,7 @@ public class StevenChocolateSouffle : MonoBehaviour
             yield return null;
         }
 
-        if (table) table.RemoveSouffle(this);
+        if (table) table.RemoveFries(this);
         table = null;
         Destroy(gameObject);
     }

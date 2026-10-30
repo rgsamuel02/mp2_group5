@@ -20,7 +20,7 @@ public class ServingRewards : MonoBehaviour
     public string rankFormat = "Current Rank: {0}";
     public TMP_Text goalText;
     public TableReciever tableReciever;
-    public CafeSouffleReceiver souffleReceiver;
+    public CafeFriesReceiver friesReceiver;
     public GameObject unlockPopup;
     public TMP_Text unlockPopupText;
     public float unlockPopupDuration = 2.5f;
@@ -33,7 +33,7 @@ public class ServingRewards : MonoBehaviour
     [Header("Money")]
     public int plainPayment = 200;
     public int flavoredPayment = 250;
-    public int souffleBonus = 30;
+    public int friesBonus = 30;
 
     [Header("Satisfaction")]
     public int plainSatisfaction = 10;
@@ -51,7 +51,7 @@ public class ServingRewards : MonoBehaviour
 
     static readonly string[] Goals =
     {
-        "Goal 1: Accept souffles from Hell's Kitchen.\n\nServe two customers.",
+        "Goal 1: Accept fries from Hell's Kitchen.\n\nServe two customers.",
         "Goal 2: Accept coffee plants from the Garden.\n\nClean up four splats and earn 1000¥.",
         "Goal 3: Accept Violas from the Orchestra.\n\nReach a Customer Satisfaction of 20.",
         "Congratulations, Radiant Owner! You've 'won' cafe-running!"
@@ -60,7 +60,7 @@ public class ServingRewards : MonoBehaviour
     static readonly string[] UnlockMessages =
     {
         "",
-        "UNLOCKED: Souffles from Hell's Kitchen!",
+        "UNLOCKED: Fries from Hell's Kitchen!",
         "UNLOCKED: Coffee Plants from the Garden!",
         "UNLOCKED: Violas from the Orchestra!"
     };
@@ -79,12 +79,12 @@ public class ServingRewards : MonoBehaviour
 
         if (stage == 0)
         {
-            StevenChocolateSouffle.SetUnlocked(false);
+            StevenFries.SetUnlocked(false);
             RebeccaCoffeePlant.SetUnlocked(false);
             BryceViola.SetUnlocked(false);
         }
 
-        if (souffleReceiver) souffleReceiver.Initialize();
+        if (friesReceiver) friesReceiver.Initialize();
         if (unlockPopup) unlockPopup.SetActive(false);
         if (achTexts != null)
         {
@@ -98,8 +98,8 @@ public class ServingRewards : MonoBehaviour
         // Both the table and delivery crate are active from startup; goals gate picking up the items.
         if (tableReciever)
             tableReciever.gameObject.SetActive(true);
-        if (souffleReceiver)
-            souffleReceiver.gameObject.SetActive(true);
+        if (friesReceiver)
+            friesReceiver.gameObject.SetActive(true);
         if (unlockPopup)
             unlockPopup.SetActive(false);
         EvaluateProgression();
@@ -142,18 +142,18 @@ public class ServingRewards : MonoBehaviour
     void OnServed(Customer customer, CoffeeCup cup)
     {
         bool flavored = cup && cup.IsFlavored;
-        bool hadSouffle = customer && customer.HasConsumedSouffle;
+        bool hadFries = customer && customer.HasConsumedFries;
 
         int splats = FindObjectsByType<Splat>(FindObjectsSortMode.None).Length;
         int max = flavored ? flavoredSatisfaction : plainSatisfaction;
         int min = flavored ? flavoredMinSatisfaction : plainMinSatisfaction;
         int delta = Mathf.Clamp(max - splats / 2, min, max);
-        if (hadSouffle) delta += Mathf.RoundToInt((max - delta) * 0.5f);
+        if (hadFries) delta += Mathf.RoundToInt((max - delta) * 0.5f);
         if (HasJukeboxAndViola()) delta += Mathf.RoundToInt((max - delta) * 0.25f);
         satisfaction += delta;
         customersServed++;
 
-        wallet.Add((flavored ? flavoredPayment : plainPayment) + (hadSouffle ? souffleBonus : 0));
+        wallet.Add((flavored ? flavoredPayment : plainPayment) + (hadFries ? friesBonus : 0));
 
         EvaluateProgression();
         EvaluateAchievements();
@@ -238,8 +238,8 @@ public class ServingRewards : MonoBehaviour
         stage = nextStage;
         if (stage == 1)
         {
-            if (souffleReceiver) souffleReceiver.Unlock();
-            if (tableReciever) tableReciever.UnlockSouffles();
+            if (friesReceiver) friesReceiver.Unlock();
+            if (tableReciever) tableReciever.UnlockFries();
         }
         else if (stage == 2 && tableReciever)
         {

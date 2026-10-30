@@ -4,7 +4,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 // Preserves the entire Cafe hierarchy (stats, wallet, inventory, grid placements, customers, and loose items
-// like the broom, cups, bean packs, syrup, souffles, plants, and violas) across scene transitions.
+// like the broom, cups, bean packs, syrup, fries, plants, and violas) across scene transitions.
 [DefaultExecutionOrder(-1000)]
 public class CafePersistence : MonoBehaviour
 {
@@ -66,7 +66,7 @@ public class CafePersistence : MonoBehaviour
         ParentLooseOfType<BeanPack>();
         ParentLooseOfType<CoffeeCup>();
         ParentLooseOfType<SyrupPump>();
-        ParentLooseOfType<StevenChocolateSouffle>();
+        ParentLooseOfType<StevenFries>();
         ParentLooseOfType<RebeccaCoffeePlant>();
         ParentLooseOfType<BryceViola>();
         ParentLooseOfType<GridOccupant>();

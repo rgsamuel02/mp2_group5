@@ -2557,7 +2557,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Goal 1: Accept souffles from Hell''s Kitchen.
+  m_text: 'Goal 1: Accept fries from Hell''s Kitchen.
 
 
     Serve two customers.'
@@ -3625,7 +3625,7 @@ MonoBehaviour:
   rankFormat: 'Current Rank: {0}'
   goalText: {fileID: 8450920799120351156}
   tableReciever: {fileID: 8443526341163571310}
-  souffleReceiver: {fileID: 9100000000000000006}
+  friesReceiver: {fileID: 9100000000000000006}
   unlockPopup: {fileID: 4096385148182248235}
   unlockPopupText: {fileID: 8084594066063066894}
   unlockPopupDuration: 2.5
@@ -3640,7 +3640,7 @@ MonoBehaviour:
   - {fileID: 688256188937241227}
   plainPayment: 200
   flavoredPayment: 250
-  souffleBonus: 30
+  friesBonus: 30
   plainSatisfaction: 10
   plainMinSatisfaction: 1
   flavoredSatisfaction: 20
@@ -4643,7 +4643,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'UNLOCKED: Souffles from Hell''s Kitchen!'
+  m_text: 'UNLOCKED: Fries from Hell''s Kitchen!'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -5993,7 +5993,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8247326638775256026, guid: 2ae0a139d2b476d48acd7072deb736cd, type: 3}
       propertyPath: m_Text
-      value: "FROM: KITCHEN\n(Souffles)"
+      value: "FROM: KITCHEN\n(Fries)"
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -6035,10 +6035,10 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b8e9512f73a44ad9a2f15c6038d42022, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CafeSouffleReceiver
+  m_EditorClassIdentifier: Assembly-CSharp::CafeFriesReceiver
   grid: {fileID: 1257563777687548369}
   receiver: {fileID: 9100000000000000005}
-  soufflePrefab: {fileID: 5337075453817051902, guid: b9643ac659762e140b5246f5dadb9fc7, type: 3}
+  friesPrefab: {fileID: 5337075453817051902, guid: b9643ac659762e140b5246f5dadb9fc7, type: 3}
   blockedCells:
   - {x: 0, y: 3}
   - {x: 1, y: 3}

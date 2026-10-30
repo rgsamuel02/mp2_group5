@@ -4,13 +4,13 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 // Attached to the Cafe's DeliveryCrate_Receiver instance. Blocks the grid cells under the crate
-// and swaps incoming Kitchen Dish_ChocolateSouffle instances for the Cafe's StevenChocolateSouffle prefab.
-// Active on startup; souffles inside cannot be picked up until Goal 1 unlocks them.
-public class CafeSouffleReceiver : MonoBehaviour
+// and swaps incoming Kitchen Dish_Fries instances for the Cafe's StevenFries prefab.
+// Active on startup; fries inside cannot be picked up until Goal 1 unlocks them.
+public class CafeFriesReceiver : MonoBehaviour
 {
     public CafeGrid grid;
     public TransportReceiver receiver;
-    public GameObject soufflePrefab;
+    public GameObject friesPrefab;
 
     public List<Vector2Int> blockedCells = new List<Vector2Int>
     {
@@ -30,7 +30,7 @@ public class CafeSouffleReceiver : MonoBehaviour
     }
 
     // Ensures Steven's "Delivery Crate - to Cafe" tunnel in StevenScene has PlateToGo wired
-    // just like his Orchestra crate so plated souffles convert into Dish_ChocolateSouffle on drop.
+    // just like his Orchestra crate so plated fries convert into Dish_Fries on drop.
     static void OnAnySceneLoaded(Scene scene, LoadSceneMode mode)
     {
         if (scene.name != "StevenScene") return;
@@ -88,7 +88,7 @@ public class CafeSouffleReceiver : MonoBehaviour
     {
         Initialize();
         gameObject.SetActive(true);
-        StevenChocolateSouffle.SetUnlocked(true);
+        StevenFries.SetUnlocked(true);
     }
 
     void OnObjectArrived(GameObject arrived)
@@ -102,24 +102,24 @@ public class CafeSouffleReceiver : MonoBehaviour
             ? CafePersistence.Instance.transform
             : (transform.parent != null ? transform.parent : null);
 
-        if (arrived.TryGetComponent<StevenChocolateSouffle>(out var existingSouffle))
+        if (arrived.TryGetComponent<StevenFries>(out var existingFries))
         {
             if (parent != null)
                 arrived.transform.SetParent(parent, true);
-            existingSouffle.ApplyLockState();
+            existingFries.ApplyLockState();
             return;
         }
 
-        if (!soufflePrefab) return;
+        if (!friesPrefab) return;
 
         Vector3 spawnPos = arrived.transform.position;
-        Quaternion spawnRot = soufflePrefab.transform.rotation;
+        Quaternion spawnRot = friesPrefab.transform.rotation;
 
         arrived.SetActive(false);
         Destroy(arrived);
 
-        var souffle = Instantiate(soufflePrefab, spawnPos, spawnRot, parent);
-        if (souffle.TryGetComponent<Rigidbody>(out var rb))
+        var fries = Instantiate(friesPrefab, spawnPos, spawnRot, parent);
+        if (fries.TryGetComponent<Rigidbody>(out var rb))
         {
             rb.interpolation = RigidbodyInterpolation.None;
             rb.position = spawnPos;
@@ -129,7 +129,7 @@ public class CafeSouffleReceiver : MonoBehaviour
             rb.angularVelocity = Vector3.zero;
         }
 
-        if (souffle.TryGetComponent<StevenChocolateSouffle>(out var souffleComp))
-            souffleComp.ApplyLockState();
+        if (fries.TryGetComponent<StevenFries>(out var friesComp))
+            friesComp.ApplyLockState();
     }
 }

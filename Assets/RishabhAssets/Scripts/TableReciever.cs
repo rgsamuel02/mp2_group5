@@ -10,7 +10,7 @@ public class TableReciever : MonoBehaviour
 {
     public CafeGrid grid;
     public Material previewMaterial;
-    public GameObject soufflePrefab;
+    public GameObject friesPrefab;
     public GameObject coffeePlantPrefab;
     public GameObject violaPrefab;
     [Min(0.1f)] public float replenishInterval = 10f;
@@ -36,7 +36,7 @@ public class TableReciever : MonoBehaviour
 
     readonly List<SlotState> slotStates = new List<SlotState>();
     bool initialized;
-    bool soufflesUnlocked;
+    bool friesUnlocked;
     bool coffeePlantsUnlocked;
     bool violaUnlocked;
 
@@ -92,12 +92,12 @@ public class TableReciever : MonoBehaviour
             Unsubscribe(s);
     }
 
-    public void UnlockSouffles()
+    public void UnlockFries()
     {
         EnsureInitialized();
-        soufflesUnlocked = true;
+        friesUnlocked = true;
         gameObject.SetActive(true);
-        StevenChocolateSouffle.SetUnlocked(true);
+        StevenFries.SetUnlocked(true);
         ProcessPendingDeliveries();
     }
 
@@ -220,8 +220,8 @@ public class TableReciever : MonoBehaviour
             plant.ApplyLockState();
         if (go.TryGetComponent<BryceViola>(out var viola))
             viola.ApplyLockState();
-        if (go.TryGetComponent<StevenChocolateSouffle>(out var souffle))
-            souffle.ApplyLockState();
+        if (go.TryGetComponent<StevenFries>(out var fries))
+            fries.ApplyLockState();
 
         s.item = go;
         s.grab = go.GetComponent<XRGrabInteractable>();
