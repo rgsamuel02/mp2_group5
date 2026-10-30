@@ -5,7 +5,6 @@ using Steven.MP2A;
 
 public class Scr_GardenEconomy : MonoBehaviour
 {
-    public PlayerResources restaurantResources;
 
     public Scr_GardenWallet wallet;
     public Scr_Inventory inventory;
@@ -186,12 +185,12 @@ public class Scr_GardenEconomy : MonoBehaviour
         {
             float restaurantCost = revenueCents / 100f;
 
-            if (!restaurantResources.TrySpend(ResourceId.Gold, restaurantCost))
+            if (!KitchenLedger.TryBuy(ResourceId.Tomato, quantity, restaurantCost, "Garden"))
             {
-                // Refund the tomatoes if the restaurant cannot afford them.
+                // Refund the tomatoes if the restaurant can't buy them.
                 inventory.AddResource(crop, quantity);
 
-                builder.ShowResourcePopup("The restaurant cannot afford this purchase.");
+                builder.ShowResourcePopup(KitchenLedger.LastError);
                 return false;
             }
         }
