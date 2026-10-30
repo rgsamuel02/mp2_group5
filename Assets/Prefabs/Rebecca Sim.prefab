@@ -4410,6 +4410,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6947275939247131781, guid: d40a902125c04c6488fa0fd892d72f6b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2808882330679114729}
+    - targetCorrespondingSourceObject: {fileID: 6947275939247131781, guid: d40a902125c04c6488fa0fd892d72f6b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8384328045270138270}
   m_SourcePrefab: {fileID: 100100000, guid: d40a902125c04c6488fa0fd892d72f6b, type: 3}
 --- !u!4 &8416967429315493052 stripped
 Transform:
@@ -4435,6 +4438,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Scr_GardenSellingStation
   cropToSell: 2
   economy: {fileID: 4087574172441949095}
+--- !u!65 &8384328045270138270
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9188684526796252678}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.7518514, y: 1.3833022, z: 1.7548933}
+  m_Center: {x: 0.0010833144, y: 0.03687793, z: 0.0009135902}
 --- !u!1001 &3036261719919830023
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4508,6 +4532,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6947275939247131781, guid: d40a902125c04c6488fa0fd892d72f6b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7691837955329595374}
+    - targetCorrespondingSourceObject: {fileID: 6947275939247131781, guid: d40a902125c04c6488fa0fd892d72f6b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 747704724565939773}
   m_SourcePrefab: {fileID: 100100000, guid: d40a902125c04c6488fa0fd892d72f6b, type: 3}
 --- !u!4 &4683895304354918968 stripped
 Transform:
@@ -4533,6 +4560,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Scr_GardenSellingStation
   cropToSell: 3
   economy: {fileID: 4087574172441949095}
+--- !u!65 &747704724565939773
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5353470825670486146}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.7518514, y: 1.3833022, z: 1.7548933}
+  m_Center: {x: 0.0010833144, y: 0.03687793, z: 0.0009135902}
 --- !u!1001 &3130508498420110737
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4606,6 +4654,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6947275939247131781, guid: d40a902125c04c6488fa0fd892d72f6b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 63670320213415265}
+    - targetCorrespondingSourceObject: {fileID: 6947275939247131781, guid: d40a902125c04c6488fa0fd892d72f6b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 434695347773719434}
   m_SourcePrefab: {fileID: 100100000, guid: d40a902125c04c6488fa0fd892d72f6b, type: 3}
 --- !u!4 &4635245119579997102 stripped
 Transform:
@@ -4631,6 +4682,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Scr_GardenSellingStation
   cropToSell: 4
   economy: {fileID: 4087574172441949095}
+--- !u!65 &434695347773719434
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5411183031746402580}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.7518514, y: 1.3833022, z: 1.7548933}
+  m_Center: {x: 0.0010833144, y: 0.03687793, z: 0.0009135902}
 --- !u!1001 &3310917239076107615
 PrefabInstance:
   m_ObjectHideFlags: 0
