@@ -1415,39 +1415,35 @@ MonoBehaviour:
     tutorialId: 
   tutorials:
   - id: welcome
-    title: WELCOME TO THE INFERNO LINE
-    body: You're the Head Chef. Install equipment, prep and cook, keep the kitchen
-      clean and safe, and serve every table before they walk out. Poke YES, CHEF!
-      to close a tip.
+    title: HEAD CHEF
+    body: Cook what the tables order and get it to them before they leave. Press
+      YES, CHEF! to close a tip.
   - id: catalog
     title: EQUIPMENT CATALOG
-    body: 'Grab a miniature and hold it over the kitchen floor: a full-size ghost
-      snaps to the grid. Release to install it for the price on its tag. Squeeze
-      TRIGGER while holding to stamp copies (great for rows of mats).'
+    body: Pick up a miniature and hold it over the floor to see where it goes. Let
+      go to buy and place it. Pull the trigger while holding it to place more than
+      one.
   - id: grid_snap
-    title: THE 60 CM KITCHEN GRID
-    body: Everything snaps to the floor grid. Turn the mini in your hand to rotate
-      the ghost in 90-degree steps; the arrow on the ghost marks the front.
+    title: FLOOR GRID
+    body: Equipment snaps to the floor grid. Turn the miniature to turn the piece;
+      the arrow shows the front.
   - id: foundation
-    title: FOUNDATIONS FIRST
-    body: 'Equipment stacks: Tiles under everything. Gas Line under stoves, grills,
-      fryers. Water Line under sinks and ice machines. Power Outlet under ovens and
-      fridges. Counter under cutting boards. Stove under pans and pots. Planter under
-      herbs. Table under place settings.'
+    title: HOOKUPS
+    body: 'Some equipment needs something under it: tiles under everything, a gas
+      line under grills and fryers, a counter under cutting boards, a table under
+      place settings.'
   - id: pantry_board
-    title: THE PANTRY BOARD
-    body: 'Every resource you own: gold, reputation, hygiene, temper, your brigade,
-      raw ingredients, prepped components and finished dishes. Rows flash green or
-      red when they change.'
+    title: PANTRY LEDGER
+    body: 'Everything you have: gold, reputation, cooks, ingredients and cooked dishes.
+      A line flashes green when it goes up and red when it goes down.'
   - id: crafting
-    title: FIRING A TICKET
-    body: 'The tickets above a station are its recipes; green means you have the
-      ingredients. Poke (or grip) a ticket to fire it: ingredients are spent, Progress
-      fills, and the result lands in the pantry.'
+    title: RECIPE TICKETS
+    body: The tickets above a station are its recipes. Green means you have the ingredients.
+      Press one to start cooking; the dish goes to the pantry when it's done.
   - id: heat
     title: HEAT
-    body: Lit burners gain Heat every second; turn the knob off and they cool. Hot
-      recipes need a minimum Heat. Very hot + greasy stations can catch fire!
+    body: A lit grill or fryer takes a few seconds to heat up. Some recipes won't
+      start until it's hot enough.
   - id: neighbor
     title: NEIGHBORS INTERACT
     body: 'Equipment on touching grid cells affects each other every second: sinks
@@ -1460,20 +1456,18 @@ MonoBehaviour:
       Tomato Salad ticket here.'
   - id: sink
     title: SINK
-    body: A sink cleans neighboring counters, boards and stoves and waters neighboring
-      plants, spending WaterLevel. Dip the watering can in to refill it.
+    body: The sink keeps the herb plants next to it watered.
   - id: herbs
     title: HERB PLANT
-    body: Grows while it has Moisture (faster with planter Nutrients). Water it or
-      put it next to a sink. Snip it with the shears at 50+ Growth for Herbs. If
-      it dries out, it dies.
+    body: Grows as long as it has water. Snip it with the shears once it's grown
+      to get herbs.
   - id: watering_can
     title: WATERING CAN
     body: Tilt the spout over a herb plant or planter to water it. Dip it into a
       sink to refill its WaterLevel.
   - id: shears
-    title: KITCHEN SHEARS
-    body: Touch a grown herb plant (Growth 50+) to snip 50 Growth into Herbs.
+    title: SHEARS
+    body: Touch a grown herb plant to snip some herbs.
   - id: spray
     title: SANITIZER SPRAY
     body: Hold TRIGGER to spray. Mist that hits a station raises its Cleanliness.
@@ -1497,75 +1491,68 @@ MonoBehaviour:
       the trap's ticket to re-bait it with Cheese.
   - id: crate
     title: SUPPLY CRATE
-    body: Deliveries pile up at the back door and lose Freshness over time. Pry one
-      open with the crowbar to get loose ingredients.
+    body: Deliveries show up at the back door. Pry one open with the crowbar to get
+      the ingredients inside. Don't leave them too long or they go off.
   - id: cleaver
     title: CROWBAR
-    body: Jam the flat end into a supply crate to pry it open.
+    body: Push the flat end into a supply crate to pry it open.
   - id: ingredients
     title: LOOSE INGREDIENTS
-    body: Touch them with the harvest basket or drop them in the pantry chute to
-      add them to the pantry. They spoil if left lying around. Tossing one into a
-      stockpot adds Flavor instead.
+    body: Touch them with the basket or drop them in the pantry chute to add them
+      to the pantry. Don't leave them lying around.
   - id: basket
     title: HARVEST BASKET
-    body: Touch loose ingredients or ripe mushrooms with the basket to collect them.
+    body: Touch loose ingredients with the basket to collect them.
   - id: mushrooms
     title: WILD MUSHROOMS
     body: They sprout in the damp corner of the loading dock and grow on their own.
       Harvest them with the basket once Growth is 40+, before they rot.
   - id: customer
-    title: DINERS ARRIVING
-    body: Parties walk ONLY on the carpet runners (walkway mats) to a free, set table.
-      No runner route, no customers!
+    title: GUESTS
+    body: Guests walk along the carpet runners to a free table with a place setting.
   - id: table
-    title: ORDER IN!
-    body: A seated party orders a dish and its Patience starts dropping. Their ticket
-      is now clipped to the rail at the pass.
+    title: NEW ORDER
+    body: This table has ordered and is waiting. Its ticket is now on the rail by
+      the pass.
   - id: order_rail
-    title: TICKET RAIL
-    body: Each seated table clips its order here. When that dish is in your pantry,
-      poke the ticket to plate it onto the conveyor.
+    title: ORDER TICKETS
+    body: Each table's order hangs here. Once the dish is cooked, press the ticket
+      to plate it.
   - id: conveyor
-    title: PASS CONVEYOR
-    body: Plated dishes ride the belt out to the dining room. Grab the plate and
-      carry it to the table that ordered it.
+    title: THE PASS
+    body: Plates ride the belt to the dining room. Pick the plate up at the end and
+      take it to the table on its label.
   - id: plate_delivery
-    title: SERVICE!
-    body: Touch the plate to its table. Hot (Warmth) and correct dishes pay more
-      gold and reputation. Dropped plates are ruined.
+    title: SERVING
+    body: Touch the plate to the right table. If you drop it, you'll have to plate
+      it again.
   - id: line_cooks
-    title: YOUR BRIGADE
-    body: 'Line Cooks are a resource you can see: each idle cook stands in the staff
-      area. Hire more at the Staff Board.'
+    title: LINE COOKS
+    body: Your idle cooks wait in the staff area. Hire more at the Staff Board.
   - id: call_cook
-    title: CALLING A COOK
-    body: The cook plans a route along the walkway mats to the station and joins
-      its Crew. Crew cooks faster and re-fires the last ticket by itself.
+    title: CALL A COOK
+    body: A cook walks over along the mats and joins the station's crew.
   - id: walkway
     title: WALKWAY MATS
-    body: Cooks and diners only walk on mats and runners. Lay them to connect the
-      staff area, stations, front door and tables.
+    body: Cooks and guests only walk on mats and runners, so keep the staff area,
+      stations, door and tables connected.
   - id: ice
     title: ICE MACHINE
     body: Makes Ice while it has water and drops cubes in its tray. Throw a cube
       into the fryer or grill to cool it, or into the fridge to chill it.
   - id: trash
-    title: TRASH & SCRAPS
-    body: 'Prep leaves food scraps. Toss them in a bin before they rot or a rat finds
-      them. A full bin stinks: poke its ticket to empty it.'
+    title: SCRAPS
+    body: Prep leaves scraps behind. Throw them in the bin.
   - id: death
-    title: GONE FOR GOOD
-    body: When a vital stat (Freshness, Integrity, Moisture, Health, Intensity, Patience...)
-      hits zero, that thing is destroyed.
+    title: GONE
+    body: When something runs out completely, like a guest's patience, it's gone
+      for good.
   - id: supplier
-    title: SUPPLIER BOARD
-    body: Trade gold for ingredient boxes, sanitizer, trap cheese and spare parts.
-      Each ticket is an instant exchange.
+    title: SUPPLIER
+    body: Spend gold here on boxes of ingredients. Each ticket is an instant purchase.
   - id: staff_board
     title: STAFF BOARD
-    body: 'Hire a Line Cook for gold: a new cook appears in the staff area, ready
-      to be called to a station.'
+    body: Hire a line cook for gold. They wait in the staff area until you call them.
   - id: wrench
     title: WRENCH
     body: Touch a damaged station to repair 25 Integrity for 1 Spare Part.
@@ -1584,41 +1571,36 @@ MonoBehaviour:
     body: Rats, rot and a stinking bin lower Hygiene. Below 25 the health inspector
       docks Reputation.
   - id: crew
-    title: CREW JOINED
-    body: This station now has a cook. More Crew = faster Progress, and it keeps
-      firing the last ticket automatically.
+    title: CREW
+    body: This station has a cook now. It cooks faster and repeats the last ticket
+      by itself.
   - id: caretaking
-    title: CARETAKING
-    body: Looking after equipment (watering, cleaning, repairing, re-baiting, changing
-      oil) boosts its stats, sometimes for a resource.
+    title: UPKEEP
+    body: Looking after equipment and plants keeps them working.
   - id: harvest
-    title: HARVEST
-    body: Gathering turns things in the world into pantry resources.
+    title: COLLECTED
+    body: That went into your pantry.
   - id: collision
-    title: COLLISION!
-    body: 'Some things react when they bump into each other: one is used up and the
-      other''s stats change (ice into oil, foam into fire, diners into tables, cooks
-      into stations).'
+    title: BY TOUCH
+    body: 'A lot of things here work by touch: plates on tables, cooks on stations,
+      ingredients in the chute.'
   - id: intermittent
-    title: SOMETHING NEW APPEARED
-    body: Deliveries, rats, mushrooms and diners turn up at random times. Keep an
-      eye on the back door and the dining room.
+    title: SOMETHING ARRIVED
+    body: Deliveries and guests turn up every so often. Keep an eye on the back door
+      and the dining room.
   - id: fryer
     title: DEEP FRYER
-    body: Oil Quality drops with every batch and from splatter. Change the oil with
-      its service ticket. Spent oil + high heat = fire.
+    body: Cut potatoes go in here. Wait for the oil to heat up first.
   - id: pass
     title: THE PASS
-    body: The heart of service. Orders arrive on the ticket rail, plates leave on
-      the conveyor.
+    body: Orders come in on the ticket rail and plates go out on the belt.
   - id: office
     title: CHEF'S OFFICE PANEL
     body: 'Shortcuts for demos: add gold, stock the pantry, spawn diners, rats or
       deliveries, start a fire, hire a cook, reset the tips.'
   - id: planter
     title: PLANTER BOX
-    body: Holds Moisture and Nutrients for the herb plant growing in it. Feed it
-      with its service ticket.
+    body: The herbs grow in this. Keep it watered.
   - id: cookware
     title: PANS & POTS
     body: Cookware takes its Heat from the stove underneath. Toss a loose ingredient

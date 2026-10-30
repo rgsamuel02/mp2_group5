@@ -106,7 +106,7 @@ namespace Steven.MP2A
         {
             m_Running = true;
             yield return new WaitForSeconds(1.5f);
-            Say("FIRST SHIFT - let's serve your first guest.", false);
+            Say("First shift. Let's serve your first guest.", false);
             yield return new WaitForSeconds(3.5f);
 
             for (m_Round = 1; m_Round <= rounds; m_Round++)
@@ -125,7 +125,7 @@ namespace Steven.MP2A
                 {
                     if (++tries > 15)
                     {
-                        Finish("No free table with a place setting - skipping the tutorial.");
+                        Finish("No table is set for guests, so the tutorial was skipped.");
                         yield break;
                     }
                     yield return new WaitForSeconds(2f);
@@ -142,10 +142,10 @@ namespace Steven.MP2A
                 Praise(m_Table != null ? m_Table.transform.position + Vector3.up * 1.2f : m_ArrowTarget,
                     m_Round == 1 ? "FIRST COVER SERVED!" : m_Round == rounds ? "Perfect service!" : "Yes, Chef! Served!", true);
                 ArrowOff();
-                Say(m_Round == 1 ? "That's the whole job. Once more - follow the arrows." : m_Round < rounds ? "Great. Next one's yours." : "", false);
+                Say(m_Round == 1 ? "That's the whole loop. One more time - follow the arrows." : m_Round < rounds ? "Nice. The next one's all yours." : "", false);
                 yield return new WaitForSeconds(m_Round < rounds ? 3.5f : 1.5f);
             }
-            Finish("Kitchen's open! Keep serving to reach your goals.");
+            Finish("You're on your own now. Keep serving to reach your goals.");
         }
 
         void Finish(string line)
@@ -456,7 +456,7 @@ namespace Steven.MP2A
 
 #if UNITY_EDITOR
             var kb = UnityEngine.InputSystem.Keyboard.current;
-            if (m_Running && kb != null && kb.f8Key.wasPressedThisFrame)
+            if (m_Running && kb != null && kb.f12Key.wasPressedThisFrame)
             {
                 StopAllCoroutines();
                 Finish("Tutorial skipped.");

@@ -432,7 +432,7 @@ namespace Steven.MP2A.EditorTools
                 if (t.gameObject.activeInHierarchy && t.HasPlaceSetting)
                     tables++;
             Log("First Shift: tutorial added to " + progression.name + " (" + tables + " set tables found" +
-                (tables == 0 ? " - it needs at least one table with a place setting!" : "") + "). Press F8 in Play mode to skip it.");
+                (tables == 0 ? " - it needs at least one table with a place setting!" : "") + "). Press F12 in Play mode to skip it.");
         }
 
         // ------------------------------------------------------------------ helpers
