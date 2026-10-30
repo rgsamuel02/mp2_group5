@@ -37,10 +37,11 @@ public class InventoryPuller : MonoBehaviour
 
         var row = hit.gameObject.GetComponentInParent<ItemRow>();
         if (!row || !inventoryUI.Owns(row) || !row.Item || !row.Item.prefab) return;
-        if (!inventory.Remove(row.Item)) return;
+        var item = row.Item;
+        if (!inventory.Remove(item)) return;
 
         var position = hit.worldPosition - hit.gameObject.transform.forward * spawnDistance;
-        pulling = GrabbableItem.Create(row.Item, position, grid, inventory, previewMaterial);
+        pulling = GrabbableItem.Create(item, position, grid, inventory, previewMaterial);
         isPulling = true;
         interactor.StartManualInteraction((IXRSelectInteractable)pulling.Grab);
     }
