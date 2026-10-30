@@ -25,7 +25,7 @@ public class GameState : MonoBehaviour
     bool unlockedGarden = false;
     int numCustomers = 0;
     public int level = 1;
-    int flowers = 100, coffee = 100, meals = 100;
+    int flowers = 0, coffee = 0, meals = 0;
     public int[] rowMultiplier = {1, 1, 1, 1, 1};
     bool boughtPiano = false;
     public GameObject pianoTrophy;
@@ -78,7 +78,7 @@ public class GameState : MonoBehaviour
     float high = 0, mid = 0, low = 0, brass = 0, woodwind = 0, strings = 0;
     float pitchEnjoyment = 1, timbreEnjoyment = 1;
     int trash = 10;
-    float money = 100.0f;
+    float money = 0.0f;
     int material = 0;
     public InputActionReference nextLevel;
 
