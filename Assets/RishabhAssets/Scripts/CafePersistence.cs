@@ -65,7 +65,7 @@ public class CafePersistence : MonoBehaviour
         ParentLooseOfType<Broom>();
         ParentLooseOfType<BeanPack>();
         ParentLooseOfType<CoffeeCup>();
-        // ParentLooseOfType<FlavorSyrup>();
+        ParentLooseOfType<SyrupPump>();
         ParentLooseOfType<StevenChocolateSouffle>();
         ParentLooseOfType<RebeccaCoffeePlant>();
         ParentLooseOfType<BryceViola>();

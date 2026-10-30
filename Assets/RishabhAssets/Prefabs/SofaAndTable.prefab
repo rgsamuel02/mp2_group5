@@ -63,7 +63,7 @@ MonoBehaviour:
   souffleAnchors:
   - {fileID: 5545586591830796765}
   - {fileID: 2611473685958608409}
-  cupSnapRadius: 0.25
+  cupSnapRadius: 0.5
   statsLabel: {fileID: 5160413537047289787}
   statsFormat: 'Seats Filled: {0}/{1}'
 --- !u!1 &2449616130338172704
