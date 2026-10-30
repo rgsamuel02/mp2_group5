@@ -1,4 +1,3 @@
-
 using UnityEngine;
 using TMPro;
 
@@ -14,11 +13,6 @@ public class Scr_InventoryUI : MonoBehaviour
 
     void Start()
     {
-        if (inventory == null)
-        {
-            inventory = FindFirstObjectByType<Scr_Inventory>();
-        }
-
         if (inventoryText == null)
         {
             Debug.LogError("Inventory Text is not assigned.");
@@ -60,3 +54,4 @@ public class Scr_InventoryUI : MonoBehaviour
         }
     }
 }
+

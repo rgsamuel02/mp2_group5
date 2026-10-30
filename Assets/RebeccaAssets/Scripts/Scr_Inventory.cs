@@ -19,6 +19,13 @@ public class Scr_Inventory : MonoBehaviour
     public int corn = 60;
     public int flowers = 5;
 
+    private void Awake()
+    {
+        tomatoes = 15;
+        corn = 60;
+        flowers = 5;
+    }
+
     public int GetAmount(GardenResource resource)
     {
         switch (resource)

@@ -2572,7 +2572,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af622634860394a41928443b3594890e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameState
-  parent: {fileID: 1409796534961127816}
   person: {fileID: 6728605689000482610, guid: b9c89dc24d6e581439a497b0117ef558, type: 3}
   audience: {fileID: 877394604946224789}
   trashSpawner: {fileID: 130362694874825882}
@@ -2580,8 +2579,13 @@ MonoBehaviour:
   - {fileID: 2100000, guid: de80d13f15929bc4d9f72233c15bd450, type: 2}
   - {fileID: 2100000, guid: 35cf49468bf91914587d64ef7ee85fd9, type: 2}
   - {fileID: 2100000, guid: 40ad99c38a64f674eb910bbd266764e7, type: 2}
+  level: 1
+  rowMultiplier: 0100000001000000010000000100000001000000
+  pianoTrophy: {fileID: 0}
   menu: {fileID: 4435387132401443111}
+  nextLevel: {fileID: 0}
   stats: {fileID: 1274911414835440529}
+  threshold: {fileID: 0}
 --- !u!1 &1417802154262829829
 GameObject:
   m_ObjectHideFlags: 0
@@ -10457,6 +10461,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpawnInstrument
   confirm: {fileID: 11711766586467970, guid: e0ca4504471ca124088e1e2cfe6804ae, type: 3}
   cancel: {fileID: -1644001223835636349, guid: e0ca4504471ca124088e1e2cfe6804ae, type: 3}
+  integrate: {fileID: 0}
   placeButton: {fileID: 6454596279149084813, guid: e0ca4504471ca124088e1e2cfe6804ae, type: 3}
   raycast: {fileID: 5494187571365863754}
   unplaceableMat: {fileID: 2100000, guid: 01df02bb2e562a14682f5473227a25ef, type: 2}
